@@ -60,16 +60,18 @@ class I32(RVInstructionSet):
         return RVInstruction(rv_name="ebreak", rv_size=32)
 
     def __init__(self):
+        """Initializing the ISA instruction table"""
+
         self.instructionTable = {
             frozenbitarray("0110111"): LUI,
             frozenbitarray("0010111"): AUIPC,
             frozenbitarray("1101111"): JAL,
             frozenbitarray("1100111"): JALR,
-            frozenbitarray("1100011"): BRANCHES,  # branch instructions
-            frozenbitarray("0000011"): LOAD,  # load instructions
-            frozenbitarray("0100011"): STORE,  # store instructions
-            frozenbitarray("0010011"): IMMEDIATE,  # register immediate instructions
-            frozenbitarray("0110011"): REGISTER,  # register register instructions
+            frozenbitarray("1100011"): BRANCHES,
+            frozenbitarray("0000011"): LOAD,
+            frozenbitarray("0100011"): STORE,
+            frozenbitarray("0010011"): IMMEDIATE,
+            frozenbitarray("0110011"): REGISTER,
             frozenbitarray("1110011"): ECALL,
             frozenbitarray("1110011"): EBREAK,
         }

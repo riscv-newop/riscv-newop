@@ -1,6 +1,8 @@
 from abc import ABC, abstractmethod
 
 # an abstract base class all instruction sets will inherit from
+
+
 class RVInstructionSet(ABC):
     def __init__(self):
         self.instructionTable = {}

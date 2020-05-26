@@ -1,6 +1,5 @@
 class RVInstruction:
     """A class to represent any RISC-V Instruction"""
-
     def __init__(
         self,
         rv_format=None,

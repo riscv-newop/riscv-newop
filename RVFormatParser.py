@@ -2,6 +2,8 @@ from RVInstruction import RVInstruction
 from bitarray import frozenbitarray
 
 # class to parse different instruction formats (ie RISUBJ)
+
+
 class RVFormatParser:
     @staticmethod
     def getOpcode(ba):
