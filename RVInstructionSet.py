@@ -1,4 +1,4 @@
-from abc import ABC
+from abc import ABC, abstractmethod
 
 # an abstract base class all instruction sets will inherit from
 class RVInstructionSet(ABC):
