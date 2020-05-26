@@ -70,8 +70,8 @@ class I32(RVInstructionSet):
             frozenbitarray("0100011"): STORE,  # store instructions
             frozenbitarray("0010011"): IMMEDIATE,  # register immediate instructions
             frozenbitarray("0110011"): REGISTER,  # register register instructions
-            frozenbitarray("1110011"): ECALL,  # ecall instruction
-            frozenbitarray("1110011"): EBREAK,  # ebreak instruction
+            frozenbitarray("1110011"): ECALL,
+            frozenbitarray("1110011"): EBREAK,
         }
 
     @property
