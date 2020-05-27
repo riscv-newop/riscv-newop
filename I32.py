@@ -1,63 +1,78 @@
-from RVInstructionSet import RVInstructionSet
-from RVInstruction import RVInstruction
 from bitarray import frozenbitarray
+
+from RVFormatParser import RVFormatParser as fp
+from RVInstruction import RVInstruction
+from RVInstructionSet import RVInstructionSet
 
 
 class I32(RVInstructionSet):
     """A class that implements the RV32I base instruction set"""
 
+    @staticmethod
+    def LUI(ba):
+        data = fp.parseU(ba)
+        return RVInstruction(
+            rv_format="U",
+            rv_dest_registers=[data["rd"]],
+            rv_immediates=[data["imm"]],
+            rv_name="lui",
+            rv_size=32,
+            rv_binary=ba,
+        )
+
+    @staticmethod
+    def AUIPC(ba):
+        return RVInstruction(
+            rv_format="U",
+            rv_dest_registers=[data["rd"]],
+            rv_immediates=[data["imm"]],
+            rv_name="auipc",
+            rv_size=32,
+            rv_binary=ba,
+        )
+
     # TODO
     @staticmethod
-    def LUI():
+    def JAL(ba):
         pass
 
     # TODO
     @staticmethod
-    def AUIPC():
+    def JALR(ba):
         pass
 
     # TODO
     @staticmethod
-    def JAL():
+    def BRANCHES(ba):
         pass
 
     # TODO
     @staticmethod
-    def JALR():
+    def LOAD(ba):
         pass
 
     # TODO
     @staticmethod
-    def BRANCHES():
+    def STORE(ba):
         pass
 
     # TODO
     @staticmethod
-    def LOAD():
+    def IMMEDIATE(ba):
         pass
 
     # TODO
     @staticmethod
-    def STORE():
-        pass
-
-    # TODO
-    @staticmethod
-    def IMMEDIATE():
-        pass
-
-    # TODO
-    @staticmethod
-    def REGISTER():
+    def REGISTER(ba):
         pass
 
     @staticmethod
-    def ECALL():
-        return RVInstruction(rv_name="ecall", rv_size=32)
+    def ECALL(ba):
+        return RVInstruction(rv_name="ecall", rv_size=32, rv_binary=ba)
 
     @staticmethod
-    def EBREAK():
-        return RVInstruction(rv_name="ebreak", rv_size=32)
+    def EBREAK(ba):
+        return RVInstruction(rv_name="ebreak", rv_size=32, rv_binary=ba)
 
     def __init__(self):
         """Initializing the ISA instruction table"""
