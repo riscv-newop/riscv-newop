@@ -63,7 +63,7 @@ class I32(RVInstructionSet):
 
     @staticmethod
     def BRANCHES(ba):
-        """Creates various branch Instructions"""
+        """Creates various Branch Instructions"""
         data = fp.parseB(ba)
         f3 = data["funct3"]
         name = ""
@@ -101,7 +101,7 @@ class I32(RVInstructionSet):
 
     @staticmethod
     def LOAD(ba):
-        """Creates various load Instructions"""
+        """Creates various Load Instructions"""
         data = fp.parseI(ba)
         f3 = data["f3"]
         name = ""
@@ -135,10 +135,34 @@ class I32(RVInstructionSet):
             rv_binary=ba,
         )
 
-    # TODO
     @staticmethod
     def STORE(ba):
-        pass
+        """Create various Store Instructions"""
+        data = fp.parseS(ba)
+        f3 = data["funct3"]
+        name = ""
+
+        if f3 == bitarray("000"):
+            # SB
+            name = "sb"
+        elif f3 == bitarray("001"):
+            # SH
+            name = "sh"
+        elif f3 == bitarray("010"):
+            # SW
+            name = "sw"
+        else:
+            # TODO error??
+            pass
+
+        return RVInstruction(
+            rv_format="S",
+            rv_src_registers=[data["rs1"], data["rs2"]],
+            rv_immediates=[data["imm"]],
+            rv_name=name,
+            rv_size=32,
+            rv_binary=ba,
+        )
 
     # TODO
     @staticmethod
