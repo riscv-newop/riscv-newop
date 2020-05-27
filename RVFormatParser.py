@@ -1,42 +1,72 @@
 from RVInstruction import RVInstruction
-from bitarray import frozenbitarray
-
-# class to parse different instruction formats (ie RISUBJ)
+from bitarray import frozenbitarray, util
 
 
 class RVFormatParser:
+    """class to parse different instruction formats (ie RISUBJ)"""
     @staticmethod
     def getOpcode(ba):
         return frozenbitarray(ba[-7:])
 
     @staticmethod
-    def convertToRegister(ba):
-        pass
+    def convertToIntRegister(ba):
+        return "x{}".format(util.ba2int(ba))
 
     @staticmethod
     def parseR(ba):
-        pass
+        return {
+            "funct7": ba[:7],
+            "rs2": RVFormatParser.convertToIntRegister(ba[7:12]),
+            "rs1": RVFormatParser.convertToIntRegister(ba[12:17]),
+            "funct3": ba[17:20],
+            "rd": RVFormatParser.convertToIntRegister(ba[20:25]),
+            "opcode": ba[25:32],
+        }
 
     @staticmethod
     def parseI(ba):
-        pass
-
-    @staticmethod
-    def parseIShift(ba):
-        pass
+        return {
+            "imm": ba[:12],
+            "rs1": RVFormatParser.convertToIntRegister(ba[12:17]),
+            "funct3": ba[17:20],
+            "rd": RVFormatParser.convertToIntRegister(ba[20:25]),
+            "opcode": ba[25:32],
+        }
 
     @staticmethod
     def parseU(ba):
-        pass
+        return {
+            "imm": ba[:20],
+            "rd": RVFormatParser.convertToIntRegister(ba[20:25]),
+            "opcode": ba[25:32],
+        }
 
     @staticmethod
     def parseJ(ba):
-        pass
+        return {
+            "imm":
+            ba[0] + ba[12:19] + ba[11] + ba[1:10],  # TODO check if correct
+            "rd": RVFormatParser.convertToIntRegister(ba[20:25]),
+            "opcode": ba[25:32],
+        }
 
     @staticmethod
     def parseB(ba):
-        pass
+        return {
+            "imm":
+            ba[0] + ba[25] + ba[1:7] + ba[20:24],  # TODO check if this is true
+            "rs2": RVFormatParser.convertToIntRegister(ba[7:12]),
+            "rs1": RVFormatParser.convertToIntRegister(ba[12:17]),
+            "funct3": ba[17:20],
+            "opcode": ba[25:32],
+        }
 
     @staticmethod
     def parseS(ba):
-        pass
+        return {
+            "imm": ba[:7] + ba[20:25],
+            "rs2": RVFormatParser.convertToIntRegister(ba[7:12]),
+            "rs1": RVFormatParser.convertToIntRegister(ba[12:17]),
+            "funct3": ba[17:20],
+            "opcode": ba[25:32],
+        }
