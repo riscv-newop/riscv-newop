@@ -164,10 +164,65 @@ class I32(RVInstructionSet):
             rv_binary=ba,
         )
 
-    # TODO
     @staticmethod
     def IMMEDIATE(ba):
-        pass
+        """Creates various Register Immediate Instructions"""
+        data = fp.parseI(ba, convert=False)
+        f3 = data["funct3"]
+        name = ""
+        shift = False
+        imm = None
+
+        if f3 == bitarray("000"):
+            # ADDI
+            name = "addi"
+        elif f3 == bitarray("010"):
+            # SLTI
+            name = "slti"
+        elif f3 == bitarray("011"):
+            # SLTIU
+            name = "sltiu"
+        elif f3 == bitarray("100"):
+            # XORI
+            name = "xori"
+        elif f3 == bitarray("110"):
+            # ORI
+            name = "ori"
+        elif f3 == bitarray("111"):
+            # ANDI
+            name = "andi"
+        elif f3 == bitarray("001"):
+            # SLLI
+            name = "slli"
+            shift = True
+
+        # These two share the same funct3 value
+        # but have a different 2nd to most significant bit
+        elif f3 == bitarray("101"):
+            if data["imm"][1] == 0:
+                # SRLI
+                name = "srli"
+            else:
+                # SRAI
+                name = "srai"
+            shift = True
+
+        if shift:
+            # to account for the shamt
+            imm = fp.immToInt(data["imm"][7:])
+        else:
+            # for every other immediate instruction
+            imm = fp.immToInt(data["imm"])
+
+        return RVInstruction(
+            rv_format="I",
+            rv_src_registers=[data["rs1"]],
+            rv_dest_registers=[data["rd"]],
+            rv_immediates=[imm],
+            rv_name=name,
+            rv_size=32,
+            rv_binary=ba,
+        )
 
     # TODO
     @staticmethod
