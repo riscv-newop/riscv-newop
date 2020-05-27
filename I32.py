@@ -67,6 +67,7 @@ class I32(RVInstructionSet):
         data = fp.parseB(ba)
         f3 = data["funct3"]
         name = ""
+
         if f3 == bitarray("000"):
             # BEQ
             name = "beq"
@@ -98,10 +99,41 @@ class I32(RVInstructionSet):
             rv_binary=ba,
         )
 
-    # TODO
     @staticmethod
     def LOAD(ba):
-        pass
+        """Creates various load Instructions"""
+        data = fp.parseI(ba)
+        f3 = data["f3"]
+        name = ""
+
+        if f3 == bitarray("000"):
+            # LB
+            name = "lb"
+        elif f3 == bitarray("001"):
+            # LH
+            name = "lh"
+        elif f3 == bitarray("010"):
+            # LW
+            name = "lw"
+        elif f3 == bitarray("100"):
+            # LBU
+            name = "lbu"
+        elif f3 == bitarray("101"):
+            # LHU
+            name = "lhu"
+        else:
+            # TODO error??
+            pass
+
+        return RVInstruction(
+            rv_format="I",
+            rv_src_registers=[data["rs1"]],
+            rv_dest_registers=[data["rd"]],
+            rv_immediates=[data["imm"]],
+            rv_name=name,
+            rv_size=32,
+            rv_binary=ba,
+        )
 
     # TODO
     @staticmethod
