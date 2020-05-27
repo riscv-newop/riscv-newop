@@ -31,10 +31,16 @@ class I32(RVInstructionSet):
             rv_binary=ba,
         )
 
-    # TODO
     @staticmethod
     def JAL(ba):
-        pass
+        return RVInstruction(
+            rv_format="J",
+            rv_dest_registers=[data["rd"]],
+            rv_immediates=[data["imm"]],
+            rv_name="jal",
+            rv_size=32,
+            rv_binary=ba,
+        )
 
     # TODO
     @staticmethod
