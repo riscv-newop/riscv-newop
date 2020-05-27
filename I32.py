@@ -1,4 +1,4 @@
-from bitarray import frozenbitarray
+from bitarray import bitarray, frozenbitarray
 
 from RVFormatParser import RVFormatParser as fp
 from RVInstruction import RVInstruction
@@ -224,10 +224,58 @@ class I32(RVInstructionSet):
             rv_binary=ba,
         )
 
-    # TODO
     @staticmethod
     def REGISTER(ba):
-        pass
+        """Creates Register to Register Instructions"""
+        data = fp.parseR(ba)
+        f3 = data["funct3"]
+        f7 = data["funct7"]
+        name = ""
+
+        if f3 == bitarray("000"):
+            if f7[1] == 0:
+                # ADD
+                name = "add"
+            elif f7[1] == 1:
+                # SUB
+                name = "sub"
+        elif f3 == bitarray("001"):
+            # SLL
+            name = "sll"
+        elif f3 == bitarray("010"):
+            # SLT
+            name = "slt"
+        elif f3 == bitarray("011"):
+            # SLTU
+            name = "sltu"
+        elif f3 == bitarray("100"):
+            # XOR
+            name = "xor"
+        elif f3 == bitarray("101"):
+            if f7[1] == 0:
+                # SRL
+                name = "srl"
+            elif f7[1] == 1:
+                # SRA
+                name = "sra"
+        elif f3 == bitarray("110"):
+            # OR
+            name = "or"
+        elif f3 == bitarray("111"):
+            # AND
+            name = "and"
+        else:
+            # TODO error??
+            pass
+
+        return RVInstruction(
+            rv_format="R",
+            rv_src_registers=[data["rs1"], data["rs2"]],
+            rv_dest_registers=[data["rd"]],
+            rv_name=name,
+            rv_size=32,
+            rv_binary=ba,
+        )
 
     @staticmethod
     def ECALL(ba):
@@ -241,17 +289,17 @@ class I32(RVInstructionSet):
         """Initializing the ISA instruction table"""
 
         self.instructionTable = {
-            frozenbitarray("0110111"): LUI,
-            frozenbitarray("0010111"): AUIPC,
-            frozenbitarray("1101111"): JAL,
-            frozenbitarray("1100111"): JALR,
-            frozenbitarray("1100011"): BRANCHES,
-            frozenbitarray("0000011"): LOAD,
-            frozenbitarray("0100011"): STORE,
-            frozenbitarray("0010011"): IMMEDIATE,
-            frozenbitarray("0110011"): REGISTER,
-            frozenbitarray("1110011"): ECALL,
-            frozenbitarray("1110011"): EBREAK,
+            frozenbitarray("0110111"): I32.LUI,
+            frozenbitarray("0010111"): I32.AUIPC,
+            frozenbitarray("1101111"): I32.JAL,
+            frozenbitarray("1100111"): I32.JALR,
+            frozenbitarray("1100011"): I32.BRANCHES,
+            frozenbitarray("0000011"): I32.LOAD,
+            frozenbitarray("0100011"): I32.STORE,
+            frozenbitarray("0010011"): I32.IMMEDIATE,
+            frozenbitarray("0110011"): I32.REGISTER,
+            frozenbitarray("1110011"): I32.ECALL,
+            frozenbitarray("1110011"): I32.EBREAK,
         }
 
     @property

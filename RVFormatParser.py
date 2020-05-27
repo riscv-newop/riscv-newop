@@ -1,4 +1,3 @@
-from RVInstruction import RVInstruction
 from bitarray import frozenbitarray, util
 
 
