@@ -22,6 +22,7 @@ class I32(RVInstructionSet):
 
     @staticmethod
     def AUIPC(ba):
+        data = fp.parseU(ba)
         return RVInstruction(
             rv_format="U",
             rv_dest_registers=[data["rd"]],
@@ -33,6 +34,7 @@ class I32(RVInstructionSet):
 
     @staticmethod
     def JAL(ba):
+        data = fp.parseJ(ba)
         return RVInstruction(
             rv_format="J",
             rv_dest_registers=[data["rd"]],
@@ -42,10 +44,18 @@ class I32(RVInstructionSet):
             rv_binary=ba,
         )
 
-    # TODO
     @staticmethod
     def JALR(ba):
-        pass
+        data = fp.parseI(ba)
+        return RVInstruction(
+            rv_format="I",
+            rv_src_registers=[data["rs1"]],
+            rv_dest_registers=[data["rd"]],
+            rv_immediates=[data["imm"]],
+            rv_name="jalr",
+            rv_size=32,
+            rv_binary=ba,
+        )
 
     # TODO
     @staticmethod
