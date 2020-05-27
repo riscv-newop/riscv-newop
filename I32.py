@@ -10,6 +10,7 @@ class I32(RVInstructionSet):
 
     @staticmethod
     def LUI(ba):
+        """Creates 'Load Upper Immediate' Instruction"""
         data = fp.parseU(ba)
         return RVInstruction(
             rv_format="U",
@@ -22,6 +23,7 @@ class I32(RVInstructionSet):
 
     @staticmethod
     def AUIPC(ba):
+        """Creates 'Add Upper Immediate to PC' Instruction"""
         data = fp.parseU(ba)
         return RVInstruction(
             rv_format="U",
@@ -34,6 +36,7 @@ class I32(RVInstructionSet):
 
     @staticmethod
     def JAL(ba):
+        """Creates 'Jump And Link' Instruction"""
         data = fp.parseJ(ba)
         return RVInstruction(
             rv_format="J",
@@ -46,6 +49,7 @@ class I32(RVInstructionSet):
 
     @staticmethod
     def JALR(ba):
+        """Creates 'Jump And Link Register' Instruction"""
         data = fp.parseI(ba)
         return RVInstruction(
             rv_format="I",
@@ -57,10 +61,42 @@ class I32(RVInstructionSet):
             rv_binary=ba,
         )
 
-    # TODO CONTINUE THIS
     @staticmethod
     def BRANCHES(ba):
-        pass
+        """Creates various branch Instructions"""
+        data = fp.parseB(ba)
+        f3 = data["funct3"]
+        name = ""
+        if f3 == bitarray("000"):
+            # BEQ
+            name = "beq"
+        elif f3 == bitarray("001"):
+            # BNE
+            name = "bne"
+        elif f3 == bitarray("100"):
+            # BLT
+            name = "blt"
+        elif f3 == bitarray("101"):
+            # BGE
+            name = "bge"
+        elif f3 == bitarray("110"):
+            # BLTU
+            name = "bltu"
+        elif f3 == bitarray("111"):
+            # BGEU
+            name = "bgeu"
+        else:
+            # TODO error??
+            pass
+
+        return RVInstruction(
+            rv_format="B",
+            rv_src_registers=[data["rs1"], data["rs2"]],
+            rv_immediates=[data["imm"]],
+            rv_name=name,
+            rv_size=32,
+            rv_binary=ba,
+        )
 
     # TODO
     @staticmethod
