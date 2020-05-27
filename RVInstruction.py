@@ -8,6 +8,7 @@ class RVInstruction:
         rv_immediates=None,
         rv_name=None,
         rv_size=None,
+        rv_binary=None,
     ):
         """Constructs a RV Instruction based on parameters
 
@@ -17,6 +18,7 @@ class RVInstruction:
             - immediates: any constants used in the instruction
             - name: the readable name of the instruction (i.e. addi, jal, beq, etc)
             - size: the size of the instruction in bits
+            - binary: the original binary representation of the instruction
         """
         self.format = rv_format if rv_format is not None else ""
         self.src_registers = rv_src_registers if rv_src_registers is not None else []
@@ -24,6 +26,7 @@ class RVInstruction:
         self.immediates = rv_immediates if rv_immediates is not None else []
         self.name = rv_name if rv_name is not None else ""
         self.size = rv_size if rv_size is not None else 0
+        self.binary = rv_binary if rv_binary is not None else None
 
     # TODO Check how valid this is, ie if order is correct
     def __str__(self):
