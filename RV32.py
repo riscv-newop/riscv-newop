@@ -8,7 +8,7 @@ class RV32(I32):
 
     def __init__():
         self.instructionTable = I32.instructionTable
-        self.program = {} # key is pc, value is RVInstruction
+        self.program = {}  # key is pc, value is RVInstruction
 
     def addInstruction(self, pc, ba):
         """ Adds Instruction from pc into program """
