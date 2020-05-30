@@ -4,9 +4,30 @@ from bitarray import frozenbitarray, util
 class RVFormatParser:
     """class to parse different instruction formats (ie RISUBJ)"""
 
+    # Genral helper methods to parse formats
     @staticmethod
     def getOpcode(ba):
         return frozenbitarray(ba[-7:])
+
+    @staticmethod
+    def getRD(ba):
+        return ba[-12:-7]
+
+    @staticmethod
+    def getFunct3(ba):
+        return ba[-15:-12]
+
+    @staticmethod
+    def getRS1(ba):
+        return ba[-20:-15]
+
+    @staticmethod
+    def getRS2(ba):
+        return ba[-25:-20]
+
+    @staticmethod
+    def getFunct7(ba):
+        return ba[:-25]
 
     @staticmethod
     def convertToIntRegister(ba):
@@ -20,60 +41,61 @@ class RVFormatParser:
     @staticmethod
     def parseR(ba):
         return {
-            "funct7": ba[:7],
-            "rs2": RVFormatParser.convertToIntRegister(ba[7:12]),
-            "rs1": RVFormatParser.convertToIntRegister(ba[12:17]),
-            "funct3": ba[17:20],
-            "rd": RVFormatParser.convertToIntRegister(ba[20:25]),
-            "opcode": ba[25:32],
+            "funct7": RVFormatParser.getFunct7(ba),
+            "rs2": RVFormatParser.convertToIntRegister(RVFormatParser.getRS2(ba)),
+            "rs1": RVFormatParser.convertToIntRegister(RVFormatParser.getRS1(ba)),
+            "funct3": RVFormatParser.getFunct3(ba),
+            "rd": RVFormatParser.convertToIntRegister(RVFormatParser.getRD(ba)),
+            "opcode": RVFormatParser.getOpcode(ba),
         }
 
     @staticmethod
     def parseI(ba, convert=True):
+        imm = RVFormatParser.getFunct7(ba) + RVFormatParser.getRS2(ba)
         return {
-            "imm": RVFormatParser.immToInt(ba[:12]) if convert else ba[:12],
-            "rs1": RVFormatParser.convertToIntRegister(ba[12:17]),
-            "funct3": ba[17:20],
-            "rd": RVFormatParser.convertToIntRegister(ba[20:25]),
-            "opcode": ba[25:32],
+            "imm": RVFormatParser.immToInt(imm) if convert else imm,
+            "rs1": RVFormatParser.convertToIntRegister(RVFormatParser.getRS1(ba)),
+            "funct3": RVFormatParser.getFunct3(ba),
+            "rd": RVFormatParser.convertToIntRegister(RVFormatParser.getRD(ba)),
+            "opcode": RVFormatParser.getOpcode(ba),
         }
 
     @staticmethod
     def parseU(ba):
         return {
-            "imm": RVFormatParser.immToInt(ba[:20]),
-            "rd": RVFormatParser.convertToIntRegister(ba[20:25]),
-            "opcode": ba[25:32],
+            "imm": RVFormatParser.immToInt(ba[:-12]),
+            "rd": RVFormatParser.convertToIntRegister(RVFormatParser.getRD(ba)),
+            "opcode": RVFormatParser.getOpcode(ba),
         }
 
     @staticmethod
     def parseJ(ba):
         return {
             "imm": RVFormatParser.immToInt(
-                ba[0] + ba[12:19] + ba[11] + ba[1:10]
-            ),  # TODO check if correct
-            "rd": RVFormatParser.convertToIntRegister(ba[20:25]),
-            "opcode": ba[25:32],
+                ba[-32] + ba[-20:-12] + ba[-21] + ba[-31:-21]
+            ),
+            "rd": RVFormatParser.convertToIntRegister(RVFormatParser.getRD(ba)),
+            "opcode": RVFormatParser.getOpcode(ba),
         }
 
     @staticmethod
     def parseB(ba):
         return {
-            "imm": RVFormatParser.immToInt(
-                ba[0] + ba[25] + ba[1:7] + ba[20:24]
-            ),  # TODO check if this is true
-            "rs2": RVFormatParser.convertToIntRegister(ba[7:12]),
-            "rs1": RVFormatParser.convertToIntRegister(ba[12:17]),
-            "funct3": ba[17:20],
-            "opcode": ba[25:32],
+            "imm": RVFormatParser.immToInt(ba[-32] + ba[-8] + ba[-31:-25] + ba[-12:-6]),
+            "rs2": RVFormatParser.convertToIntRegister(RVFormatParser.getRS2(ba)),
+            "rs1": RVFormatParser.convertToIntRegister(RVFormatParser.getRS1(ba)),
+            "funct3": RVFormatParser.getFunct3(ba),
+            "opcode": RVFormatParser.getOpcode(ba),
         }
 
     @staticmethod
     def parseS(ba):
         return {
-            "imm": RVFormatParser.immToInt(ba[:7] + ba[20:25]),
-            "rs2": RVFormatParser.convertToIntRegister(ba[7:12]),
-            "rs1": RVFormatParser.convertToIntRegister(ba[12:17]),
-            "funct3": ba[17:20],
-            "opcode": ba[25:32],
+            "imm": RVFormatParser.immToInt(
+                RVFormatParser.getFunct7(ba) + RVFormatParser.getRD(ba)
+            ),
+            "rs2": RVFormatParser.convertToIntRegister(RVFormatParser.getRS2(ba)),
+            "rs1": RVFormatParser.convertToIntRegister(RVFormatParser.getRS1(ba)),
+            "funct3": RVFormatParser.getFunct3(ba),
+            "opcode": RVFormatParser.getOpcode(ba),
         }
