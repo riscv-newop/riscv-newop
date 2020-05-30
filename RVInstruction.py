@@ -1,5 +1,6 @@
 class RVInstruction:
     """A class to represent any RISC-V Instruction"""
+
     def __init__(
         self,
         rv_format=None,
@@ -28,12 +29,18 @@ class RVInstruction:
         self.size = rv_size if rv_size is not None else 0
         self.binary = rv_binary if rv_binary is not None else None
 
-    # TODO Check how valid this is, ie if order is correct
     def __str__(self):
         """Create a printable string from Instruction"""
-        return "{} {} {} {}".format(
-            self.name,
-            " ".join(self.dest_registers),
-            " ".join(self.src_registers),
-            " ".join(self.immediates),
+        return (
+            self.name
+            + " "
+            + ("" if self.dest_registers is None else " ".join(self.dest_registers))
+            + " "
+            + ("" if self.src_registers is None else " ".join(self.src_registers))
+            + " "
+            + (
+                ""
+                if self.immediates is None
+                else " ".join(str(x) for x in self.immediates)
+            )
         )
