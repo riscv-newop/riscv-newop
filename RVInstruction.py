@@ -31,16 +31,18 @@ class RVInstruction:
 
     def __str__(self):
         """Create a printable string from Instruction"""
-        return (
-            self.name
-            + " "
-            + ("" if self.dest_registers is None else " ".join(self.dest_registers))
-            + " "
-            + ("" if self.src_registers is None else " ".join(self.src_registers))
-            + " "
-            + (
-                ""
-                if self.immediates is None
-                else " ".join(str(x) for x in self.immediates)
-            )
+        return " ".join(
+            (
+                self.name
+                + " "
+                + ("" if self.dest_registers is None else " ".join(self.dest_registers))
+                + " "
+                + ("" if self.src_registers is None else " ".join(self.src_registers))
+                + " "
+                + (
+                    ""
+                    if self.immediates is None
+                    else " ".join(str(x) for x in self.immediates)
+                )
+            ).split()
         )
