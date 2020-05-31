@@ -34,9 +34,15 @@ class RVFormatParser:
         return "x{}".format(util.ba2int(ba))
 
     @staticmethod
+    def twos_compliment(value, length):
+        if (value & (1 << (length - 1))) != 0:
+            value = value - (1 << length)
+        return value
+
+    @staticmethod
     def immToInt(imm):
         """Converts imm bitarray into twos complement integer"""
-        return int.from_bytes(imm.tobytes(), byteorder="big", signed=True)
+        return RVFormatParser.twos_compliment(int(imm.to01(),2), len(imm))
 
     @staticmethod
     def parseR(ba):
