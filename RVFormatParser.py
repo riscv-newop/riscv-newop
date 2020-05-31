@@ -1,4 +1,4 @@
-from bitarray import frozenbitarray, bitarray, util
+from bitarray import bitarray, frozenbitarray, util
 
 
 class RVFormatParser:
@@ -42,7 +42,7 @@ class RVFormatParser:
     @staticmethod
     def immToInt(imm):
         """Converts imm bitarray into twos complement integer"""
-        return RVFormatParser.twos_compliment(int(bitarray(imm).to01(),2), len(imm))
+        return RVFormatParser.twos_compliment(int(bitarray(imm).to01(), 2), len(imm))
 
     @staticmethod
     def parseR(ba):
@@ -78,8 +78,8 @@ class RVFormatParser:
     def parseJ(ba):
         return {
             "imm": RVFormatParser.immToInt(
-                bitarray(ba[-32] + ba[-20:-12] + ba[-21] + ba[-31:-21]
-            )),
+                bitarray(ba[-32] + ba[-20:-12] + ba[-21] + ba[-31:-21])
+            ),
             "rd": RVFormatParser.convertToIntRegister(RVFormatParser.getRD(ba)),
             "opcode": RVFormatParser.getOpcode(ba),
         }
@@ -87,7 +87,9 @@ class RVFormatParser:
     @staticmethod
     def parseB(ba):
         return {
-            "imm": RVFormatParser.immToInt(bitarray(ba[-32] + ba[-8] + ba[-31:-25] + ba[-12:-6])),
+            "imm": RVFormatParser.immToInt(
+                bitarray(ba[-32] + ba[-8] + ba[-31:-25] + ba[-12:-6])
+            ),
             "rs2": RVFormatParser.convertToIntRegister(RVFormatParser.getRS2(ba)),
             "rs1": RVFormatParser.convertToIntRegister(RVFormatParser.getRS1(ba)),
             "funct3": RVFormatParser.getFunct3(ba),

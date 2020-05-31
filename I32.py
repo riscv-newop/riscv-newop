@@ -3,6 +3,7 @@ from bitarray import bitarray, frozenbitarray
 from RVFormatParser import RVFormatParser as fp
 from RVInstruction import RVInstruction
 
+
 # TODO maybe change to a module instead of a class?
 class I32:
     """A class that implements the RV32I base instruction set"""

@@ -1,6 +1,7 @@
 from I32 import I32
 from RVFormatParser import RVFormatParser
 
+
 # TODO add support for M,A,C, etc
 class RV32(I32):
     """ General class for RISC-V 32bit """
