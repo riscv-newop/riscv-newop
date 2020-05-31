@@ -5,7 +5,7 @@ from abc import ABC, abstractmethod
 
 class RVInstructionSet(ABC):
     def __init__(self):
-        self.instructionTable = {}
+        self._instructionTable = {}
 
     #
     # the instruction table is a table mapped from opcodes -> functions that return an RVInstruction
@@ -13,4 +13,9 @@ class RVInstructionSet(ABC):
     @property
     @abstractmethod
     def instructionTable(self):
-        return self.instructionTable
+        return self._instructionTable
+
+    @instructionTable.setter
+    @abstractmethod
+    def instructionTable(self, val):
+        self._instructionTable = val

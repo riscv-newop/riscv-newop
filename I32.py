@@ -288,7 +288,7 @@ class I32(RVInstructionSet):
     def __init__(self):
         """Initializing the ISA instruction table"""
 
-        self.instructionTable = {
+        self._instructionTable = {
             frozenbitarray("0110111"): I32.LUI,
             frozenbitarray("0010111"): I32.AUIPC,
             frozenbitarray("1101111"): I32.JAL,
@@ -304,4 +304,8 @@ class I32(RVInstructionSet):
 
     @property
     def instructionTable(self):
-        return self.instructionTable
+        return self._instructionTable
+
+    @instructionTable.setter
+    def instructionTable(self, val):
+        self._instructionTable = val
