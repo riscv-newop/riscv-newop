@@ -2,10 +2,9 @@ from bitarray import bitarray, frozenbitarray
 
 from RVFormatParser import RVFormatParser as fp
 from RVInstruction import RVInstruction
-from RVInstructionSet import RVInstructionSet
 
-
-class I32(RVInstructionSet):
+# TODO maybe change to a module instead of a class?
+class I32:
     """A class that implements the RV32I base instruction set"""
 
     @staticmethod
@@ -103,7 +102,7 @@ class I32(RVInstructionSet):
     def LOAD(ba):
         """Creates various Load Instructions"""
         data = fp.parseI(ba)
-        f3 = data["f3"]
+        f3 = data["funct3"]
         name = ""
 
         if f3 == bitarray("000"):
@@ -212,7 +211,7 @@ class I32(RVInstructionSet):
             imm = fp.immToInt(data["imm"][7:])
         else:
             # for every other immediate instruction
-            imm = fp.immToInt(data["imm"])
+            imm = fp.immToInt(bitarray(data["imm"]))
 
         return RVInstruction(
             rv_format="I",
@@ -285,27 +284,25 @@ class I32(RVInstructionSet):
     def EBREAK(ba):
         return RVInstruction(rv_name="ebreak", rv_size=32, rv_binary=ba)
 
+    @staticmethod
+    def FENCE(ba):
+        # TODO actually implement, this is just here to prevent errors
+        return RVInstruction(rv_name="fence", rv_size=32, rv_binary=ba)
+
     def __init__(self):
-        """Initializing the ISA instruction table"""
+        pass
 
-        self._instructionTable = {
-            frozenbitarray("0110111"): I32.LUI,
-            frozenbitarray("0010111"): I32.AUIPC,
-            frozenbitarray("1101111"): I32.JAL,
-            frozenbitarray("1100111"): I32.JALR,
-            frozenbitarray("1100011"): I32.BRANCHES,
-            frozenbitarray("0000011"): I32.LOAD,
-            frozenbitarray("0100011"): I32.STORE,
-            frozenbitarray("0010011"): I32.IMMEDIATE,
-            frozenbitarray("0110011"): I32.REGISTER,
-            frozenbitarray("1110011"): I32.ECALL,
-            frozenbitarray("1110011"): I32.EBREAK,
-        }
-
-    @property
-    def instructionTable(self):
-        return self._instructionTable
-
-    @instructionTable.setter
-    def instructionTable(self, val):
-        self._instructionTable = val
+    instructionTable = {
+        frozenbitarray("0110111"): LUI.__func__,
+        frozenbitarray("0010111"): AUIPC.__func__,
+        frozenbitarray("1101111"): JAL.__func__,
+        frozenbitarray("1100111"): JALR.__func__,
+        frozenbitarray("1100011"): BRANCHES.__func__,
+        frozenbitarray("0000011"): LOAD.__func__,
+        frozenbitarray("0100011"): STORE.__func__,
+        frozenbitarray("0010011"): IMMEDIATE.__func__,
+        frozenbitarray("0110011"): REGISTER.__func__,
+        frozenbitarray("1110011"): ECALL.__func__,
+        frozenbitarray("1110011"): EBREAK.__func__,
+        frozenbitarray("0001111"): FENCE.__func__,
+    }
