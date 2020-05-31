@@ -1,4 +1,4 @@
-from bitarray import frozenbitarray, util
+from bitarray import frozenbitarray, bitarray, util
 
 
 class RVFormatParser:
@@ -15,7 +15,7 @@ class RVFormatParser:
 
     @staticmethod
     def getFunct3(ba):
-        return ba[-15:-12]
+        return bitarray(ba[-15:-12])
 
     @staticmethod
     def getRS1(ba):
@@ -27,11 +27,11 @@ class RVFormatParser:
 
     @staticmethod
     def getFunct7(ba):
-        return ba[:-25]
+        return bitarray(ba[:-25])
 
     @staticmethod
     def convertToIntRegister(ba):
-        return "x{}".format(util.ba2int(ba))
+        return "x{}".format(util.ba2int(bitarray(ba)))
 
     @staticmethod
     def twos_compliment(value, length):
@@ -42,7 +42,7 @@ class RVFormatParser:
     @staticmethod
     def immToInt(imm):
         """Converts imm bitarray into twos complement integer"""
-        return RVFormatParser.twos_compliment(int(imm.to01(),2), len(imm))
+        return RVFormatParser.twos_compliment(int(bitarray(imm).to01(),2), len(imm))
 
     @staticmethod
     def parseR(ba):
@@ -69,7 +69,7 @@ class RVFormatParser:
     @staticmethod
     def parseU(ba):
         return {
-            "imm": RVFormatParser.immToInt(ba[:-12]),
+            "imm": RVFormatParser.immToInt(bitarray(ba[:-12])),
             "rd": RVFormatParser.convertToIntRegister(RVFormatParser.getRD(ba)),
             "opcode": RVFormatParser.getOpcode(ba),
         }
@@ -78,8 +78,8 @@ class RVFormatParser:
     def parseJ(ba):
         return {
             "imm": RVFormatParser.immToInt(
-                ba[-32] + ba[-20:-12] + ba[-21] + ba[-31:-21]
-            ),
+                bitarray(ba[-32] + ba[-20:-12] + ba[-21] + ba[-31:-21]
+            )),
             "rd": RVFormatParser.convertToIntRegister(RVFormatParser.getRD(ba)),
             "opcode": RVFormatParser.getOpcode(ba),
         }
@@ -87,7 +87,7 @@ class RVFormatParser:
     @staticmethod
     def parseB(ba):
         return {
-            "imm": RVFormatParser.immToInt(ba[-32] + ba[-8] + ba[-31:-25] + ba[-12:-6]),
+            "imm": RVFormatParser.immToInt(bitarray(ba[-32] + ba[-8] + ba[-31:-25] + ba[-12:-6])),
             "rs2": RVFormatParser.convertToIntRegister(RVFormatParser.getRS2(ba)),
             "rs1": RVFormatParser.convertToIntRegister(RVFormatParser.getRS1(ba)),
             "funct3": RVFormatParser.getFunct3(ba),
