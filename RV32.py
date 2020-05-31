@@ -15,5 +15,6 @@ class RV32(I32):
         self.program[pc] = self.instructionTable[RVFormatParser.getOpcode(ba)](ba)
 
     def printAll(self):
+        """ Prints out all instructions """
         for pc in self.program:
             print("{}: {}".format(pc, self.program[pc]))

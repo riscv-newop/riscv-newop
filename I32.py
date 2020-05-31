@@ -4,7 +4,6 @@ from RVFormatParser import RVFormatParser as fp
 from RVInstruction import RVInstruction
 
 
-# TODO maybe change to a module instead of a class?
 class I32:
     """A class that implements the RV32I base instruction set"""
 
@@ -208,7 +207,7 @@ class I32:
             shift = True
 
         if shift:
-            # to account for the shamt
+            # to account for the shamt, shift amount
             imm = fp.immToInt(data["imm"][7:])
         else:
             # for every other immediate instruction
@@ -290,9 +289,7 @@ class I32:
         # TODO actually implement, this is just here to prevent errors
         return RVInstruction(rv_name="fence", rv_size=32, rv_binary=ba)
 
-    def __init__(self):
-        pass
-
+    # dictionary of opcodes --> functions(bitarray) --> RVInstruction
     instructionTable = {
         frozenbitarray("0110111"): LUI.__func__,
         frozenbitarray("0010111"): AUIPC.__func__,
