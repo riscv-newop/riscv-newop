@@ -277,12 +277,10 @@ class I32:
         )
 
     @staticmethod
-    def ECALL(ba):
-        return RVInstruction(rv_name="ecall", rv_size=32, rv_binary=ba)
-
-    @staticmethod
-    def EBREAK(ba):
-        return RVInstruction(rv_name="ebreak", rv_size=32, rv_binary=ba)
+    def ENVIRONMENT(ba):
+        data = fp.parseI(ba)
+        name = "ecall" if data["imm"] == 0 else "ebreak"
+        return RVInstruction(rv_name=name, rv_size=32, rv_binary=ba)
 
     @staticmethod
     def FENCE(ba):
@@ -300,7 +298,6 @@ class I32:
         frozenbitarray("0100011"): STORE.__func__,
         frozenbitarray("0010011"): IMMEDIATE.__func__,
         frozenbitarray("0110011"): REGISTER.__func__,
-        frozenbitarray("1110011"): ECALL.__func__,
-        frozenbitarray("1110011"): EBREAK.__func__,
+        frozenbitarray("1110011"): ENVIRONMENT.__func__,
         frozenbitarray("0001111"): FENCE.__func__,
     }
