@@ -92,7 +92,9 @@ class RVFormatParser:
         """ Parses the J format of instructions, Jump instructions """
         return {
             "imm": RVFormatParser.immToInt(
-                bitarray(ba[-32] + ba[-20:-12] + ba[-21] + ba[-31:-21])
+                bitarray(
+                    ba[-32] + ba[-20:-12] + ba[-21] + ba[-31:-21] + "0"
+                )  # adding 0 to the end is the same as left shifting by 1
             ),
             "rd": RVFormatParser.convertToIntRegister(RVFormatParser.getRD(ba)),
             "opcode": RVFormatParser.getOpcode(ba),
@@ -103,7 +105,9 @@ class RVFormatParser:
         """ Parses the B format of instructions, Branch instructions """
         return {
             "imm": RVFormatParser.immToInt(
-                bitarray(ba[-32] + ba[-8] + ba[-31:-25] + ba[-12:-6])
+                bitarray(
+                    ba[-32] + ba[-8] + ba[-31:-25] + ba[-12:-8] + "0"
+                )  # left shift by 1
             ),
             "rs2": RVFormatParser.convertToIntRegister(RVFormatParser.getRS2(ba)),
             "rs1": RVFormatParser.convertToIntRegister(RVFormatParser.getRS1(ba)),
