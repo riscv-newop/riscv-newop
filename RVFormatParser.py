@@ -93,7 +93,11 @@ class RVFormatParser:
         return {
             "imm": RVFormatParser.immToInt(
                 bitarray(
-                    ba[-32] + ba[-20:-12] + ba[-21] + ba[-31:-21] + "0"
+                    bitarray(ba[-32])
+                    + ba[-20:-12]
+                    + bitarray(ba[-21])
+                    + ba[-31:-21]
+                    + "0"
                 )  # adding 0 to the end is the same as left shifting by 1
             ),
             "rd": RVFormatParser.convertToIntRegister(RVFormatParser.getRD(ba)),
@@ -106,7 +110,11 @@ class RVFormatParser:
         return {
             "imm": RVFormatParser.immToInt(
                 bitarray(
-                    ba[-32] + ba[-8] + ba[-31:-25] + ba[-12:-8] + "0"
+                    bitarray(ba[-32])
+                    + bitarray(ba[-8])
+                    + ba[-31:-25]
+                    + ba[-12:-8]
+                    + "0"
                 )  # left shift by 1
             ),
             "rs2": RVFormatParser.convertToIntRegister(RVFormatParser.getRS2(ba)),
