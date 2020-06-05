@@ -3,13 +3,14 @@ from M32 import M32
 from RVFormatParser import RVFormatParser
 
 
-# TODO add support for M,A,C, etc
 class RV32:
     """ General class for RISC-V 32bit """
 
     def __init__(self, isa="32I"):
         """ A constructor for RV32
             isa is a string containing which instruction sets and extensions to use, by default this will use 32I"""
+
+        # a mapping from frozenbitarray of opcode --> function that returns an RVInstruction
         self.instructionTable = {}
 
         if "32I" in isa:
@@ -17,10 +18,15 @@ class RV32:
         if "M" in isa:
             self.instructionTable.update(M32.instructionTable)
 
-        self.program = {}  # key is pc, value is RVInstruction
+        # the program is a mapping from a pc int --> RVInstruction
+        self.program = {}
 
     def addInstruction(self, pc, ba):
-        """ Adds Instruction from pc into program """
+        """ Adds Instruction from pc into program map
+
+            pc - an integer (program counter)
+            ba - the bitarray for the instruction
+        """
         self.program[pc] = self.instructionTable[RVFormatParser.getOpcode(ba)](ba)
 
     def printAll(self):
