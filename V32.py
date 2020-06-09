@@ -171,7 +171,7 @@ class V32:
                 rv_format="OPIVI",
                 rv_src_registers=[data["vs2"]],
                 rv_dest_registers=[data["vd"]],
-                rv_immediates=[data[simm5]],
+                rv_immediates=[data["simm5"]],
                 rv_mask=[data["vm"]],
                 rv_name=name,
                 rv_size=32,
