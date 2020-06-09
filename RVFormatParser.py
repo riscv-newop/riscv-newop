@@ -4,6 +4,8 @@ from bitarray import bitarray, frozenbitarray, util
 class RVFormatParser:
     """class to parse different instruction formats (ie RISUBJ)"""
 
+    # Helper methods to parse 32bit formats
+
     @staticmethod
     def getOpcode(ba):
         """ Creates frozenbitarray of opcode, used as a key in the instructionTable """
@@ -53,6 +55,22 @@ class RVFormatParser:
     def immToInt(imm):
         """Converts imm bitarray into twos complement integer"""
         return RVFormatParser.twos_compliment(int(bitarray(imm).to01(), 2), len(imm))
+
+    # Compressed Helper methods
+    # These help parse 16bit instructions
+
+    @staticmethod
+    def getCOpcode(ba):
+        """Returns compressed opcode"""
+        return ba[-2:]
+
+    @staticmethod
+    def getCFunct3(ba):
+        """ Returns funct3 for CR format """
+        return ba[:-13]
+
+    # Parsing methods
+    # These methods parse various formats via helper functions
 
     @staticmethod
     def parseR(ba):
@@ -134,4 +152,16 @@ class RVFormatParser:
             "rs1": RVFormatParser.convertToIntRegister(RVFormatParser.getRS1(ba)),
             "funct3": RVFormatParser.getFunct3(ba),
             "opcode": RVFormatParser.getOpcode(ba),
+        }
+
+    # Parse compressed formats (CR, CI, CSS, etc)
+
+    @staticmethod
+    def parseCR(ba):
+        """ Parses the CR format, Compressed Register instructions """
+        return {
+            "funct4": ba[:-12],
+            "register": ba[-12:-7],  # can be rd or rs1 depending on instruction
+            "rs2": ba[-7:-2],
+            "op": RVFormatParser.getCOpcode(ba),
         }
