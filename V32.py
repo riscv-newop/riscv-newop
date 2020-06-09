@@ -1,4 +1,5 @@
 # TODO add rv_name for all the returns
+# TODO add all the funct6's listed in the spec
 
 from bitarray import bitarray, frozenbitarray
 
@@ -115,14 +116,30 @@ class V32:
 		pass
         elif f3 == bitarray("010") or f3 == bitarray("110"):
             # OPMVV, OPMVX
-            name = "ADD NAME"
+            if f6 == bitarray("000000"):
+                name = "vredsum"
+	    elif f6 == bitarray("000001"):
+                name = "vredand"
+            elif f6 == bitarray("000010"):
+                name = "vredor"
+            elif f6 == birarray(""):
+		name = "ADD NAME"
+	    else:
+		pass
         elif f3 == bitarray("001") or f3 == bitarray("101"):
             # OPFVV, OPFVF
-            name = "ADD NAME"
+            if f6 == bitarray("000000"):
+                name = "vfadd"
+	    elif f6 == bitarray("000001"):
+                name = "vfredsum"
+            elif f6 == bitarray("000010"):
+                name = "vfsub"
+            elif f6 == birarray(""):
+		name = "ADD NAME"
+	    else:
+		pass
         else:
-            #
-            #TODO if statement for beginning of ba
-
+            pass
 
         if fp.getFunct3(ba) == "000": #TODO there's a compiler error at this line...por que?
 	    data = fp.parseOPIVV(ba)
@@ -131,6 +148,7 @@ class V32:
                 rv_src_registers=[data["vs1"], data["vs2"]],
                 rv_dest_registers=[data["vd"]],
                 rv_mask=[data["vm"]],
+		rv_name=name,
                 rv_size=32,
                 rv_binary=ba,
             )
@@ -141,6 +159,7 @@ class V32:
 		rv_src_registers=[data["vs1"], data["vs2"]],
 		rv_dest_registers=[data["vd"]],	# TODO just vd or vd/rd?
 		rv_mask=[data["vm"]],
+		rv_name=name,
 	        rv_size=32,
                 rv_binary=ba,
             )
@@ -152,6 +171,7 @@ class V32:
 		rv_dest_registers=[data["vd"]],
 		rv_immediates=[data[simm5]],
 		rv_mask=[data["vm"]],
+		rv_name=name,
 		rv_size=32,
 		rv_binary=ba,
             )
@@ -162,6 +182,7 @@ class V32:
 		rv_src_registers=[data["rs1"], data["vs2"]],
 		rv_dest_registers=[data["vd"]],
 		rv_mask=[data["vm"]],
+		rv_name=name,
 		rv_size=32,
 		rv_binary=ba,
             )
@@ -172,6 +193,7 @@ class V32:
 		rv_src_registers=[data["rs1"], data["vs2"]],
 		rv_dest_registers=[data["vd"]],	# TODO just vd or vd/rd?
 		rv_mask=[data["vm"]],
+		rv_name=name,
 		rv_size=32,
 		rv_binary=ba,
             )
@@ -182,6 +204,7 @@ class V32:
 		rv_src_registers=[data["rs1"]],
 		rv_dest_registers=[data["rd"]],
 		rv_immediates=[data["zimm"]],
+		rv_name=name,
 		rv_size=32,
 		rv_binary=ba,
             )
@@ -191,6 +214,7 @@ class V32:
 		rv_format="vsetvl",
 		rv_src_registers=[data["rs1"], data["rs2"]],
 		rv_dest_registers=[data["rd"]],
+		rv_name=name,
 		rv_size=32,
 		rv_binary=ba,
             )
