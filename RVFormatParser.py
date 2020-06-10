@@ -38,6 +38,37 @@ class RVFormatParser:
             a funct7, like a funct3, further specifies what instruction an opcode refers to"""
         return bitarray(ba[:-25])
 
+    @staticmethod
+    def convertToIntRegister(ba):
+        """ Takes in a bitarray or string of bits and converts it into a string specifying an
+            integer register """
+        return "x{}".format(util.ba2int(bitarray(ba)))
+
+    @staticmethod
+    def twos_compliment(value, length):
+        """ Returns the integer value of a number stored in two's complement """
+        if (value & (1 << (length - 1))) != 0:
+            value = value - (1 << length)
+        return value
+
+    @staticmethod
+    def immToInt(imm):
+        """Converts imm bitarray into twos complement integer"""
+        return RVFormatParser.twos_compliment(int(bitarray(imm).to01(), 2), len(imm))
+
+    # Compressed Helper methods
+    # These help parse 16bit instructions
+
+    @staticmethod
+    def getCOpcode(ba):
+        """Returns compressed opcode"""
+        return frozenbitarray(ba[-2:])
+
+    @staticmethod
+    def getCFunct3(ba):
+        """ Returns funct3 for CR format """
+        return ba[:-13]
+
     # Vector methods
 
     @staticmethod
@@ -89,37 +120,6 @@ class RVFormatParser:
         return "v{}".format(util.ba2int(bitarray(ba)))
 
     # end of vector methods
-
-    @staticmethod
-    def convertToIntRegister(ba):
-        """ Takes in a bitarray or string of bits and converts it into a string specifying an
-            integer register """
-        return "x{}".format(util.ba2int(bitarray(ba)))
-
-    @staticmethod
-    def twos_compliment(value, length):
-        """ Returns the integer value of a number stored in two's complement """
-        if (value & (1 << (length - 1))) != 0:
-            value = value - (1 << length)
-        return value
-
-    @staticmethod
-    def immToInt(imm):
-        """Converts imm bitarray into twos complement integer"""
-        return RVFormatParser.twos_compliment(int(bitarray(imm).to01(), 2), len(imm))
-
-    # Compressed Helper methods
-    # These help parse 16bit instructions
-
-    @staticmethod
-    def getCOpcode(ba):
-        """Returns compressed opcode"""
-        return ba[-2:]
-
-    @staticmethod
-    def getCFunct3(ba):
-        """ Returns funct3 for CR format """
-        return ba[:-13]
 
     # Parsing methods
     # These methods parse various formats via helper functions
@@ -213,7 +213,9 @@ class RVFormatParser:
         """ Parses the CR format, Compressed Register instructions """
         return {
             "funct4": ba[:-12],
-            "register": ba[-12:-7],  # can be rd or rs1 depending on instruction
+            "register": RVFormatParser.convertToIntRegister(
+                ba[-12:-7]
+            ),  # can be rd or rs1 depending on instruction
             "rs2": ba[-7:-2],
             "op": RVFormatParser.getCOpcode(ba),
         }
