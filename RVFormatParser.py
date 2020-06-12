@@ -220,6 +220,19 @@ class RVFormatParser:
             "op": RVFormatParser.getCOpcode(ba),
         }
 
+    @staticmethod
+    def parseCI(ba):
+        """ Parses the CI format, Compressed Immediate instructions
+        The IMM is not converted into a number as different instructions
+        have different bit-orderings for the immediates"""
+        return {
+            "funct3": RVFormatParser.getCFunct3(ba),
+            "imm1": bitarray(ba[-13]),
+            "imm5": ba[-7:-2],
+            "register": RVFormatParser.convertToIntRegister(ba[-12:-7]),
+            "op": RVFormatParser.getCOpcode(ba),
+        }
+
     # end of compressed parsers
 
     # Vector parsers
