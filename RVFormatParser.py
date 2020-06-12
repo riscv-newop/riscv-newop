@@ -285,6 +285,18 @@ class RVFormatParser:
             "op": RVFormatParser.getCOpcode(ba),
         }
 
+    @staticmethod
+    def parseCS(ba):
+        """ Parses CS format, Store format """
+        return {
+            "funct3": RVFormatParser.getCFunct3(ba),
+            "imm3": ba[-13:-10],
+            "rs1_pop": RVFormatParser.getPopularIntRegister(ba[-10:-7]),
+            "imm2": ba[-7:-5],
+            "rs2_pop": RVFormatParser.getPopularIntRegister(ba[-5:-2]),
+            "op": RVFormatParser.getCOpcode(ba),
+        }
+
     # end of compressed parsers
 
     # Vector parsers
