@@ -69,6 +69,25 @@ class RVFormatParser:
         """ Returns funct3 for CR format """
         return ba[:-13]
 
+    @staticmethod
+    def getPopularRegister(ba):
+        """ Returns the 8 most popular registers according to RV Spec,
+
+            ba is a bitarray containing 1s and 0s from the register slots
+
+            The CIW, CL, CS, CA, and CB formats use these registers rather
+            than the ones specified as normal."""
+        return {
+            "000": "x8",
+            "001": "x9",
+            "010": "x10",
+            "011": "x11",
+            "100": "x12",
+            "101": "x13",
+            "110": "x14",
+            "111": "x15",
+        }[ba.to01()]
+
     # Vector methods
 
     @staticmethod
@@ -206,7 +225,7 @@ class RVFormatParser:
             "opcode": RVFormatParser.getOpcode(ba),
         }
 
-    # Parse compressed formats (CR, CI, CSS, etc)
+    # Parse compressed formats
 
     @staticmethod
     def parseCR(ba):
@@ -230,6 +249,17 @@ class RVFormatParser:
             "imm1": bitarray(ba[-13]),
             "imm5": ba[-7:-2],
             "register": RVFormatParser.convertToIntRegister(ba[-12:-7]),
+            "op": RVFormatParser.getCOpcode(ba),
+        }
+
+    @staticmethod
+    def parseCSS(ba):
+        """ Parses CSS format, Stack-relative Store """
+        return {
+            "funct3": RVFormatParser.getCFunct3(ba),
+            "imm": ba[-13:-7],
+            # "imm": RVFormatParser.immToInt(bitarray(ba[-9:-7] + ba[-13:-9])), # TODO add C.SWSP func
+            "rs2": RVFormatParser.convertToIntRegister(ba[-7:-2]),
             "op": RVFormatParser.getCOpcode(ba),
         }
 
