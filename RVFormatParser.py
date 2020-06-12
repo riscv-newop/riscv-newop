@@ -297,6 +297,17 @@ class RVFormatParser:
             "op": RVFormatParser.getCOpcode(ba),
         }
 
+    @staticmethod
+    def parseCA(ba):
+        """ Parses CA format, Arithmetic format """
+        return {
+            "funct6": ba[:-10],
+            "register_pop": RVFormatParser.getPopularIntRegister(ba[-10:-7]),
+            "funct2": ba[-7:-5],
+            "rs2_pop": RVFormatParser.getPopularIntRegister(ba[-5:-2]),
+            "op": RVFormatParser.getCOpcode(ba),
+        }
+
     # end of compressed parsers
 
     # Vector parsers
