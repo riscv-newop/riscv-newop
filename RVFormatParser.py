@@ -319,6 +319,15 @@ class RVFormatParser:
             "op": RVFormatParser.getCOpcode(ba),
         }
 
+    @staticmethod
+    def parseCJ(ba):
+        """ Parses CJ format, Jump format """
+        return {
+            "funct3": RVFormatParser.getCFunct3(ba),
+            "jump_target": ba[-13:-2],
+            "op": RVFormatParser.getCOpcode(ba),
+        }
+
     # end of compressed parsers
 
     # Vector parsers
