@@ -308,6 +308,17 @@ class RVFormatParser:
             "op": RVFormatParser.getCOpcode(ba),
         }
 
+    @staticmethod
+    def parseCB(ba):
+        """ Parses CB format, Branch format """
+        return {
+            "funct3": RVFormatParser.getCFunct3(ba),
+            "offset3": ba[-13:-10],
+            "rs1_pop": RVFormatParser.getPopularIntRegister(ba[-10:-7]),
+            "offset5": ba[-7:-2],
+            "op": RVFormatParser.getCOpcode(ba),
+        }
+
     # end of compressed parsers
 
     # Vector parsers
