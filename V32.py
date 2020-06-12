@@ -100,6 +100,9 @@ class V32:
     @staticmethod
     def OP_V(ba):
         """Creates OP-V Instructions"""
+
+        # TODO add data = whichever parser for this one
+
         f3 = data["funct3"]
         f6 = data["funct6"]
         name = ""
@@ -110,7 +113,7 @@ class V32:
                 name = "vadd"
             elif f6 == bitarray("000010"):
                 name = "vsub"
-            elif f6 == birarray(""):
+            elif f6 == bitarray(""):
                 name = "ADD NAME"
             else:
                 pass
@@ -122,7 +125,7 @@ class V32:
                 name = "vredand"
             elif f6 == bitarray("000010"):
                 name = "vredor"
-            elif f6 == birarray(""):
+            elif f6 == bitarray(""):
                 name = "ADD NAME"
             else:
                 pass
@@ -134,7 +137,7 @@ class V32:
                 name = "vfredsum"
             elif f6 == bitarray("000010"):
                 name = "vfsub"
-            elif f6 == birarray(""):
+            elif f6 == bitarray(""):
                 name = "ADD NAME"
             else:
                 pass
