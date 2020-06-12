@@ -70,7 +70,7 @@ class RVFormatParser:
         return ba[:-13]
 
     @staticmethod
-    def getPopularRegister(ba):
+    def getPopularIntRegister(ba):
         """ Returns the 8 most popular registers according to RV Spec,
 
             ba is a bitarray containing 1s and 0s from the register slots
@@ -260,6 +260,16 @@ class RVFormatParser:
             "imm": ba[-13:-7],
             # "imm": RVFormatParser.immToInt(bitarray(ba[-9:-7] + ba[-13:-9])), # TODO add C.SWSP func
             "rs2": RVFormatParser.convertToIntRegister(ba[-7:-2]),
+            "op": RVFormatParser.getCOpcode(ba),
+        }
+
+    @staticmethod
+    def parseCIW(ba):
+        """ Parses CIW format, Wide Immediate format """
+        return {
+            "funct3": RVFormatParser.getCFunct3(ba),
+            "imm": ba[-13:-5],
+            "rd_pop": RVFormatParser.getPopularIntRegister(ba[-5:-2]),
             "op": RVFormatParser.getCOpcode(ba),
         }
 
