@@ -40,7 +40,21 @@ class C32:
 
         elif f3 == "010":
             # C.LW
-            pass
+            data = fp.parseCL(ba)
+            imm3 = data["imm3"]
+            imm2 = data["imm2"]
+            return RVInstruction(
+                rv_format="CL",
+                rv_src_registers=[data["rs1_pop"]],
+                rv_dest_registers=[data["rd_pop"]],
+                rv_immediates=RVFormatParser.immToInt(
+                    bitarray(imm2[1]) + imm3 + bitarray(imm2[0])
+                )
+                * 4,
+                rv_name="c.lw",
+                rv_size=16,
+                rv_binary=ba,
+            )
 
         elif f3 == "011":
             # C.FLW, not implemented
