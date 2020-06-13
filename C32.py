@@ -120,7 +120,29 @@ class C32:
 
         elif f3 == "001":
             # C.JAL
-            pass
+            data = fp.parseCJ(ba)
+            jump_t = data["jump_target"]
+
+            imm = (
+                bitarray(jump_t[0])  # 11
+                + bitarray(jump_t[4])  # 10
+                + jump_t[2:4]  # 9:8
+                + bitarray(jump_t[6])  # 7
+                + bitarray(jump_t[5])  # 6
+                + bitarray(jump_t[10])  # 5
+                + bitarray(jump_t[1])  # 4
+                + jump_t[7:10]  # 3:1
+                + bitarray("0")  # 0, as it is left shifted 2
+            )
+
+            return RVInstruction(
+                rv_format="CJ",
+                rv_dest_registers=["x1"],
+                rv_immediates=RVFormatParser.immToInt(imm),
+                rv_name="c.jal",
+                rv_size=16,
+                rv_binary=ba,
+            )
 
         elif f3 == "010":
             # C.LI
@@ -136,7 +158,30 @@ class C32:
 
         elif f3 == "101":
             # C.J
-            pass
+            data = fp.parseCJ(ba)
+            jump_t = data["jump_target"]
+
+            # same format as C.JAL
+            imm = (
+                bitarray(jump_t[0])  # 11
+                + bitarray(jump_t[4])  # 10
+                + jump_t[2:4]  # 9:8
+                + bitarray(jump_t[6])  # 7
+                + bitarray(jump_t[5])  # 6
+                + bitarray(jump_t[10])  # 5
+                + bitarray(jump_t[1])  # 4
+                + jump_t[7:10]  # 3:1
+                + bitarray("0")  # 0, as it is left shifted 2
+            )
+
+            return RVInstruction(
+                rv_format="CJ",
+                rv_dest_registers=["x0"],
+                rv_immediates=RVFormatParser.immToInt(imm),
+                rv_name="c.j",
+                rv_size=16,
+                rv_binary=ba,
+            )
 
         elif f3 == "110":
             # C.BEQZ
