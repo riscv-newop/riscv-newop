@@ -14,7 +14,7 @@ class C32:
             # illegal instructions are all 0s
             return RVInstruction(rv_name="illegal")
 
-        f3 = fp.getCOpcode(ba)
+        f3 = fp.getCFunct3(ba)
 
         if f3 == "000":
             # C.ADDI4SPN
@@ -90,7 +90,61 @@ class C32:
 
     @staticmethod
     def QUADRANT_1(ba):
-        pass
+        f3 = fp.getCFunct3(ba)
+
+        if f3 == "000":
+            # C.NOP or C.ADDI
+            data = fp.parseCI(ba)
+            imm = data["imm1"] + data["imm5"]
+
+            if data["register"] == zeros(5):
+                # C.NOP
+                return RVInstruction(
+                    rv_format="CI",
+                    rv_immediates=RVFormatParser.immToInt(imm),
+                    rv_name="c.nop",
+                    rv_size=16,
+                    rv_binary=ba,
+                )
+            else:
+                # C.ADDI
+                return RVInstruction(
+                    rv_format="CI",
+                    rv_src_registers=[data["register"]],
+                    rv_dest_registers=[data["register"]],
+                    rv_immediates=RVFormatParser.immToInt(imm),
+                    rv_name="c.addi",
+                    rv_size=16,
+                    rv_binary=ba,
+                )
+
+        elif f3 == "001":
+            # C.JAL
+            pass
+
+        elif f3 == "010":
+            # C.LI
+            pass
+
+        elif f3 == "011":
+            # C.ADDI16SP or C.LUI
+            pass
+
+        elif f3 == "100":
+            # C.SRLI, C.SRAI, C.ANDI, C.SUB, C.XOR, C.OR, C.AND
+            pass
+
+        elif f3 == "101":
+            # C.J
+            pass
+
+        elif f3 == "110":
+            # C.BEQZ
+            pass
+
+        elif f3 == "111":
+            # C.BNEZ
+            pass
 
     @staticmethod
     def QUADRANT_2(ba):
