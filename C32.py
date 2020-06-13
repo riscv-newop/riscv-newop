@@ -146,7 +146,21 @@ class C32:
 
         elif f3 == "010":
             # C.LI
-            pass
+            data = fp.parseCI(ba)
+            imm = data["imm1"] + data["imm5"]
+            if data["register"] == "x0":
+                # TODO something with HINT?
+                pass
+
+            return RVInstruction(
+                rv_format="CI",
+                rv_src_registers=[data["x0"]],
+                rv_dest_registers=[data["register"]],
+                rv_immediates=RVFormatParser.immToInt(imm),
+                rv_name="c.li",
+                rv_size=16,
+                rv_binary=ba,
+            )
 
         elif f3 == "011":
             # C.ADDI16SP or C.LUI
