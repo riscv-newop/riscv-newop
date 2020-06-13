@@ -70,8 +70,20 @@ class C32:
 
         elif f3 == "110":
             # C.SW
-            pass
-
+            data = fp.parseCS(ba)
+            imm3 = data["imm3"]
+            imm2 = data["imm2"]
+            return RVInstruction(
+                rv_format="CS",
+                rv_src_registers=[data["rs1_pop"], data["rs2_pop"]],
+                rv_immediates=RVFormatParser.immToInt(
+                    bitarray(imm2[1]) + imm3 + bitarray(imm2[0])
+                )
+                * 4,
+                rv_name="c.lw",
+                rv_size=16,
+                rv_binary=ba,
+            )
         elif f3 == "111":
             # C.FSW, not implemented
             pass
