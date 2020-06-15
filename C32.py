@@ -193,7 +193,7 @@ class C32:
             else:
                 # C.LUI
 
-                nzimm = imm1 + imm5
+                nzimm = imm1 + imm5 + zeros(12)
                 imm = fp.immToInt(nzuimm)
 
                 if data["register"] == "x0":
