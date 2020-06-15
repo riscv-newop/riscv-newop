@@ -164,7 +164,50 @@ class C32:
 
         elif f3 == "011":
             # C.ADDI16SP or C.LUI
-            pass
+            data = fp.parseCI(ba)
+            imm1 = data["imm1"]
+            imm5 = data["imm5"]
+
+            if data["register"] == "x2":
+                # C.ADDI16SP
+
+                nzuimm = (
+                    imm1
+                    + imm5[2:4]
+                    + bitarray(imm5[1])
+                    + bitarray(imm5[4])
+                    + bitarray(imm5[0])
+                )
+
+                return RVInstruction(
+                    rv_format="CI",
+                    rv_src_registers=["x2"],
+                    rv_dest_registers=[data["register"]],
+                    rv_immediates=RVFormatParser.immToInt(nzuimm)
+                    * 16,  # left shift by 4 (multiplying by 16)
+                    rv_name="c.addi16sp",
+                    rv_size=16,
+                    rv_binary=ba,
+                )
+            else:
+                # C.LUI
+
+                nzimm = imm1 + imm5
+                imm = RVFormatParser.immToInt(nzuimm)
+
+                if data["register"] == "x0":
+                    raise Exception("C.LUI cannot have a destination register of x0")
+                if imm == 0:
+                    raise Exception("C.LUI with nzimm=0 is reserved")
+
+                return RVInstruction(
+                    rv_format="CI",
+                    rv_dest_registers=[data["register"]],
+                    rv_immediates=imm,
+                    rv_name="c.lui",
+                    rv_size=16,
+                    rv_binary=ba,
+                )
 
         elif f3 == "100":
             # C.SRLI, C.SRAI, C.ANDI, C.SUB, C.XOR, C.OR, C.AND
