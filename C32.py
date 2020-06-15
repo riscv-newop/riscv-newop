@@ -227,7 +227,21 @@ class C32:
                 )
             elif f2 == "01":
                 # C.SRAI
-                pass
+                data = fp.parseCB(ba)
+                if data["offset3"][0] == "1":
+                    # TODO? reserved for custom instructions
+                    pass
+
+                shamt = bitarray(data["offset3"][0]) + data["offset5"]
+                return RVInstruction(
+                    rv_format="CB",
+                    rv_src_registers=[data["register"]],
+                    rv_dest_registers=[data["register"]],
+                    rv_immediates=fp.immToInt(shamt),
+                    rv_name="c.srai",
+                    rv_size=16,
+                    rv_binary=ba,
+                )
             elif f2 == "10":
                 # C.ANDI
                 pass
