@@ -263,7 +263,30 @@ class C32:
                 )
             elif f2 == "11":
                 # C.SUB, C.XOR, C.OR, and C.AND
-                pass
+                data = fp.parseCA(ba)
+                funct2 = fp.getCFunct2(ba)
+                name = ""
+                if funct2 == "00":
+                    # C.SUB
+                    name = "c.sub"
+                elif funct2 == "01":
+                    # C.XOR
+                    name = "c.xor"
+                elif funct2 == "10":
+                    # C.OR
+                    name = "c.or"
+                elif funct2 == "11":
+                    # C.AND
+                    name = "c.and"
+
+                return RVInstruction(
+                    rv_format="CA",
+                    rv_src_registers=[data["register_pop"], data["rs2_pop"]],
+                    rv_dest_registers=[data["register_pop"]],
+                    rv_name=name,
+                    rv_size=16,
+                    rv_binary=ba,
+                )
 
         elif f3 == "101":
             # C.J
