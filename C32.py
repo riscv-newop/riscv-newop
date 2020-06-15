@@ -25,7 +25,7 @@ class C32:
                 rv_format="CIW",
                 rv_src_registers=["x2"],
                 rv_dest_registers=[data["rd_pop"]],
-                rv_immediates=RVFormatParser.immToInt(
+                rv_immediates=fp.immToInt(
                     imm[2:6] + imm[:2] + bitarray(imm[-1]) + bitarray(imm[-2])
                 )
                 * 4,
@@ -47,9 +47,7 @@ class C32:
                 rv_format="CL",
                 rv_src_registers=[data["rs1_pop"]],
                 rv_dest_registers=[data["rd_pop"]],
-                rv_immediates=RVFormatParser.immToInt(
-                    bitarray(imm2[1]) + imm3 + bitarray(imm2[0])
-                )
+                rv_immediates=fp.immToInt(bitarray(imm2[1]) + imm3 + bitarray(imm2[0]))
                 * 4,
                 rv_name="c.lw",
                 rv_size=16,
@@ -76,9 +74,7 @@ class C32:
             return RVInstruction(
                 rv_format="CS",
                 rv_src_registers=[data["rs1_pop"], data["rs2_pop"]],
-                rv_immediates=RVFormatParser.immToInt(
-                    bitarray(imm2[1]) + imm3 + bitarray(imm2[0])
-                )
+                rv_immediates=fp.immToInt(bitarray(imm2[1]) + imm3 + bitarray(imm2[0]))
                 * 4,
                 rv_name="c.lw",
                 rv_size=16,
@@ -101,7 +97,7 @@ class C32:
                 # C.NOP
                 return RVInstruction(
                     rv_format="CI",
-                    rv_immediates=RVFormatParser.immToInt(imm),
+                    rv_immediates=fp.immToInt(imm),
                     rv_name="c.nop",
                     rv_size=16,
                     rv_binary=ba,
@@ -112,7 +108,7 @@ class C32:
                     rv_format="CI",
                     rv_src_registers=[data["register"]],
                     rv_dest_registers=[data["register"]],
-                    rv_immediates=RVFormatParser.immToInt(imm),
+                    rv_immediates=fp.immToInt(imm),
                     rv_name="c.addi",
                     rv_size=16,
                     rv_binary=ba,
@@ -138,7 +134,7 @@ class C32:
             return RVInstruction(
                 rv_format="CJ",
                 rv_dest_registers=["x1"],
-                rv_immediates=RVFormatParser.immToInt(imm),
+                rv_immediates=fp.immToInt(imm),
                 rv_name="c.jal",
                 rv_size=16,
                 rv_binary=ba,
@@ -156,7 +152,7 @@ class C32:
                 rv_format="CI",
                 rv_src_registers=[data["x0"]],
                 rv_dest_registers=[data["register"]],
-                rv_immediates=RVFormatParser.immToInt(imm),
+                rv_immediates=fp.immToInt(imm),
                 rv_name="c.li",
                 rv_size=16,
                 rv_binary=ba,
@@ -183,7 +179,7 @@ class C32:
                     rv_format="CI",
                     rv_src_registers=["x2"],
                     rv_dest_registers=[data["register"]],
-                    rv_immediates=RVFormatParser.immToInt(nzuimm)
+                    rv_immediates=fp.immToInt(nzuimm)
                     * 16,  # left shift by 4 (multiplying by 16)
                     rv_name="c.addi16sp",
                     rv_size=16,
@@ -193,7 +189,7 @@ class C32:
                 # C.LUI
 
                 nzimm = imm1 + imm5
-                imm = RVFormatParser.immToInt(nzuimm)
+                imm = fp.immToInt(nzuimm)
 
                 if data["register"] == "x0":
                     raise Exception("C.LUI cannot have a destination register of x0")
@@ -211,7 +207,33 @@ class C32:
 
         elif f3 == "100":
             # C.SRLI, C.SRAI, C.ANDI, C.SUB, C.XOR, C.OR, C.AND
-            pass
+            f2 = ba[-12:-10]
+            if f2 == "00":
+                # C.SRLI
+                data = fp.parseCB(ba)
+                if data["offset3"][0] == "1":
+                    # TODO? reserved for custom instructions
+                    pass
+
+                shamt = bitarray(data["offset3"][0]) + data["offset5"]
+                return RVInstruction(
+                    rv_format="CB",
+                    rv_src_registers=[data["register"]],
+                    rv_dest_registers=[data["register"]],
+                    rv_immediates=fp.immToInt(shamt),
+                    rv_name="c.srli",
+                    rv_size=16,
+                    rv_binary=ba,
+                )
+            elif f2 == "01":
+                # C.SRAI
+                pass
+            elif f2 == "10":
+                # C.ANDI
+                pass
+            elif f2 == "11":
+                # C.SUB, C.XOR, C.OR, and C.AND
+                pass
 
         elif f3 == "101":
             # C.J
@@ -234,7 +256,7 @@ class C32:
             return RVInstruction(
                 rv_format="CJ",
                 rv_dest_registers=["x0"],
-                rv_immediates=RVFormatParser.immToInt(imm),
+                rv_immediates=fp.immToInt(imm),
                 rv_name="c.j",
                 rv_size=16,
                 rv_binary=ba,

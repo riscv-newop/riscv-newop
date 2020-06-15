@@ -70,6 +70,11 @@ class RVFormatParser:
         return ba[:-13]
 
     @staticmethod
+    def getCFunct2(ba):
+        """ Returns funct2 for CB, CA, and  """
+        return ba[-7:-5]
+
+    @staticmethod
     def getPopularIntRegister(ba):
         """ Returns the 8 most popular registers according to RV Spec,
 
