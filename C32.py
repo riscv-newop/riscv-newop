@@ -317,7 +317,26 @@ class C32:
 
         elif f3 == "110":
             # C.BEQZ
-            pass
+            data = fp.parseCB(ba)
+            offset3 = data["offset3"]
+            offset5 = data["offset5"]
+            offset = (
+                bitarray(offset3[0])
+                + offset5[:2]
+                + bitarray(offset5[4])
+                + offset3[1:]
+                + offset5[2:4]
+                + bitarray("0")
+            )
+
+            return RVInstruction(
+                rv_format="CB",
+                rv_src_registers=[data["rs1_pop"]],
+                rv_immediates=[fp.immToInt(offset)],
+                rv_name="c.beqz",
+                rv_size=16,
+                rv_binary=ba,
+            )
 
         elif f3 == "111":
             # C.BNEZ
