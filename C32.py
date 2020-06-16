@@ -479,7 +479,7 @@ class C32:
             # C.SWSP
             data = fp.parseCSS(ba)
             imm = data["imm"]
-            offset = RVFormatParser.immToInt(imm[4:] + imm[:4] + zeros(2))
+            offset = fp.immToInt(imm[4:] + imm[:4] + zeros(2))
 
             return RVInstruction(
                 rv_format="CR",
