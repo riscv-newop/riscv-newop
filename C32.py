@@ -27,10 +27,7 @@ class C32:
                 rv_dest_registers=[data["rd_pop"]],
                 rv_immediates=[
                     fp.immToInt(
-                        imm[2:6]
-                        + imm[:2]
-                        + bitarray().append(imm[-1])
-                        + bitarray().append(imm[-2])
+                        imm[2:6] + imm[:2] + bitarray([imm[-1]]) + bitarray([imm[-2]])
                     )
                     * 4
                 ],
@@ -53,10 +50,7 @@ class C32:
                 rv_src_registers=[data["rs1_pop"]],
                 rv_dest_registers=[data["rd_pop"]],
                 rv_immediates=[
-                    fp.immToInt(
-                        bitarray().append(imm2[1]) + imm3 + bitarray().append(imm2[0])
-                    )
-                    * 4
+                    fp.immToInt(bitarray([imm2[1]]) + imm3 + bitarray([imm2[0]])) * 4
                 ],
                 rv_name="c.lw",
                 rv_size=16,
@@ -84,10 +78,7 @@ class C32:
                 rv_format="CS",
                 rv_src_registers=[data["rs1_pop"], data["rs2_pop"]],
                 rv_immediates=[
-                    fp.immToInt(
-                        bitarray().append(imm2[1]) + imm3 + bitarray().append(imm2[0])
-                    )
-                    * 4
+                    fp.immToInt(bitarray([imm2[1]]) + imm3 + bitarray([imm2[0]])) * 4
                 ],
                 rv_name="c.lw",
                 rv_size=16,
@@ -132,21 +123,14 @@ class C32:
             data = fp.parseCJ(ba)
             jump_t = data["jump_target"]
 
-            # TODO clean up later
-            # the appends look like a mess currently
-            # but this problem arose because I realized that
-            # bitarray(False) = bitarray('') and that is not wanted
-            # so to fix this we instead use bitarray().append(False)
-            # which works but looks worse and I'm sure there is a more
-            # elegant way to do it
             imm = (
-                bitarray.append(jump_t[0])  # 11
-                + bitarray().append(jump_t[4])  # 10
+                bitarray([jump_t[0]])  # 11
+                + bitarray([jump_t[4]])  # 10
                 + jump_t[2:4]  # 9:8
-                + bitarray().append(jump_t[6])  # 7
-                + bitarray().append(jump_t[5])  # 6
-                + bitarray().append(jump_t[10])  # 5
-                + bitarray().append(jump_t[1])  # 4
+                + bitarray([jump_t[6]])  # 7
+                + bitarray([jump_t[5]])  # 6
+                + bitarray([jump_t[10]])  # 5
+                + bitarray([jump_t[1]])  # 4
                 + jump_t[7:10]  # 3:1
                 + bitarray("0")  # 0, as it is left shifted 2
             )
@@ -190,9 +174,9 @@ class C32:
                 nzimm = (
                     imm1
                     + imm5[2:4]
-                    + bitarray().append(imm5[1])
-                    + bitarray().append(imm5[4])
-                    + bitarray().append(imm5[0])
+                    + bitarray([imm5[1]])
+                    + bitarray([imm5[4]])
+                    + bitarray([imm5[0]])
                 )
 
                 return RVInstruction(
@@ -236,7 +220,7 @@ class C32:
                     # TODO? reserved for custom instructions
                     pass
 
-                shamt = bitarray().append(data["offset3"][0]) + data["offset5"]
+                shamt = bitarray([data["offset3"][0]]) + data["offset5"]
                 return RVInstruction(
                     rv_format="CB",
                     rv_src_registers=[data["register"]],
@@ -253,7 +237,7 @@ class C32:
                     # TODO? reserved for custom instructions
                     pass
 
-                shamt = bitarray().append(data["offset3"][0]) + data["offset5"]
+                shamt = bitarray([data["offset3"][0]]) + data["offset5"]
                 return RVInstruction(
                     rv_format="CB",
                     rv_src_registers=[data["register"]],
@@ -267,7 +251,7 @@ class C32:
                 # C.ANDI
                 data = fp.parseCB(ba)
 
-                imm = bitarray().append(data["offset3"][0]) + data["offset5"]
+                imm = bitarray([data["offset3"][0]]) + data["offset5"]
                 return RVInstruction(
                     rv_format="CB",
                     rv_src_registers=[data["register"]],
@@ -311,13 +295,13 @@ class C32:
 
             # same format as C.JAL
             imm = (
-                bitarray.append(jump_t[0])  # 11
-                + bitarray().append(jump_t[4])  # 10
+                bitarray([jump_t[0]])  # 11
+                + bitarray([jump_t[4]])  # 10
                 + jump_t[2:4]  # 9:8
-                + bitarray().append(jump_t[6])  # 7
-                + bitarray().append(jump_t[5])  # 6
-                + bitarray().append(jump_t[10])  # 5
-                + bitarray().append(jump_t[1])  # 4
+                + bitarray([jump_t[6]])  # 7
+                + bitarray([jump_t[5]])  # 6
+                + bitarray([jump_t[10]])  # 5
+                + bitarray([jump_t[1]])  # 4
                 + jump_t[7:10]  # 3:1
                 + bitarray("0")  # 0, as it is left shifted 2
             )
@@ -337,9 +321,9 @@ class C32:
             offset3 = data["offset3"]
             offset5 = data["offset5"]
             offset = (
-                bitarray().append(offset3[0])
+                bitarray([offset3[0]])
                 + offset5[:2]
-                + bitarray().append(offset5[4])
+                + bitarray([offset5[4]])
                 + offset3[1:]
                 + offset5[2:4]
                 + bitarray("0")
@@ -360,9 +344,9 @@ class C32:
             offset3 = data["offset3"]
             offset5 = data["offset5"]
             offset = (
-                bitarray().append(offset3[0])
+                bitarray([offset3[0]])
                 + offset5[:2]
-                + bitarray().append(offset5[4])
+                + bitarray([offset5[4]])
                 + offset3[1:]
                 + offset5[2:4]
                 + bitarray("0")
@@ -421,7 +405,7 @@ class C32:
             pass
         elif f3 == bitarray("100"):
             # C.JR, C.MV, C.EBREAK, C.JALR, and C.ADD
-            bit12 = bitarray().append(ba[-13])
+            bit12 = bitarray([ba[-13]])
             data = fp.parseCR(ba)  # all of these are CR format
             if bit12 == bitarray("0"):
                 # C.JR or C.MV

@@ -187,9 +187,9 @@ class RVFormatParser:
         return {
             "imm": RVFormatParser.immToInt(
                 bitarray(
-                    bitarray().append(ba[-32])
+                    bitarray([ba[-32]])
                     + ba[-20:-12]
-                    + bitarray().append(ba[-21])
+                    + bitarray([ba[-21]])
                     + ba[-31:-21]
                     + "0"
                 )  # adding 0 to the end is the same as left shifting by 1
@@ -204,8 +204,8 @@ class RVFormatParser:
         return {
             "imm": RVFormatParser.immToInt(
                 bitarray(
-                    bitarray().append(ba[-32])
-                    + bitarray().append(ba[-8])
+                    bitarray([ba[-32]])
+                    + bitarray([ba[-8]])
                     + ba[-31:-25]
                     + ba[-12:-8]
                     + "0"
@@ -251,7 +251,7 @@ class RVFormatParser:
         have different bit-orderings for the immediates"""
         return {
             "funct3": RVFormatParser.getCFunct3(ba),
-            "imm1": bitarray().append(ba[-13]),
+            "imm1": bitarray([ba[-13]]),
             "imm5": ba[-7:-2],
             "register": RVFormatParser.convertToIntRegister(ba[-12:-7]),
             "op": RVFormatParser.getCOpcode(ba),
