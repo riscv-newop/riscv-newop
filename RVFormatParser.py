@@ -69,6 +69,30 @@ class RVFormatParser:
         """ Returns funct3 for CR format """
         return ba[:-13]
 
+    @staticmethod
+    def getCFunct2(ba):
+        """ Returns funct2 for CB, CA, and  """
+        return ba[-7:-5]
+
+    @staticmethod
+    def getPopularIntRegister(ba):
+        """ Returns the 8 most popular registers according to RV Spec,
+
+            ba is a bitarray containing 1s and 0s from the register slots
+
+            The CIW, CL, CS, CA, and CB formats use these registers rather
+            than the ones specified as normal."""
+        return {
+            "000": "x8",
+            "001": "x9",
+            "010": "x10",
+            "011": "x11",
+            "100": "x12",
+            "101": "x13",
+            "110": "x14",
+            "111": "x15",
+        }[ba.to01()]
+
     # Vector methods
 
     @staticmethod
@@ -168,9 +192,9 @@ class RVFormatParser:
         return {
             "imm": RVFormatParser.immToInt(
                 bitarray(
-                    bitarray(ba[-32])
+                    bitarray([ba[-32]])
                     + ba[-20:-12]
-                    + bitarray(ba[-21])
+                    + bitarray([ba[-21]])
                     + ba[-31:-21]
                     + "0"
                 )  # adding 0 to the end is the same as left shifting by 1
@@ -185,8 +209,8 @@ class RVFormatParser:
         return {
             "imm": RVFormatParser.immToInt(
                 bitarray(
-                    bitarray(ba[-32])
-                    + bitarray(ba[-8])
+                    bitarray([ba[-32]])
+                    + bitarray([ba[-8]])
                     + ba[-31:-25]
                     + ba[-12:-8]
                     + "0"
@@ -221,7 +245,96 @@ class RVFormatParser:
             "register": RVFormatParser.convertToIntRegister(
                 ba[-12:-7]
             ),  # can be rd or rs1 depending on instruction
-            "rs2": ba[-7:-2],
+            "rs2": RVFormatParser.convertToIntRegister(ba[-7:-2]),
+            "op": RVFormatParser.getCOpcode(ba),
+        }
+
+    @staticmethod
+    def parseCI(ba):
+        """ Parses the CI format, Compressed Immediate instructions
+        The IMM is not converted into a number as different instructions
+        have different bit-orderings for the immediates"""
+        return {
+            "funct3": RVFormatParser.getCFunct3(ba),
+            "imm1": bitarray([ba[-13]]),
+            "imm5": ba[-7:-2],
+            "register": RVFormatParser.convertToIntRegister(ba[-12:-7]),
+            "op": RVFormatParser.getCOpcode(ba),
+        }
+
+    @staticmethod
+    def parseCSS(ba):
+        """ Parses CSS format, Stack-relative Store """
+        return {
+            "funct3": RVFormatParser.getCFunct3(ba),
+            "imm": ba[-13:-7],
+            # "imm": RVFormatParser.immToInt(bitarray(ba[-9:-7] + ba[-13:-9])), # TODO add C.SWSP func
+            "rs2": RVFormatParser.convertToIntRegister(ba[-7:-2]),
+            "op": RVFormatParser.getCOpcode(ba),
+        }
+
+    @staticmethod
+    def parseCIW(ba):
+        """ Parses CIW format, Wide Immediate format """
+        return {
+            "funct3": RVFormatParser.getCFunct3(ba),
+            "imm": ba[-13:-5],
+            "rd_pop": RVFormatParser.getPopularIntRegister(ba[-5:-2]),
+            "op": RVFormatParser.getCOpcode(ba),
+        }
+
+    @staticmethod
+    def parseCL(ba):
+        """ Parses CL format, Load format """
+        return {
+            "funct3": RVFormatParser.getCFunct3(ba),
+            "imm3": ba[-13:-10],
+            "rs1_pop": RVFormatParser.getPopularIntRegister(ba[-10:-7]),
+            "imm2": ba[-7:-5],
+            "rd_pop": RVFormatParser.getPopularIntRegister(ba[-5:-2]),
+            "op": RVFormatParser.getCOpcode(ba),
+        }
+
+    @staticmethod
+    def parseCS(ba):
+        """ Parses CS format, Store format """
+        return {
+            "funct3": RVFormatParser.getCFunct3(ba),
+            "imm3": ba[-13:-10],
+            "rs1_pop": RVFormatParser.getPopularIntRegister(ba[-10:-7]),
+            "imm2": ba[-7:-5],
+            "rs2_pop": RVFormatParser.getPopularIntRegister(ba[-5:-2]),
+            "op": RVFormatParser.getCOpcode(ba),
+        }
+
+    @staticmethod
+    def parseCA(ba):
+        """ Parses CA format, Arithmetic format """
+        return {
+            "funct6": ba[:-10],
+            "register_pop": RVFormatParser.getPopularIntRegister(ba[-10:-7]),
+            "funct2": ba[-7:-5],
+            "rs2_pop": RVFormatParser.getPopularIntRegister(ba[-5:-2]),
+            "op": RVFormatParser.getCOpcode(ba),
+        }
+
+    @staticmethod
+    def parseCB(ba):
+        """ Parses CB format, Branch format """
+        return {
+            "funct3": RVFormatParser.getCFunct3(ba),
+            "offset3": ba[-13:-10],
+            "rs1_pop": RVFormatParser.getPopularIntRegister(ba[-10:-7]),
+            "offset5": ba[-7:-2],
+            "op": RVFormatParser.getCOpcode(ba),
+        }
+
+    @staticmethod
+    def parseCJ(ba):
+        """ Parses CJ format, Jump format """
+        return {
+            "funct3": RVFormatParser.getCFunct3(ba),
+            "jump_target": ba[-13:-2],
             "op": RVFormatParser.getCOpcode(ba),
         }
 
@@ -420,7 +533,3 @@ class RVFormatParser:
         }
 
     # end of vector parsers
-
-    r = 0b001
-    print "a".format(util.ba2int(bitarray(r)))
-    print 1

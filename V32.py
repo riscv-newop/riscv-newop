@@ -1,4 +1,5 @@
 # TODO add rv_name for all the returns
+# TODO add all the funct6's listed in the spec
 
 from bitarray import bitarray, frozenbitarray
 
@@ -188,7 +189,10 @@ class V32:
 
     @staticmethod
     def OP_V(ba):
-	"""Creates OP-V Instructions"""
+        """Creates OP-V Instructions"""
+
+        # TODO add data = whichever parser for this one
+
         f3 = data["funct3"]
         f6 = data["funct6"]
         name = ""
@@ -199,113 +203,115 @@ class V32:
                 name = "vadd"
             elif f6 == bitarray("000010"):
                 name = "vsub"
-            elif f6 == birarray(""):
-		name = "ADD NAME"
-	    else:
-		pass
+            elif f6 == bitarray(""):
+                name = "ADD NAME"
+            else:
+                pass
         elif f3 == bitarray("010") or f3 == bitarray("110"):
             # OPMVV, OPMVX
             if f6 == bitarray("000000"):
                 name = "vredsum"
-	    elif f6 == bitarray("000001"):
+            elif f6 == bitarray("000001"):
                 name = "vredand"
             elif f6 == bitarray("000010"):
                 name = "vredor"
-            elif f6 == birarray(""):
-		name = "ADD NAME"
-	    else:
-		pass
+            elif f6 == bitarray(""):
+                name = "ADD NAME"
+            else:
+                pass
         elif f3 == bitarray("001") or f3 == bitarray("101"):
             # OPFVV, OPFVF
             if f6 == bitarray("000000"):
                 name = "vfadd"
-	    elif f6 == bitarray("000001"):
+            elif f6 == bitarray("000001"):
                 name = "vfredsum"
             elif f6 == bitarray("000010"):
                 name = "vfsub"
-            elif f6 == birarray(""):
-		name = "ADD NAME"
-	    else:
-		pass
+            elif f6 == bitarray(""):
+                name = "ADD NAME"
+            else:
+                pass
         else:
             pass
 
-        if fp.getFunct3(ba) == "000": #TODO there's a compiler error at this line...por que?
-	    data = fp.parseOPIVV(ba)
+        if (
+            fp.getFunct3(ba) == "000"
+        ):  # TODO there's a compiler error at this line...por que?
+            data = fp.parseOPIVV(ba)
             return RVInstruction(
                 rv_format="OPIVV",
                 rv_src_registers=[data["vs1"], data["vs2"]],
                 rv_dest_registers=[data["vd"]],
                 rv_mask=[data["vm"]],
-		rv_name=name,
+                rv_name=name,
                 rv_size=32,
                 rv_binary=ba,
             )
-	elif fp.getFunct3(ba) == "001" or fp.getFunct3(ba) == "010":
+        elif fp.getFunct3(ba) == "001" or fp.getFunct3(ba) == "010":
             data = fp.parseOPFVV(ba)
-	    return RVInstruction(
+            return RVInstruction(
                 rv_format="OPFVV",
-		rv_src_registers=[data["vs1"], data["vs2"]],
-		rv_dest_registers=[data["vd"]],	# TODO just vd or vd/rd?
-		rv_mask=[data["vm"]],
-		rv_name=name,
-	        rv_size=32,
+                rv_src_registers=[data["vs1"], data["vs2"]],
+                rv_dest_registers=[data["vd"]],  # TODO just vd or vd/rd?
+                rv_mask=[data["vm"]],
+                rv_name=name,
+                rv_size=32,
                 rv_binary=ba,
             )
-	elif fp.getFunct3(ba) == "011":
-	    data = fp.parseOPIVI(ba)
-	    return RVInstruction(
-		rv_format="OPIVI",
-		rv_src_registers=[data["vs2"]],
-		rv_dest_registers=[data["vd"]],
-		rv_immediates=[data[simm5]],
-		rv_mask=[data["vm"]],
-		rv_name=name,
-		rv_size=32,
-		rv_binary=ba,
+        elif fp.getFunct3(ba) == "011":
+            data = fp.parseOPIVI(ba)
+            return RVInstruction(
+                rv_format="OPIVI",
+                rv_src_registers=[data["vs2"]],
+                rv_dest_registers=[data["vd"]],
+                rv_immediates=[data["simm5"]],
+                rv_mask=[data["vm"]],
+                rv_name=name,
+                rv_size=32,
+                rv_binary=ba,
             )
-	elif fp.getFunct3(ba) == "100" or fp.getFunct3(ba) == "101":
-	    data = fp.parseOPIVX(ba)
-	    return RVInstruction(
-		rv_format="OPIVX",
-		rv_src_registers=[data["rs1"], data["vs2"]],
-		rv_dest_registers=[data["vd"]],
-		rv_mask=[data["vm"]],
-		rv_name=name,
-		rv_size=32,
-		rv_binary=ba,
+        elif fp.getFunct3(ba) == "100" or fp.getFunct3(ba) == "101":
+            data = fp.parseOPIVX(ba)
+            return RVInstruction(
+                rv_format="OPIVX",
+                rv_src_registers=[data["rs1"], data["vs2"]],
+                rv_dest_registers=[data["vd"]],
+                rv_mask=[data["vm"]],
+                rv_name=name,
+                rv_size=32,
+                rv_binary=ba,
             )
-	elif fp.getFunct3(ba) == "110":
-	    data = fp.parseOPMVX(ba)
-	    return RVInstruction(
-		rv_format="OPMVX",
-		rv_src_registers=[data["rs1"], data["vs2"]],
-		rv_dest_registers=[data["vd"]],	# TODO just vd or vd/rd?
-		rv_mask=[data["vm"]],
-		rv_name=name,
-		rv_size=32,
-		rv_binary=ba,
+        elif fp.getFunct3(ba) == "110":
+            data = fp.parseOPMVX(ba)
+            return RVInstruction(
+                rv_format="OPMVX",
+                rv_src_registers=[data["rs1"], data["vs2"]],
+                rv_dest_registers=[data["vd"]],  # TODO just vd or vd/rd?
+                rv_mask=[data["vm"]],
+                rv_name=name,
+                rv_size=32,
+                rv_binary=ba,
             )
-	elif fp.getFunct3(ba) == "111" and fp.getVSetMSB(ba) == "0":
-	    data = fp.parseVSetVLI(ba)
-	    return RVInstruction(
-		rv_format="vsetvli",
-		rv_src_registers=[data["rs1"]],
-		rv_dest_registers=[data["rd"]],
-		rv_immediates=[data["zimm"]],
-		rv_name=name,
-		rv_size=32,
-		rv_binary=ba,
+        elif fp.getFunct3(ba) == "111" and fp.getVSetMSB(ba) == "0":
+            data = fp.parseVSetVLI(ba)
+            return RVInstruction(
+                rv_format="vsetvli",
+                rv_src_registers=[data["rs1"]],
+                rv_dest_registers=[data["rd"]],
+                rv_immediates=[data["zimm"]],
+                rv_name=name,
+                rv_size=32,
+                rv_binary=ba,
             )
-	elif fp.getFunct3(ba) == "111" and fp.getVSetMSB(ba) == "1":
-	    data = fp.parseVSetVL(ba)
-	    return RVInstruction(
-		rv_format="vsetvl",
-		rv_src_registers=[data["rs1"], data["rs2"]],
-		rv_dest_registers=[data["rd"]],
-		rv_name=name,
-		rv_size=32,
-		rv_binary=ba,
+        elif fp.getFunct3(ba) == "111" and fp.getVSetMSB(ba) == "1":
+            data = fp.parseVSetVL(ba)
+            return RVInstruction(
+                rv_format="vsetvl",
+                rv_src_registers=[data["rs1"], data["rs2"]],
+                rv_dest_registers=[data["rd"]],
+                rv_name=name,
+                rv_size=32,
+                rv_binary=ba,
             )
 
     # dictionary of opcodes --> functions(bitarray) --> RVInstruction

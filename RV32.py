@@ -30,7 +30,6 @@ class RV32:
             ba - the bitarray for the instruction
         """
         self.program[pc] = self.instructionTable[RVFormatParser.getOpcode(ba)](ba)
-#self.instructionTable[RVFormatParser.getOpcode(ba)](ba)
 
     def printAll(self):
         """ Prints out all instructions """
