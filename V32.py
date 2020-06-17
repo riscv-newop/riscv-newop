@@ -12,15 +12,20 @@ class V32:
 
     @staticmethod
     def LOAD_FP(ba):
-	"""Creates Vector Load Instructions"""
+        """Creates Vector Load Instructions"""
         print("Hey hey")
-	nf = ""
-	width = ""
-	sign = ""
-	umop = ""
-	vm = ""
-	
-        if fp.getFunct3(ba) == bitarray("001") or fp.getFunct3(ba) == bitarray("010") or fp.getFunct3(ba) == bitarray("011") or fp.getFunct3(ba) == bitarray("100"):
+        nf = ""
+        width = ""
+        sign = ""
+        umop = ""
+        vm = ""
+
+        if (
+            fp.getFunct3(ba) == bitarray("001")
+            or fp.getFunct3(ba) == bitarray("010")
+            or fp.getFunct3(ba) == bitarray("011")
+            or fp.getFunct3(ba) == bitarray("100")
+        ):
             width = ""
         elif fp.getFunct3(ba) == bitarray("000"):
             width = "b"
@@ -31,78 +36,91 @@ class V32:
         elif fp.getFunct3(ba) == bitarray("111"):
             width = "e"
 
-	if fp.getMOP(ba) == bitarray("000") or fp.getMOP(ba) == bitarray("010") or fp.getMOP(ba) == bitarray("011"):
-	    sign = "u"
+        if (
+            fp.getMOP(ba) == bitarray("000")
+            or fp.getMOP(ba) == bitarray("010")
+            or fp.getMOP(ba) == bitarray("011")
+        ):
+            sign = "u"
 
-	if fp.getVM(ba) == bitarray("0"):
-	    vm = "v0.t"
+        if fp.getVM(ba) == bitarray("0"):
+            vm = "v0.t"
 
-	if fp.getMOP(ba) == bitarray("000") or fp.getMOP(ba) == bitarray("100"):
-	    data = fp.parseVL(ba)
-	    if data["nf"] != "seg0":
-		nf = data["nf"]
-	    if fp.getRS2(ba) == bitarray("10000"):
-		umop = "ff"
+        if fp.getMOP(ba) == bitarray("000") or fp.getMOP(ba) == bitarray("100"):
+            data = fp.parseVL(ba)
+            if data["nf"] != "seg0":
+                nf = data["nf"]
+            if fp.getRS2(ba) == bitarray("10000"):
+                umop = "ff"
             name = "vl" + nf + width + sign + ".v"
-	    return RVInstruction(
-		rv_format="VL",
-		rv_src_registers=[data["rs1"]],
-		rv_dest_registers=[data["vd"]],
-#		rv_nf=nf,
-		rv_mask=vm,
-#		rv_umop=umop,
-#		rv_width=width,
-#		rv_sign=sign,
-		rv_name="vl",
-		rv_size=32,
-		rv_binary=ba,
-	    )
-	elif fp.getMOP(ba) == "010" or fp.getMOP(ba) == "110":
-	    data = fp.parseVLS(ba)
-	    if fp.getNF(ba) != "000":
-		nf = "seg" + (data[nf] + 1)	#TODO this line wont work. how best to do it?
-	    return RVInstruction(
+            return RVInstruction(
+                rv_format="VL",
+                rv_src_registers=[data["rs1"]],
+                rv_dest_registers=[data["vd"]],
+                #               rv_nf=nf,
+                rv_mask=vm,
+                #               rv_umop=umop,
+                #               rv_width=width,
+                #               rv_sign=sign,
+                rv_name=name,
+                rv_size=32,
+                rv_binary=ba,
+            )
+        elif fp.getMOP(ba) == "010" or fp.getMOP(ba) == "110":
+            data = fp.parseVLS(ba)
+            if fp.getNF(ba) != "000":
+                nf = "seg" + (
+                    data[nf] + 1
+                )  # TODO this line wont work. how best to do it?
+            return RVInstruction(
                 rv_format="VLS",
                 rv_src_registers=[data["rs1"], data["rs2"]],
                 rv_dest_registers=[data["vd"]],
-		rv_nf=nf,
-		rv_mask=vm,
-		rv_width=width,
-		rv_sign=sign,
-		rv_name="vls",
+                rv_nf=nf,
+                rv_mask=vm,
+                rv_width=width,
+                rv_sign=sign,
+                rv_name="vls",
                 rv_size=32,
                 rv_binary=ba,
-	    )
-	elif fp.getMOP(ba) == "011" or fp.getMOP(ba) == "111":
-	    data = fp.parseVLX(ba)
-	    if fp.getNF(ba) != "000":
-		nf = "seg" + (data[nf] + 1)	#TODO this line wont work. how best to do it?
-	    return RVInstruction(
+            )
+        elif fp.getMOP(ba) == "011" or fp.getMOP(ba) == "111":
+            data = fp.parseVLX(ba)
+            if fp.getNF(ba) != "000":
+                nf = "seg" + (
+                    data[nf] + 1
+                )  # TODO this line wont work. how best to do it?
+            return RVInstruction(
                 rv_format="VLX",
                 rv_src_registers=[data["rs1"], data["vs2"]],
                 rv_dest_registers=[data["vd"]],
-		rv_nf=nf,
-		rv_mask=vm,
-		rv_width=width,
-		rv_sign=sign,
-		rv_name="vlx",
+                rv_nf=nf,
+                rv_mask=vm,
+                rv_width=width,
+                rv_sign=sign,
+                rv_name="vlx",
                 rv_size=32,
                 rv_binary=ba,
-	    )
-	else:
-	    # TODO add error message?
-	    pass
+            )
+        else:
+            # TODO add error message?
+            pass
 
     @staticmethod
     def STORE_FP(ba):
         """Creates Vector Store Instructions"""
-	nf = ""
-	width = ""
-	sign = ""
-	umop = ""
-	vm = ""
-	
-        if fp.getFunct3(ba) == "001" or fp.getFunct3(ba) == "010" or fp.getFunct3(ba) == "011" or fp.getFunct3(ba) == "100":
+        nf = ""
+        width = ""
+        sign = ""
+        umop = ""
+        vm = ""
+
+        if (
+            fp.getFunct3(ba) == "001"
+            or fp.getFunct3(ba) == "010"
+            or fp.getFunct3(ba) == "011"
+            or fp.getFunct3(ba) == "100"
+        ):
             width = ""
         elif fp.getFunct3(ba) == "000":
             width = "b"
@@ -113,60 +131,66 @@ class V32:
         else:
             width = "e"
 
-	if fp.getMOP(ba) == "000" or fp.getMOP(ba) == "010" or fp.getMOP(ba) == "011":
-	    sign = "u"
+        if fp.getMOP(ba) == "000" or fp.getMOP(ba) == "010" or fp.getMOP(ba) == "011":
+            sign = "u"
 
-	if fp.getVM(ba) == "0":
-	    vm = "v0.t"
+        if fp.getVM(ba) == "0":
+            vm = "v0.t"
 
         if fp.getMOP(ba) == "000":
             data = fp.parseVS(ba)
-	    if fp.getNF(ba) != "000":
-		nf = "seg" + (data[nf] + 1)	#TODO this line wont work. how best to do it?
-	    if fp.getRS2(ba) == "10000":
-		umop = "ff"
+            if fp.getNF(ba) != "000":
+                nf = "seg" + (
+                    data[nf] + 1
+                )  # TODO this line wont work. how best to do it?
+            if fp.getRS2(ba) == "10000":
+                umop = "ff"
             return RVInstruction(
                 rv_format="VS",
                 rv_src_registers=[data["rs1"]],
                 rv_dest_registers=[data["vs3"]],
-		rv_nf=nf,
-		rv_mask=vm,
-		rv_umop=umop,
-		rv_width=width,
-		rv_sign=sign,
-		rv_name="vs",
+                rv_nf=nf,
+                rv_mask=vm,
+                rv_umop=umop,
+                rv_width=width,
+                rv_sign=sign,
+                rv_name="vs",
                 rv_size=32,
                 rv_binary=ba,
             )
         elif fp.getMOP(ba) == "010":
             data = fp.parseVSS(ba)
-	    if fp.getNF(ba) != "000":
-		nf = "seg" + (data[nf] + 1)	#TODO this line wont work. how best to do it?
+            if fp.getNF(ba) != "000":
+                nf = "seg" + (
+                    data[nf] + 1
+                )  # TODO this line wont work. how best to do it?
             return RVInstruction(
                 rv_format="VSS",
                 rv_src_registers=[data["rs1"], data["rs2"]],
                 rv_dest_registers=[data["vs3"]],
-		rv_nf=nf,
-		rv_mask=vm,
-		rv_width=width,
-		rv_sign=sign,
-		rv_name="vss",
+                rv_nf=nf,
+                rv_mask=vm,
+                rv_width=width,
+                rv_sign=sign,
+                rv_name="vss",
                 rv_size=32,
                 rv_binary=ba,
-            )    	    
-	elif fp.getMOP(ba) == "011" or fp.getMOP(ba) == "111":
+            )
+        elif fp.getMOP(ba) == "011" or fp.getMOP(ba) == "111":
             data = fp.parseVSX(ba)
-	    if fp.getNF(ba) != "000":
-		nf = "seg" + (data[nf] + 1)	#TODO this line wont work. how best to do it?
+            if fp.getNF(ba) != "000":
+                nf = "seg" + (
+                    data[nf] + 1
+                )  # TODO this line wont work. how best to do it?
             return RVInstruction(
                 rv_format="VSX",
                 rv_src_registers=[data["rs1"], data["vs2"]],
                 rv_dest_registers=[data["vs3"]],
-		rv_nf=nf,
-		rv_mask=vm,
-		rv_width=width,
-		rv_sign=sign,
-		rv_name="vsx",
+                rv_nf=nf,
+                rv_mask=vm,
+                rv_width=width,
+                rv_sign=sign,
+                rv_name="vsx",
                 rv_size=32,
                 rv_binary=ba,
             )
@@ -176,10 +200,10 @@ class V32:
 
     @staticmethod
     def AMO(ba):
-	"""Creates Atomic Memory Operation Instructions"""
+        """Creates Atomic Memory Operation Instructions"""
         data = fp.parseVAMO(ba)
 
-	return RVInstruction(
+        return RVInstruction(
             rv_format="VAMO",
             rv_src_registers=[data["rs1"], data["vs2"]],
             rv_dest_registers=[data["vd"]],

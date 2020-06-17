@@ -146,7 +146,9 @@ class RVFormatParser:
     @staticmethod
     def NFtoInt(ba):
         """Converts nf bitarray into integer + 1"""
-        return "seg{}".format(util.ba2int(bitarray(ba)) + 1) #TODO this line probably won't work
+        return "seg{}".format(
+            util.ba2int(bitarray(ba)) + 1
+        )  # TODO this line probably won't work
 
     # end of vector methods
 
@@ -346,7 +348,9 @@ class RVFormatParser:
     def parseVL(ba):
         """ Parses the Vector Load unit-stride format of instructions """
         return {
-            "nf": RVFormatParser.NFtoInt(RVFormatParser.getNF(ba)), #TODO make other nf lines match this line
+            "nf": RVFormatParser.NFtoInt(
+                RVFormatParser.getNF(ba)
+            ),  # TODO make other nf lines match this line
             "mop": RVFormatParser.getMOP(ba),
             "vm": RVFormatParser.getVM(ba),
             "lumop": RVFormatParser.getRS2(ba),

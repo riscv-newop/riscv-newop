@@ -1,6 +1,6 @@
 from I32 import I32
 from M32 import M32
-from V32 import V32	#NEW
+from V32 import V32  # NEW
 from RVFormatParser import RVFormatParser
 
 
@@ -18,8 +18,8 @@ class RV32:
             self.instructionTable.update(I32.instructionTable)
         if "M" in isa:
             self.instructionTable.update(M32.instructionTable)
-	if "V" in isa:
-	    self.instructionTable.update(V32.instructionTable)
+        if "V" in isa:
+            self.instructionTable.update(V32.instructionTable)
 
         # the program is a mapping from a pc int --> RVInstruction
         self.program = {}
