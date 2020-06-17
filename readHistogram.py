@@ -5,7 +5,7 @@ from RV32 import RV32
 
 def readHistogram(filename):
 
-    rv = RV32()
+    rv = RV32("32IV")
 
     with open(filename) as csvf:
         reader = csv.reader(csvf, delimiter=" ")
