@@ -39,7 +39,7 @@ class V32:
             fp.getMOP(ba) == bitarray("000")
             or fp.getMOP(ba) == bitarray("010")
             or fp.getMOP(ba) == bitarray("011")
-        ):
+        ) and width != "e":
             sign = "u"
 
         if fp.getVM(ba) == bitarray(0):
@@ -107,7 +107,7 @@ class V32:
             or fp.getFunct3(ba) == bitarray("011")
             or fp.getFunct3(ba) == bitarray("100")
         ):
-            width = ""	#TODO figure out how to display these
+            width = ""  # TODO figure out how to display these
         elif fp.getFunct3(ba) == bitarray("000"):
             width = "b"
         elif fp.getFunct3(ba) == bitarray("101"):
@@ -124,7 +124,7 @@ class V32:
             data = fp.parseVS(ba)
             if data["nf"] != "seg1":
                 nf = data["nf"]
-            name = "vs" + nf + width + ".v"
+            name = "vs" + str(nf) + width + ".v"
             return RVInstruction(
                 rv_format="VS",
                 rv_src_registers=[data["rs1"]],
@@ -162,7 +162,7 @@ class V32:
                 rv_size=32,
                 rv_binary=ba,
             )
-	elif fp.getMOP(ba) == bitarray("111"):
+        elif fp.getMOP(ba) == bitarray("111"):
             data = fp.parseVSX(ba)
             if data["nf"] != "seg1":
                 nf = data["nf"]

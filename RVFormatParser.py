@@ -348,9 +348,7 @@ class RVFormatParser:
     def parseVL(ba):
         """ Parses the Vector Load unit-stride format of instructions """
         return {
-            "nf": RVFormatParser.NFtoInt(
-                RVFormatParser.getNF(ba)
-            ),  # TODO make other nf lines match this line
+            "nf": RVFormatParser.NFtoInt(RVFormatParser.getNF(ba)),
             "mop": RVFormatParser.getMOP(ba),
             "vm": RVFormatParser.getVM(ba),
             "lumop": RVFormatParser.getRS2(ba),
@@ -364,7 +362,7 @@ class RVFormatParser:
     def parseVLS(ba):
         """ Parses the Vector Load strided format of instructions """
         return {
-            "nf": RVFormatParser.getNF(ba),
+            "nf": RVFormatParser.NFtoInt(RVFormatParser.getNF(ba)),
             "mop": RVFormatParser.getMOP(ba),
             "vm": RVFormatParser.getVM(ba),
             "rs2": RVFormatParser.convertToIntRegister(RVFormatParser.getRS2(ba)),
@@ -378,7 +376,7 @@ class RVFormatParser:
     def parseVLX(ba):
         """ Parses the Vector Load indexed format of instructions """
         return {
-            "nf": RVFormatParser.getNF(ba),
+            "nf": RVFormatParser.NFtoInt(RVFormatParser.getNF(ba)),
             "mop": RVFormatParser.getMOP(ba),
             "vm": RVFormatParser.getVM(ba),
             "vs2": RVFormatParser.convertToVectorRegister(RVFormatParser.getRS2(ba)),
@@ -392,7 +390,7 @@ class RVFormatParser:
     def parseVS(ba):
         """ Parses the Vector Store unit-stride format of instructions """
         return {
-            "nf": RVFormatParser.getNF(ba),
+            "nf": RVFormatParser.NFtoInt(RVFormatParser.getNF(ba)),
             "mop": RVFormatParser.getMOP(ba),
             "vm": RVFormatParser.getVM(ba),
             "sumop": RVFormatParser.getRS2(ba),
@@ -406,7 +404,7 @@ class RVFormatParser:
     def parseVSS(ba):
         """ Parses the Vector Store strided format of instructions """
         return {
-            "nf": RVFormatParser.getNF(ba),
+            "nf": RVFormatParser.NFtoInt(RVFormatParser.getNF(ba)),
             "mop": RVFormatParser.getMOP(ba),
             "vm": RVFormatParser.getVM(ba),
             "rs2": RVFormatParser.convertToIntRegister(RVFormatParser.getRS2(ba)),
@@ -420,7 +418,7 @@ class RVFormatParser:
     def parseVSX(ba):
         """ Parses the Vector Store indexed format of instructions """
         return {
-            "nf": RVFormatParser.getNF(ba),
+            "nf": RVFormatParser.NFtoInt(RVFormatParser.getNF(ba)),
             "mop": RVFormatParser.getMOP(ba),
             "vm": RVFormatParser.getVM(ba),
             "vs2": RVFormatParser.convertToVectorRegister(RVFormatParser.getRS2(ba)),
