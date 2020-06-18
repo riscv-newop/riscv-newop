@@ -7,7 +7,7 @@ from RVFormatParser import RVFormatParser
 class RV32:
     """ General class for RISC-V 32bit """
 
-    def __init__(self, isa="V"):
+    def __init__(self, isa="32I"):
         """ A constructor for RV32
             isa is a string containing which instruction sets and extensions to use, by default this will use 32I"""
 
