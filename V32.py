@@ -13,7 +13,6 @@ class V32:
     @staticmethod
     def LOAD_FP(ba):
         """Creates Vector Load Instructions"""
-        print("Hey hey")
         nf = ""
         width = ""
         sign = ""
@@ -43,62 +42,50 @@ class V32:
         ):
             sign = "u"
 
-        if fp.getVM(ba) == bitarray("0"):
+        if fp.getVM(ba) == bitarray(0):
             vm = "v0.t"
 
         if fp.getMOP(ba) == bitarray("000") or fp.getMOP(ba) == bitarray("100"):
             data = fp.parseVL(ba)
-            if data["nf"] != "seg0":
+            if data["nf"] != "seg1":
                 nf = data["nf"]
             if fp.getRS2(ba) == bitarray("10000"):
                 umop = "ff"
-            name = "vl" + nf + width + sign + ".v"
+            name = "vl" + nf + width + sign + umop + ".v"
             return RVInstruction(
                 rv_format="VL",
                 rv_src_registers=[data["rs1"]],
                 rv_dest_registers=[data["vd"]],
-                #               rv_nf=nf,
                 rv_mask=vm,
-                #               rv_umop=umop,
-                #               rv_width=width,
-                #               rv_sign=sign,
                 rv_name=name,
                 rv_size=32,
                 rv_binary=ba,
             )
-        elif fp.getMOP(ba) == "010" or fp.getMOP(ba) == "110":
+        elif fp.getMOP(ba) == bitarray("010") or fp.getMOP(ba) == bitarray("110"):
             data = fp.parseVLS(ba)
-            if fp.getNF(ba) != "000":
-                nf = "seg" + (
-                    data[nf] + 1
-                )  # TODO this line wont work. how best to do it?
+            if data["nf"] != "seg1":
+                nf = data["nf"]
+            name = "vls" + nf + width + sign + ".v"
             return RVInstruction(
                 rv_format="VLS",
                 rv_src_registers=[data["rs1"], data["rs2"]],
                 rv_dest_registers=[data["vd"]],
-                rv_nf=nf,
                 rv_mask=vm,
-                rv_width=width,
-                rv_sign=sign,
-                rv_name="vls",
+                rv_name=name,
                 rv_size=32,
                 rv_binary=ba,
             )
-        elif fp.getMOP(ba) == "011" or fp.getMOP(ba) == "111":
+        elif fp.getMOP(ba) == bitarray("011") or fp.getMOP(ba) == bitarray("111"):
             data = fp.parseVLX(ba)
-            if fp.getNF(ba) != "000":
-                nf = "seg" + (
-                    data[nf] + 1
-                )  # TODO this line wont work. how best to do it?
+            if data["nf"] != "seg1":
+                nf = data["nf"]
+            name = "vlx" + nf + width + sign + ".v"
             return RVInstruction(
                 rv_format="VLX",
                 rv_src_registers=[data["rs1"], data["vs2"]],
                 rv_dest_registers=[data["vd"]],
-                rv_nf=nf,
                 rv_mask=vm,
-                rv_width=width,
-                rv_sign=sign,
-                rv_name="vlx",
+                rv_name=name,
                 rv_size=32,
                 rv_binary=ba,
             )
@@ -111,86 +98,81 @@ class V32:
         """Creates Vector Store Instructions"""
         nf = ""
         width = ""
-        sign = ""
         umop = ""
         vm = ""
 
         if (
-            fp.getFunct3(ba) == "001"
-            or fp.getFunct3(ba) == "010"
-            or fp.getFunct3(ba) == "011"
-            or fp.getFunct3(ba) == "100"
+            fp.getFunct3(ba) == bitarray("001")
+            or fp.getFunct3(ba) == bitarray("010")
+            or fp.getFunct3(ba) == bitarray("011")
+            or fp.getFunct3(ba) == bitarray("100")
         ):
-            width = ""
-        elif fp.getFunct3(ba) == "000":
+            width = ""	#TODO figure out how to display these
+        elif fp.getFunct3(ba) == bitarray("000"):
             width = "b"
-        elif fp.getFunct3(ba) == "101":
+        elif fp.getFunct3(ba) == bitarray("101"):
             width = "h"
-        elif fp.getFunct3(ba) == "110":
+        elif fp.getFunct3(ba) == bitarray("110"):
             width = "w"
-        else:
+        elif fp.getFunct3(ba) == bitarray("111"):
             width = "e"
 
-        if fp.getMOP(ba) == "000" or fp.getMOP(ba) == "010" or fp.getMOP(ba) == "011":
-            sign = "u"
-
-        if fp.getVM(ba) == "0":
+        if fp.getVM(ba) == bitarray(0):
             vm = "v0.t"
 
-        if fp.getMOP(ba) == "000":
+        if fp.getMOP(ba) == bitarray("000"):
             data = fp.parseVS(ba)
-            if fp.getNF(ba) != "000":
-                nf = "seg" + (
-                    data[nf] + 1
-                )  # TODO this line wont work. how best to do it?
-            if fp.getRS2(ba) == "10000":
-                umop = "ff"
+            if data["nf"] != "seg1":
+                nf = data["nf"]
+            name = "vs" + nf + width + ".v"
             return RVInstruction(
                 rv_format="VS",
                 rv_src_registers=[data["rs1"]],
                 rv_dest_registers=[data["vs3"]],
-                rv_nf=nf,
                 rv_mask=vm,
-                rv_umop=umop,
-                rv_width=width,
-                rv_sign=sign,
-                rv_name="vs",
+                rv_name=name,
                 rv_size=32,
                 rv_binary=ba,
             )
-        elif fp.getMOP(ba) == "010":
+        elif fp.getMOP(ba) == bitarray("010"):
             data = fp.parseVSS(ba)
-            if fp.getNF(ba) != "000":
-                nf = "seg" + (
-                    data[nf] + 1
-                )  # TODO this line wont work. how best to do it?
+            if data["nf"] != "seg1":
+                nf = data["nf"]
+            name = "vss" + nf + width + ".v"
             return RVInstruction(
                 rv_format="VSS",
                 rv_src_registers=[data["rs1"], data["rs2"]],
                 rv_dest_registers=[data["vs3"]],
-                rv_nf=nf,
                 rv_mask=vm,
-                rv_width=width,
-                rv_sign=sign,
-                rv_name="vss",
+                rv_name=name,
                 rv_size=32,
                 rv_binary=ba,
             )
-        elif fp.getMOP(ba) == "011" or fp.getMOP(ba) == "111":
+        elif fp.getMOP(ba) == bitarray("011"):
             data = fp.parseVSX(ba)
-            if fp.getNF(ba) != "000":
-                nf = "seg" + (
-                    data[nf] + 1
-                )  # TODO this line wont work. how best to do it?
+            if data["nf"] != "seg1":
+                nf = data["nf"]
+            name = "vsx" + nf + width + ".v"
             return RVInstruction(
                 rv_format="VSX",
                 rv_src_registers=[data["rs1"], data["vs2"]],
                 rv_dest_registers=[data["vs3"]],
-                rv_nf=nf,
                 rv_mask=vm,
-                rv_width=width,
-                rv_sign=sign,
-                rv_name="vsx",
+                rv_name=name,
+                rv_size=32,
+                rv_binary=ba,
+            )
+	elif fp.getMOP(ba) == bitarray("111"):
+            data = fp.parseVSX(ba)
+            if data["nf"] != "seg1":
+                nf = data["nf"]
+            name = "vsux" + nf + width + ".v"
+            return RVInstruction(
+                rv_format="VSX",
+                rv_src_registers=[data["rs1"], data["vs2"]],
+                rv_dest_registers=[data["vs3"]],
+                rv_mask=vm,
+                rv_name=name,
                 rv_size=32,
                 rv_binary=ba,
             )
