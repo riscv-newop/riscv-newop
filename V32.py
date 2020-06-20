@@ -25,7 +25,7 @@ class V32:
             or fp.getFunct3(ba) == bitarray("011")
             or fp.getFunct3(ba) == bitarray("100")
         ):
-            width = ""
+            width = ""  # TODO figure out how to display these
         elif fp.getFunct3(ba) == bitarray("000"):
             width = "b"
         elif fp.getFunct3(ba) == bitarray("101"):
@@ -184,11 +184,63 @@ class V32:
     def AMO(ba):
         """Creates Atomic Memory Operation Instructions"""
         data = fp.parseVAMO(ba)
+        data_width = data["width"]
+        data_amoop = data["amoop"]
+        src_registers = []
+        dest_registers = []
+
+        if data_width == bitarray("010"):
+            width = ".w"
+        elif data_width == bitarray("011"):
+            width = ".d"
+        elif data_width == bitarray("100"):
+            width = ".q"
+        elif data_width == bitarray("110"):
+            width = "w.v"
+        elif data_width == bitarray("111"):
+            width = "e.v"
+
+        if data_amoop == bitarray("00000"):
+            amoop = "vamoadd"
+        elif data_amoop == bitarray("00001"):
+            amoop = "vamoswap"
+        elif data_amoop == bitarray("00100"):
+            amoop = "vamoxor"
+        elif data_amoop == bitarray("01000"):
+            amoop = "vamoor"
+        elif data_amoop == bitarray("01100"):
+            amoop = "vamoand"
+        elif data_amoop == bitarray("10000"):
+            amoop = "vamomin"
+        elif data_amoop == bitarray("10100"):
+            amoop = "vamomax"
+        elif data_amoop == bitarray("11000"):
+            amoop = "vamominu"
+        elif data_amoop == bitarray("11100"):
+            amoop = "vamomaxu"
+
+        name = amoop + width
+
+        if data["vm"] == bitarray(0):
+            vm = "v0.t"
+
+        if bitarray([ba[-27]]) == bitarray("0"):
+            src_registers = [data["rs1"], data["vs2"], data["vd"]]  # vd represents vs3
+            dest_registers = ["x0"]
+        elif bitarray([ba[-27]]) == bitarray("1"):
+            src_registers = [
+                data["rs1"],
+                data["vs2"],
+                data["vd"],
+            ]  # TODO is it correct to write vd as a src?
+            dest_registers = [data["vd"]]
 
         return RVInstruction(
             rv_format="VAMO",
-            rv_src_registers=[data["rs1"], data["vs2"]],
-            rv_dest_registers=[data["vd"]],
+            rv_src_registers=src_registers,
+            rv_dest_registers=dest_registers,
+            rv_mask=vm,
+            rv_name=name,
             rv_size=32,
             rv_binary=ba,
         )
@@ -199,8 +251,8 @@ class V32:
 
         # TODO add data = whichever parser for this one
 
-        f3 = data["funct3"]
-        f6 = data["funct6"]
+        f3 = fp.getFunct3(ba)
+        f6 = fp.getFunct6(ba)
         name = ""
 
         if f3 == bitarray("000") or f3 == bitarray("011") or f3 == bitarray("100"):
