@@ -464,7 +464,9 @@ class RVFormatParser:
             "vs2": RVFormatParser.convertToVectorRegister(RVFormatParser.getRS2(ba)),
             "vs1": RVFormatParser.convertToVectorRegister(RVFormatParser.getRS1(ba)),
             "funct3": RVFormatParser.getFunct3(ba),
-            # TODO how do I specify vd/rd?      "vd": RVFormatParser.convertToVectorRegister(RVFormatParser.getRD(ba)),
+            "vd": RVFormatParser.convertToVectorRegister(
+                RVFormatParser.getRD(ba)
+            ),  # TODO how do I specify vd/rd?
             "opcode": RVFormatParser.getOpcode(ba),
         }
 
@@ -503,7 +505,9 @@ class RVFormatParser:
             "vs2": RVFormatParser.convertToVectorRegister(RVFormatParser.getRS2(ba)),
             "rs1": RVFormatParser.convertToIntRegister(RVFormatParser.getRS1(ba)),
             "funct3": RVFormatParser.getFunct3(ba),
-            # TODO how do I specify vd/rd?            "vd": RVFormatParser.convertToVectorRegister(RVFormatParser.getRD(ba)),
+            "vd": RVFormatParser.convertToVectorRegister(
+                RVFormatParser.getRD(ba)
+            ),  # TODO how do I specify vd/rd?
             "opcode": RVFormatParser.getOpcode(ba),
         }
 

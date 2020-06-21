@@ -188,6 +188,7 @@ class V32:
         data_amoop = data["amoop"]
         src_registers = []
         dest_registers = []
+        vm = ""
 
         if data_width == bitarray("010"):
             width = ".w"
@@ -248,109 +249,189 @@ class V32:
     @staticmethod
     def OP_V(ba):
         """Creates OP-V Instructions"""
-
-        # TODO add data = whichever parser for this one
-
         f3 = fp.getFunct3(ba)
         f6 = fp.getFunct6(ba)
-        name = ""
+        vm = ""
+
+        if fp.getVM(ba) == bitarray(0):
+            vm = "v0.t"
 
         if f3 == bitarray("000") or f3 == bitarray("011") or f3 == bitarray("100"):
             # OPIVV, OPIVI, OPIVX
             if f6 == bitarray("000000"):
-                name = "vadd"
+                vop = "vadd.v"
             elif f6 == bitarray("000010"):
-                name = "vsub"
-            elif f6 == bitarray(""):
-                name = "ADD NAME"
+                vop = "vsub.v"
+            elif f6 == bitarray("000011"):
+                vop = "vrsub.v"
             else:
                 pass
+
+            if (
+                f6 == bitarray("000000")
+                or f6 == bitarray("000001")
+                or f6 == bitarray("000010")
+                or f6 == bitarray("000011")
+                or f6 == bitarray("000100")
+                or f6 == bitarray("000101")
+                or f6 == bitarray("000110")
+                or f6 == bitarray("000111")
+                or f6 == bitarray("001000")
+                or f6 == bitarray("001001")
+                or f6 == bitarray("001010")
+                or f6 == bitarray("001011")
+                or f6 == bitarray("001100")
+                or f6 == bitarray("001101")
+                or f6 == bitarray("001110")
+                or f6 == bitarray("001111")
+            ):
+                # TODO swap order of source registers
+                if f3 == bitarray("000"):
+                    source = "v"
+                elif f3 == bitarray("100"):
+                    source = "x"
+                elif f3 == bitarray("011"):
+                    source = "i"
         elif f3 == bitarray("010") or f3 == bitarray("110"):
             # OPMVV, OPMVX
             if f6 == bitarray("000000"):
-                name = "vredsum"
+                vop = "vredsum.v"
             elif f6 == bitarray("000001"):
-                name = "vredand"
+                vop = "vredand.v"
             elif f6 == bitarray("000010"):
-                name = "vredor"
-            elif f6 == bitarray(""):
-                name = "ADD NAME"
+                vop = "vredor.v"
+            elif f6 == bitarray("001110"):
+                vop = "vslide1up.v"
             else:
                 pass
+
+            if (
+                f6 == bitarray("000000")
+                or f6 == bitarray("000001")
+                or f6 == bitarray("000010")
+                or f6 == bitarray("000011")
+                or f6 == bitarray("000100")
+                or f6 == bitarray("000101")
+                or f6 == bitarray("000110")
+                or f6 == bitarray("000111")
+                or f6 == bitarray("001000")
+                or f6 == bitarray("001001")
+                or f6 == bitarray("001010")
+                or f6 == bitarray("001011")
+                or f6 == bitarray("001100")
+                or f6 == bitarray("001101")
+                or f6 == bitarray("001110")
+                or f6 == bitarray("001111")
+            ):
+                # TODO swap order of source registers
+                if "red" in vop:
+                    source = "s"
+                else:
+                    if f3 == bitarray("010"):
+                        source = "v"
+                    elif f3 == bitarray("110"):
+                        source = "x"
         elif f3 == bitarray("001") or f3 == bitarray("101"):
             # OPFVV, OPFVF
             if f6 == bitarray("000000"):
-                name = "vfadd"
+                vop = "vfadd.v"
             elif f6 == bitarray("000001"):
-                name = "vfredsum"
+                vop = "vfredsum.v"
             elif f6 == bitarray("000010"):
-                name = "vfsub"
+                vop = "vfsub.v"
             elif f6 == bitarray(""):
-                name = "ADD NAME"
+                vop = "ADD NAME"
             else:
                 pass
+
+            if (
+                f6 == bitarray("000000")
+                or f6 == bitarray("000001")
+                or f6 == bitarray("000010")
+                or f6 == bitarray("000011")
+                or f6 == bitarray("000100")
+                or f6 == bitarray("000101")
+                or f6 == bitarray("000110")
+                or f6 == bitarray("000111")
+                or f6 == bitarray("001000")
+                or f6 == bitarray("001001")
+                or f6 == bitarray("001010")
+                or f6 == bitarray("001011")
+                or f6 == bitarray("001100")
+                or f6 == bitarray("001101")
+                or f6 == bitarray("001110")
+                or f6 == bitarray("001111")
+            ):
+                # TODO swap order of source registers
+                if "red" in vop:
+                    source = "s"
+                else:
+                    if f3 == bitarray("001"):
+                        source = "v"
+                    elif f3 == bitarray("101"):
+                        source = "f"
         else:
             pass
 
-        if (
-            fp.getFunct3(ba) == "000"
-        ):  # TODO there's a compiler error at this line...por que?
+        name = vop + source
+
+        if fp.getFunct3(ba) == bitarray("000"):
             data = fp.parseOPIVV(ba)
             return RVInstruction(
                 rv_format="OPIVV",
                 rv_src_registers=[data["vs1"], data["vs2"]],
                 rv_dest_registers=[data["vd"]],
-                rv_mask=[data["vm"]],
+                rv_mask=vm,
                 rv_name=name,
                 rv_size=32,
                 rv_binary=ba,
             )
-        elif fp.getFunct3(ba) == "001" or fp.getFunct3(ba) == "010":
+        elif fp.getFunct3(ba) == bitarray("001") or fp.getFunct3(ba) == bitarray("010"):
             data = fp.parseOPFVV(ba)
             return RVInstruction(
                 rv_format="OPFVV",
                 rv_src_registers=[data["vs1"], data["vs2"]],
                 rv_dest_registers=[data["vd"]],  # TODO just vd or vd/rd?
-                rv_mask=[data["vm"]],
+                rv_mask=vm,
                 rv_name=name,
                 rv_size=32,
                 rv_binary=ba,
             )
-        elif fp.getFunct3(ba) == "011":
+        elif fp.getFunct3(ba) == bitarray("011"):
             data = fp.parseOPIVI(ba)
             return RVInstruction(
                 rv_format="OPIVI",
                 rv_src_registers=[data["vs2"]],
                 rv_dest_registers=[data["vd"]],
                 rv_immediates=[data["simm5"]],
-                rv_mask=[data["vm"]],
+                rv_mask=vm,
                 rv_name=name,
                 rv_size=32,
                 rv_binary=ba,
             )
-        elif fp.getFunct3(ba) == "100" or fp.getFunct3(ba) == "101":
+        elif fp.getFunct3(ba) == bitarray("100") or fp.getFunct3(ba) == bitarray("101"):
             data = fp.parseOPIVX(ba)
             return RVInstruction(
                 rv_format="OPIVX",
                 rv_src_registers=[data["rs1"], data["vs2"]],
                 rv_dest_registers=[data["vd"]],
-                rv_mask=[data["vm"]],
+                rv_mask=vm,
                 rv_name=name,
                 rv_size=32,
                 rv_binary=ba,
             )
-        elif fp.getFunct3(ba) == "110":
+        elif fp.getFunct3(ba) == bitarray("110"):
             data = fp.parseOPMVX(ba)
             return RVInstruction(
                 rv_format="OPMVX",
                 rv_src_registers=[data["rs1"], data["vs2"]],
                 rv_dest_registers=[data["vd"]],  # TODO just vd or vd/rd?
-                rv_mask=[data["vm"]],
+                rv_mask=vm,
                 rv_name=name,
                 rv_size=32,
                 rv_binary=ba,
             )
-        elif fp.getFunct3(ba) == "111" and fp.getVSetMSB(ba) == "0":
+        elif fp.getFunct3(ba) == bitarray("111") and fp.getVSetMSB(ba) == bitarray("0"):
             data = fp.parseVSetVLI(ba)
             return RVInstruction(
                 rv_format="vsetvli",
@@ -361,7 +442,7 @@ class V32:
                 rv_size=32,
                 rv_binary=ba,
             )
-        elif fp.getFunct3(ba) == "111" and fp.getVSetMSB(ba) == "1":
+        elif fp.getFunct3(ba) == bitarray("111") and fp.getVSetMSB(ba) == bitarray("1"):
             data = fp.parseVSetVL(ba)
             return RVInstruction(
                 rv_format="vsetvl",

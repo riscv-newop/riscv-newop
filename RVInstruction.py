@@ -47,6 +47,7 @@ class RVInstruction:
                     if self.immediates is None
                     else " ".join(str(x) for x in self.immediates)
                 )
+                + " "
                 + ("" if self.mask is None else self.mask)
             ).split()
         )
