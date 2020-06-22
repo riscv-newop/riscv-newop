@@ -253,17 +253,18 @@ class V32:
         f6 = fp.getFunct6(ba)
         vm = ""
 
-        if fp.getVM(ba) == bitarray(0):
-            vm = "v0.t"
-
         if f3 == bitarray("000") or f3 == bitarray("011") or f3 == bitarray("100"):
             # OPIVV, OPIVI, OPIVX
             if f6 == bitarray("000000"):
-                vop = "vadd.v"
+                vop = "vadd"
             elif f6 == bitarray("000010"):
-                vop = "vsub.v"
+                vop = "vsub"
             elif f6 == bitarray("000011"):
-                vop = "vrsub.v"
+                vop = "vrsub"
+            elif f6 == bitarray("010111"):
+                vop = "vmerge"
+            elif f6 == bitarray("011000"):
+                vop = "vmseq"
             else:
                 pass
 
@@ -287,21 +288,64 @@ class V32:
             ):
                 # TODO swap order of source registers
                 if f3 == bitarray("000"):
-                    source = "v"
+                    source = ".vv"
                 elif f3 == bitarray("100"):
-                    source = "x"
+                    source = ".vx"
                 elif f3 == bitarray("011"):
-                    source = "i"
+                    source = ".vi"
+                if fp.getVM(ba) == bitarray(0):
+                    vm = "v0.t"
+            elif (
+                f6 == bitarray("010000")
+                or f6 == bitarray("010001")
+                or f6 == bitarray("010010")
+                or f6 == bitarray("010011")
+                or f6 == bitarray("010100")
+                or f6 == bitarray("010101")
+                or f6 == bitarray("010110")
+                or f6 == bitarray("010111")
+            ):
+                # TODO swap order of source registers
+                if f3 == bitarray("000"):
+                    source = ".vvm"
+                elif f3 == bitarray("100"):
+                    source = ".vxm"
+                elif f3 == bitarray("011"):
+                    source = ".vim"
+                vm = "v0"
+            elif (
+                f6 == bitarray("011000")
+                or f6 == bitarray("011001")
+                or f6 == bitarray("011010")
+                or f6 == bitarray("011011")
+                or f6 == bitarray("011100")
+                or f6 == bitarray("011101")
+                or f6 == bitarray("011110")
+                or f6 == bitarray("011111")
+            ):
+                # TODO swap order of source registers
+                if f3 == bitarray("000"):
+                    source = ".vv"
+                elif f3 == bitarray("100"):
+                    source = ".vx"
+                elif f3 == bitarray("011"):
+                    source = ".vi"
+                if fp.getVM(ba) == bitarray(0):
+                    vm = "v0.t"
         elif f3 == bitarray("010") or f3 == bitarray("110"):
             # OPMVV, OPMVX
             if f6 == bitarray("000000"):
-                vop = "vredsum.v"
+                vop = "vredsum"
             elif f6 == bitarray("000001"):
-                vop = "vredand.v"
+                vop = "vredand"
             elif f6 == bitarray("000010"):
-                vop = "vredor.v"
+                vop = "vredor"
             elif f6 == bitarray("001110"):
-                vop = "vslide1up.v"
+                vop = "vslide1up"
+            elif f6 == bitarray("010111"):
+                vop = "vcompress"
+            elif f6 == bitarray("011000"):
+                vop = "vmandnot"
             else:
                 pass
 
@@ -325,22 +369,50 @@ class V32:
             ):
                 # TODO swap order of source registers
                 if "red" in vop:
-                    source = "s"
+                    source = ".vs"
                 else:
                     if f3 == bitarray("010"):
-                        source = "v"
+                        source = ".vv"
                     elif f3 == bitarray("110"):
-                        source = "x"
+                        source = ".vx"
+                if fp.getVM(ba) == bitarray(0):
+                    vm = "v0.t"
+            elif (
+                f6 == bitarray("010000")
+                or f6 == bitarray("010001")
+                or f6 == bitarray("010010")
+                or f6 == bitarray("010011")
+                or f6 == bitarray("010100")
+                or f6 == bitarray("010101")
+                or f6 == bitarray("010110")
+                or f6 == bitarray("010111")
+            ):
+                # TODO swap order of source registers
+                source = ".vm"
+            elif (
+                f6 == bitarray("011000")
+                or f6 == bitarray("011001")
+                or f6 == bitarray("011010")
+                or f6 == bitarray("011011")
+                or f6 == bitarray("011100")
+                or f6 == bitarray("011101")
+                or f6 == bitarray("011110")
+                or f6 == bitarray("011111")
+            ):
+                # TODO swap order of source registers
+                source = ".mm"
         elif f3 == bitarray("001") or f3 == bitarray("101"):
             # OPFVV, OPFVF
             if f6 == bitarray("000000"):
-                vop = "vfadd.v"
+                vop = "vfadd"
             elif f6 == bitarray("000001"):
-                vop = "vfredsum.v"
+                vop = "vfredsum"
             elif f6 == bitarray("000010"):
-                vop = "vfsub.v"
-            elif f6 == bitarray(""):
-                vop = "ADD NAME"
+                vop = "vfsub"
+            elif f6 == bitarray("010111"):
+                vop = "vfmerge"
+            elif f6 == bitarray("011000"):
+                vop = "vmfeq"
             else:
                 pass
 
@@ -364,12 +436,44 @@ class V32:
             ):
                 # TODO swap order of source registers
                 if "red" in vop:
-                    source = "s"
+                    source = ".vs"
                 else:
                     if f3 == bitarray("001"):
-                        source = "v"
+                        source = ".vv"
                     elif f3 == bitarray("101"):
-                        source = "f"
+                        source = ".vf"
+                if fp.getVM(ba) == bitarray(0):
+                    vm = "v0.t"
+            elif (
+                f6 == bitarray("010000")
+                or f6 == bitarray("010001")
+                or f6 == bitarray("010010")
+                or f6 == bitarray("010011")
+                or f6 == bitarray("010100")
+                or f6 == bitarray("010101")
+                or f6 == bitarray("010110")
+                or f6 == bitarray("010111")
+            ):
+                # TODO swap order of source registers
+                source = ".vfm"
+                vm = "v0"
+            elif (
+                f6 == bitarray("011000")
+                or f6 == bitarray("011001")
+                or f6 == bitarray("011010")
+                or f6 == bitarray("011011")
+                or f6 == bitarray("011100")
+                or f6 == bitarray("011101")
+                or f6 == bitarray("011110")
+                or f6 == bitarray("011111")
+            ):
+                # TODO swap order of source registers
+                if f3 == bitarray("001"):
+                    source = ".vv"
+                elif f3 == bitarray("101"):
+                    source = ".vf"
+                if fp.getVM(ba) == bitarray(0):
+                    vm = "v0.t"
         else:
             pass
 
