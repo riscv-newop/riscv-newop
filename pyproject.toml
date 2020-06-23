@@ -8,9 +8,14 @@ author = "Pranoy Dutta, Tanvi Mehta, Nagendra Gulur"
 author-email = "pranoydll@gmail.com"
 home-page = "https://github.com/riscv-newop/riscv-newop"
 license = "BSD-2-Clause"
-
-[dependencies]
-bitarray = "^1.2.2"
+requires = [
+    "bitarray >= 1.2.2"
+]
+description-file = "README.md"
+classifiers = [
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: BSD License"
+]
 
 [dev-dependencies]
 black = "^19.10"
