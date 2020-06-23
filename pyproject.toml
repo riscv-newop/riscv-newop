@@ -1,0 +1,21 @@
+[build-system]
+requires = ["flit_core >=2,<4"]
+build-backend = "flit_core.buildapi"
+
+[tool.flit.metadata]
+module = "rvnewop"
+author = [
+    "Pranoy Dutta",
+    "Tanvi Mehta",
+    "Nagendra Gulur"
+]
+author-email = "pranoydll@gmail.com"
+home-page = "https://github.com/riscv-newop/riscv-newop"
+license = "BSD-2-Clause"
+
+[dependencies]
+bitarray = "^1.2.2"
+
+[dev-dependencies]
+black = "^19.10"
+
