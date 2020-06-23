@@ -1,5 +1,5 @@
 # riscv-newop
-> A RISC_-V New Instruction Recommender System
+> A RISC-V New Instruction Recommender System
 
 ## Installation
 ```commandline
@@ -12,7 +12,7 @@ python3 -m pip install rvnewop
 import rvnewop
 from bitarray import bitarray
 
-isa__model = renewop.RV32("32I")
+isa_model = renewop.RV32("32I")
 
 hex = "00e787b3"
 # TODO clean this process up
