@@ -1,7 +1,7 @@
-from I32 import I32
-from M32 import M32
-from V32 import V32  # NEW
-from RVFormatParser import RVFormatParser
+from . import I32
+from . import M32
+from . import RVFormatParser
+from . import V32  # NEW
 
 
 class RV32:
@@ -24,12 +24,15 @@ class RV32:
         # the program is a mapping from a pc int --> RVInstruction
         self.program = {}
 
+    def decode(self, ba):
+        return self.instructionTable[RVFormatParser.getOpcode(ba)](ba)
+
     def addInstruction(self, pc, ba):
         """ Adds Instruction from pc into program map
             pc - an integer (program counter)
             ba - the bitarray for the instruction
         """
-        self.program[pc] = self.instructionTable[RVFormatParser.getOpcode(ba)](ba)
+        self.program[pc] = self.decode(ba)
 
     def printAll(self):
         """ Prints out all instructions """

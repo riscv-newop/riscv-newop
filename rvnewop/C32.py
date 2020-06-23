@@ -1,8 +1,9 @@
 from bitarray import bitarray, frozenbitarray
 from bitarray.util import zeros
 
-from RVFormatParser import RVFormatParser as fp
-from RVInstruction import RVInstruction
+# from RVFormatParser import RVFormatParser as fp
+from . import RVFormatParser as fp
+from . import RVInstruction
 
 
 class C32:

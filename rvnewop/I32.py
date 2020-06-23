@@ -1,7 +1,7 @@
 from bitarray import bitarray, frozenbitarray
 
-from RVFormatParser import RVFormatParser as fp
-from RVInstruction import RVInstruction
+from . import RVFormatParser as fp
+from . import RVInstruction
 
 
 class I32:
