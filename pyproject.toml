@@ -4,11 +4,7 @@ build-backend = "flit_core.buildapi"
 
 [tool.flit.metadata]
 module = "rvnewop"
-author = [
-    "Pranoy Dutta",
-    "Tanvi Mehta",
-    "Nagendra Gulur"
-]
+author = "Pranoy Dutta, Tanvi Mehta, Nagendra Gulur"
 author-email = "pranoydll@gmail.com"
 home-page = "https://github.com/riscv-newop/riscv-newop"
 license = "BSD-2-Clause"
