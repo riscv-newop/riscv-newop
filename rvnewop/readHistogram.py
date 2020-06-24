@@ -2,7 +2,7 @@ import csv
 
 from bitarray import bitarray
 
-from RV32 import RV32
+from . import RV32
 
 
 def readHistogram(filename):
