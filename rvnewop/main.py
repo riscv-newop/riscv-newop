@@ -1,12 +1,11 @@
-from .readHistogram import readHistogram
 import argparse
+
+from .readHistogram import readHistogram
 
 
 def main():
     parser = argparse.ArgumentParser(description="Disassemble RISC-V Assembly")
-    parser.add_argument(
-        "filename", required=True, type=str, help="Histogram file to disassemble"
-    )
+    parser.add_argument("filename", type=str, help="Histogram file to disassemble")
     parser.add_argument(
         "--save", dest="savefile", action="store", help="saves output to file"
     )
