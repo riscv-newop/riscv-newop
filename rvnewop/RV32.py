@@ -1,7 +1,8 @@
 from . import I32
 from . import M32
 from . import RVFormatParser
-from . import V32  # NEW
+from . import V32
+import sys
 
 
 class RV32:
@@ -34,7 +35,7 @@ class RV32:
         """
         self.program[pc] = self.decode(ba)
 
-    def printAll(self):
+    def printAll(self, file=sys.stdout):
         """ Prints out all instructions """
         for pc in self.program:
-            print("{}: {}".format(pc, self.program[pc]))
+            print("{}: {}".format(pc, self.program[pc]), file=file)

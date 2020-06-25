@@ -32,6 +32,7 @@ class RVInstruction:
         self.size = rv_size if rv_size is not None else 0
         self.binary = rv_binary if rv_binary is not None else ""
 
+    # TODO fix this up
     def __str__(self):
         """Create a printable string from Instruction"""
         return " ".join(
