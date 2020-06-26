@@ -5,9 +5,9 @@ from bitarray import bitarray
 from . import RV32
 
 
-def readHistogram(filename):
+def readHistogram(filename, isa="32I"):
 
-    rv = RV32("32IV")
+    rv = RV32(isa)
 
     with open(filename) as csvf:
         reader = csv.reader(csvf, delimiter=" ")

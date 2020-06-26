@@ -13,7 +13,7 @@ class C32:
     def QUADRANT_0(ba):
         if ba == zeros(16):
             # illegal instructions are all 0s
-            return RVInstruction(rv_name="illegal")
+            return RVInstruction(rv_name="illegal", rv_size=16)
 
         f3 = fp.getCFunct3(ba)
 
@@ -200,7 +200,7 @@ class C32:
                 if data["register"] == "x0":
                     raise Exception("C.LUI cannot have a destination register of x0")
                 if imm == 0:
-                    return RVInstruction(rv_name="reserved")
+                    return RVInstruction(rv_name="reserved", rv_size=16)
 
                 return RVInstruction(
                     rv_format="CI",
@@ -219,7 +219,7 @@ class C32:
                 data = fp.parseCB(ba)
                 if data["offset3"][0] == "1":
                     # TODO? reserved for custom instructions
-                    return RVInstruction(rv_name="reserved")
+                    return RVInstruction(rv_name="reserved", rv_size=16)
 
                 shamt = bitarray([data["offset3"][0]]) + data["offset5"]
                 return RVInstruction(
@@ -236,7 +236,7 @@ class C32:
                 data = fp.parseCB(ba)
                 if data["offset3"][0] == "1":
                     # TODO? reserved for custom instructions
-                    return RVInstruction(rv_name="reserved")
+                    return RVInstruction(rv_name="reserved", rv_size=16)
 
                 shamt = bitarray([data["offset3"][0]]) + data["offset5"]
                 return RVInstruction(

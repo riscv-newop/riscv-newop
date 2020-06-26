@@ -10,9 +10,16 @@ def main():
         "--save", dest="savefile", action="store", help="saves output to file"
     )
 
+    parser.add_argument(
+        "--isa",
+        type=str,
+        dest="isa",
+        help="which ISA and extensions to use, ex: 32IMCV",
+    )
+
     args = parser.parse_args()
 
-    rv = readHistogram(args.filename)
+    rv = readHistogram(args.filename, args.isa)
 
     if args.savefile:
         with open(args.savefile) as f:
