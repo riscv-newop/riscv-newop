@@ -53,3 +53,14 @@ class M32:
     instructionTable = {
         frozenbitarray("0110011"): MULTIPLY.__func__,
     }
+
+    instructionNameSet = {
+        "mul",
+        "mulh",
+        "MULHSU",
+        "mulhu",
+        "div",
+        "divu",
+        "rem",
+        "remu",
+    }

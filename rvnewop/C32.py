@@ -81,7 +81,7 @@ class C32:
                 rv_immediates=[
                     fp.immToInt(bitarray([imm2[1]]) + imm3 + bitarray([imm2[0]])) * 4
                 ],
-                rv_name="c.lw",
+                rv_name="c.sw",
                 rv_size=16,
                 rv_binary=ba,
             )
@@ -483,4 +483,34 @@ class C32:
         frozenbitarray("00"): QUADRANT_0.__func__,
         frozenbitarray("01"): QUADRANT_1.__func__,
         frozenbitarray("10"): QUADRANT_2.__func__,
+    }
+
+    instructionNameSet = {
+        "c.addi4spn",
+        "c.lw",
+        "c.lw",
+        "c.nop",
+        "c.addi",
+        "c.jal",
+        "c.li",
+        "c.addi16sp",
+        "c.lui",
+        "c.srli",
+        "c.srai",
+        "c.andi",
+        "c.sub",
+        "c.xor",
+        "c.or",
+        "c.and",
+        "c.j",
+        "c.beqz",
+        "c.bnez",
+        "c.slli",
+        "c.lwsp",
+        "c.jr",
+        "c.mv",
+        "c.ebreak",
+        "c.jalr",
+        "c.add",
+        "c.swsp",
     }
