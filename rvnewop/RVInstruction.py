@@ -32,23 +32,56 @@ class RVInstruction:
         self.size = rv_size if rv_size is not None else 0
         self.binary = rv_binary if rv_binary is not None else ""
 
-    # TODO fix this up
+    @staticmethod
+    def get_print_name(register_name):
+        if register_name[0] == "x":
+            xval = int(register_name[1:])
+            if register_name == "x0":
+                return "zero"
+            elif register_name == "x1":
+                return "ra"
+            elif register_name == "x2":
+                return "sp"
+            elif register_name == "x3":
+                return "gp"
+            elif register_name == "x4":
+                return "tp"
+            elif register_name == "x5":
+                return "t0"
+            elif register_name == "x6":
+                return "t1"
+            elif register_name == "x7":
+                return "t2"
+            elif register_name == "x8":
+                return "s0"
+            elif register_name == "x9":
+                return "s1"
+            elif xval >= 10 and xval <= 17:
+                return "a{}".format(xval - 10)
+            elif xval >= 12 and xval <= 27:
+                return "s{}".format(xval - 16)
+            elif xval >= 28 and xval <= 31:
+                return "t{}".format(xval - 25)
+
+            # note: float registers have not been implemented
+            # also vector registers
+
     def __str__(self):
         """Create a printable string from Instruction"""
-        return " ".join(
-            (
-                self.name
-                + " "
-                + ("" if self.dest_registers is None else " ".join(self.dest_registers))
-                + " "
-                + ("" if self.src_registers is None else " ".join(self.src_registers))
-                + " "
-                + (
-                    ""
-                    if self.immediates is None
-                    else " ".join(str(x) for x in self.immediates)
-                )
-                + " "
-                + ("" if self.mask is None else self.mask)
-            ).split()
+        name = self.name
+        dest = (
+            []
+            if self.dest_registers is None
+            else [self.get_print_name(x) for x in self.dest_registers]
         )
+        src = (
+            []
+            if self.src_registers is None
+            else [self.get_print_name(x) for x in self.src_registers]
+        )
+        imm = [] if self.immediates is None else self.immediates
+        mask = "" if self.mask is None else self.mask
+
+        parameters = ",".join(dest + src + imm)
+
+        return f"{name} {parameters} {mask}".strip()
