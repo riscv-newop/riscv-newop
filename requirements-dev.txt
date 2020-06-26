@@ -1,0 +1,4 @@
+bitarray==1.2.2
+black==19.10b0
+flit==2.3.0
+pytest==5.4.3
