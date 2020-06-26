@@ -9,7 +9,12 @@ class RVFormatParser:
     @staticmethod
     def getOpcode(ba):
         """ Creates frozenbitarray of opcode, used as a key in the instructionTable """
-        return frozenbitarray(ba[-7:])
+        if len(ba) == 32:
+            # 32 bit instruction opcode
+            return frozenbitarray(ba[-7:])
+        elif len(ba) == 16:
+            # compressed instruction opcode
+            return frozenbitarray(ba[-2:])
 
     @staticmethod
     def getRD(ba):

@@ -2,6 +2,7 @@ from . import I32
 from . import M32
 from . import RVFormatParser
 from . import V32
+from . import C32
 import sys
 
 
@@ -21,6 +22,8 @@ class RV32:
             self.instructionTable.update(M32.instructionTable)
         if "V" in isa:
             self.instructionTable.update(V32.instructionTable)
+        if "C" in isa:
+            self.instructionTable.update(C32.instructionTable)
 
         # the program is a mapping from a pc int --> RVInstruction
         self.program = {}
@@ -38,4 +41,4 @@ class RV32:
     def printAll(self, file=sys.stdout):
         """ Prints out all instructions """
         for pc in self.program:
-            print("{}: {}".format(pc, self.program[pc]), file=file)
+            print("{}: {}".format(hex(pc), self.program[pc]), file=file)
