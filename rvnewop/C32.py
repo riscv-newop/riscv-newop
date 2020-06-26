@@ -200,7 +200,7 @@ class C32:
                 if data["register"] == "x0":
                     raise Exception("C.LUI cannot have a destination register of x0")
                 if imm == 0:
-                    raise Exception("C.LUI with nzimm=0 is reserved")
+                    return RVInstruction(rv_name="reserved")
 
                 return RVInstruction(
                     rv_format="CI",
@@ -219,7 +219,7 @@ class C32:
                 data = fp.parseCB(ba)
                 if data["offset3"][0] == "1":
                     # TODO? reserved for custom instructions
-                    pass
+                    return RVInstruction(rv_name="reserved")
 
                 shamt = bitarray([data["offset3"][0]]) + data["offset5"]
                 return RVInstruction(
@@ -236,7 +236,7 @@ class C32:
                 data = fp.parseCB(ba)
                 if data["offset3"][0] == "1":
                     # TODO? reserved for custom instructions
-                    pass
+                    return RVInstruction(rv_name="reserved")
 
                 shamt = bitarray([data["offset3"][0]]) + data["offset5"]
                 return RVInstruction(
