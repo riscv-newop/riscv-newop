@@ -3,6 +3,7 @@ from . import M32
 from . import RVFormatParser
 from . import V32
 from . import C32
+from bitarray import bitarray
 import sys
 
 
@@ -27,6 +28,10 @@ class RV32:
 
         # the program is a mapping from a pc int --> RVInstruction
         self.program = {}
+
+    def decodeHex(self, hex):
+        ba = bitarray(bin(int(hex, 16))[2:].zfill(32))
+        return self.decode(ba)
 
     def decode(self, ba):
         return self.instructionTable[RVFormatParser.getOpcode(ba)](ba)

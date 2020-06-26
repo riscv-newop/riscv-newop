@@ -16,8 +16,6 @@ def readHistogram(filename, isa="32I"):
 
         for row in reader:
             # converts hex pc string to int
-            rv.addInstruction(
-                int(row[0], 16), bitarray(bin(int(row[1], 16))[2:].zfill(32))
-            )
+            rv.addInstruction(int(row[0], 16), rv.decodeHex(row[1]))
 
     return rv

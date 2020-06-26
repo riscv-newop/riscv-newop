@@ -14,12 +14,9 @@ from bitarray import bitarray
 
 isa_model = RV32("32I")
 
-hex = "00e787b3"
-# TODO clean this process up
-binary = bitarray(bin(int(hex, 16))[2:].zfill(32))
-print(isa_model.decode(binary))
+print(isa_model.decodeHex("00e787b3"))
 ```
 output
 ```commandline
-add x15 x15 x14
+add a5,a5,a4
 ```
