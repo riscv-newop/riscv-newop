@@ -65,6 +65,7 @@ class RVInstruction:
 
             # note: float registers have not been implemented
             # also vector registers
+            return register_name
 
     def __str__(self):
         """Create a printable string from Instruction"""
