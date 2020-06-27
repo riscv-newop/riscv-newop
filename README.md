@@ -1,5 +1,7 @@
 # riscv-newop
 > A RISC-V New Instruction Recommender System
+[![PyPI version](https://badge.fury.io/py/rvnewop.svg)](https://badge.fury.io/py/rvnewop)
+[![Build Status](https://travis-ci.com/riscv-newop/riscv-newop.svg?branch=master)](https://travis-ci.com/riscv-newop/riscv-newop)
 
 ## Installation
 ```commandline
