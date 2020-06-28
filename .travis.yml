@@ -1,6 +1,11 @@
 language: python
+os: linux
+dist: bionic
 python:
   - "3.8"
+  - "3.7"
+  - "3.6"
+  - "3.5"
 
 install: pip install tox-travis
 script: tox
