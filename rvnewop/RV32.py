@@ -4,7 +4,6 @@ from . import RVFormatParser
 from . import V32
 from . import C32
 from bitarray import bitarray
-import sys
 
 
 class RV32:
@@ -30,20 +29,17 @@ class RV32:
         self.program = {}
 
     def decodeHex(self, hex):
-        ba = bitarray(bin(int(hex, 16))[2:].zfill(32))
+        bstr = bitarray(bin(int(hex, 16))[2:]).to01()
+        size = 32
+
+        # compressed instructions NEVER end in 11
+        if bstr[-2:] != "11":
+            size = 16
+
+        bstr = bstr.zfill(size)
+        ba = bitarray(bstr)
+
         return self.decode(ba)
 
     def decode(self, ba):
         return self.instructionTable[RVFormatParser.getOpcode(ba)](ba)
-
-    def addInstruction(self, pc, ba):
-        """ Adds Instruction from pc into program map
-            pc - an integer (program counter)
-            ba - the bitarray for the instruction
-        """
-        self.program[pc] = self.decode(ba)
-
-    def printAll(self, file=sys.stdout):
-        """ Prints out all instructions """
-        for pc in self.program:
-            print("{}: {}".format(hex(pc), self.program[pc]), file=file)

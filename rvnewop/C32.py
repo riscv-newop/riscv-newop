@@ -63,8 +63,7 @@ class C32:
             pass
 
         elif f3 == bitarray("100"):
-            # RESERVED
-            pass
+            return RVInstruction(rv_name="reserved", rv_size=16)
 
         elif f3 == bitarray("101"):
             # C.FSD, not implemented

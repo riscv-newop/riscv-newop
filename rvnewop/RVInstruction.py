@@ -85,4 +85,4 @@ class RVInstruction:
 
         parameters = ",".join(dest + src + imm)
 
-        return f"{name} {parameters} {mask}".strip()
+        return "{} {} {}".format(name, parameters, mask).strip()

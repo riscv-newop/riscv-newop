@@ -1,6 +1,6 @@
 import argparse
 
-from .readHistogram import readHistogram
+from .Histogram import Histogram
 
 
 def main():
@@ -19,10 +19,10 @@ def main():
 
     args = parser.parse_args()
 
-    rv = readHistogram(args.filename, args.isa)
+    program = Histogram.parse(args.filename, args.isa)
 
     if args.savefile:
         with open(args.savefile) as f:
-            rv.printAll(f)
+            program.printAll(f)
     else:
-        rv.printAll(f)
+        program.printAll(f)
