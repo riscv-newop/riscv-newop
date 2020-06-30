@@ -19,6 +19,7 @@ classifiers = [
 
 [tool.flit.scripts]
 rvnewop = "rvnewop:main"
+rvunused = "rvnewop:unused"
 
 [dev-dependencies]
 black = "^19.10"

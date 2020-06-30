@@ -15,18 +15,20 @@ class RV32:
 
         # a mapping from frozenbitarray of opcode --> function that returns an RVInstruction
         self.instructionTable = {}
+        self.instructionNameSet = set()
 
         if "32I" in isa:
             self.instructionTable.update(I32.instructionTable)
+            self.instructionNameSet.update(I32.instructionNameSet)
         if "M" in isa:
             self.instructionTable.update(M32.instructionTable)
+            self.instructionNameSet.update(M32.instructionNameSet)
         if "V" in isa:
             self.instructionTable.update(V32.instructionTable)
+            # TODO add inst name set
         if "C" in isa:
             self.instructionTable.update(C32.instructionTable)
-
-        # the program is a mapping from a pc int --> RVInstruction
-        self.program = {}
+            self.instructionNameSet.update(C32.instructionNameSet)
 
     def decodeHex(self, hex):
         bstr = bitarray(bin(int(hex, 16))[2:]).to01()

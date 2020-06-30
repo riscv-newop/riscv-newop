@@ -18,10 +18,17 @@ class Program:
         pc - (int) program counter (pc)
         hex - (str) instruction encoded in hexadecimal
         freq - (int) amount of times instruction shows up"""
-        self.instructions[pc] = rv.decodeHex(hex)
+        self.instructions[pc] = self.rv.decodeHex(hex)
 
         # TODO decouple storing frequencies from program?
         self.frequencies[pc] = freq
+
+    def getInstructionNameSet(self):
+        if not self.instructionNameSet:
+            self.instructionNameSet = {
+                self.instructions[pc].name for pc in self.instructions
+            }
+        return self.instructionNameSet
 
     def printAll(self, file=sys.stdout):
         """Prints out all instructions to file (default is stdout)"""
