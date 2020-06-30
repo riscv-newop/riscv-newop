@@ -9,15 +9,17 @@ class Histogram:
         """Parses a given file and converts into a program"""
         program = Program()
         with open(filename) as infile:
+            start = False
+
             for line in infile:
+                if start:
+                    values = line.split(" ")
+                    pc = int(values[0])
+                    hex = values[1]
+                    freq = int(values[2])
+                    program.addInstruction(pc, hex, freq)
+
                 if "PC Histogram size:" in line:
-                    pass  # ignore size line
-
-                values = line.split(" ")
-                pc = int(values[0])
-                hex = values[1]
-                freq = int(values[2])
-
-                program.addInstruction(pc, hex, freq)
+                    start = True
 
         return program
