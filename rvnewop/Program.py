@@ -32,5 +32,5 @@ class Program:
 
     def printAll(self, file=sys.stdout):
         """Prints out all instructions to file (default is stdout)"""
-        for pc in self.program:
+        for pc in self.instructions:
             print("{}: {}".format(hex(pc), self.instructions[pc]), file=file)
