@@ -14,7 +14,7 @@ class Histogram:
             for line in infile:
                 if start:
                     values = line.split(" ")
-                    pc = int(values[0])
+                    pc = int(values[0], 16)
                     hex = values[1]
                     freq = int(values[2])
                     program.addInstruction(pc, hex, freq)
