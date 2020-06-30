@@ -5,7 +5,7 @@ class Histogram:
     """A Class to help parse .hst Histogram files and convert them into programs"""
 
     @staticmethod
-    def parse(self, filename, isa="I32"):
+    def parse(filename, isa="I32"):
         """Parses a given file and converts into a program"""
         program = Program()
         with open(filename) as infile:
