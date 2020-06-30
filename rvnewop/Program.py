@@ -10,6 +10,7 @@ class Program:
         self.rv = RV32(isa=isa)
         self.instructions = {}  # maps pc value -> RVInstruction
         self.frequencies = {}  # maps pc value -> frequency of instruction
+        self.instructionNameSet = None
 
     def addInstruction(self, pc, hexd, freq):
         """Adds an instruction to a Program given a PC value
