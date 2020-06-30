@@ -11,14 +11,14 @@ class Program:
         self.instructions = {}  # maps pc value -> RVInstruction
         self.frequencies = {}  # maps pc value -> frequency of instruction
 
-    def addInstruction(self, pc, hex, freq):
+    def addInstruction(self, pc, hexd, freq):
         """Adds an instruction to a Program given a PC value
         and the instruction hex value
 
         pc - (int) program counter (pc)
-        hex - (str) instruction encoded in hexadecimal
+        hexd - (str) instruction encoded in hexadecimal
         freq - (int) amount of times instruction shows up"""
-        self.instructions[pc] = self.rv.decodeHex(hex)
+        self.instructions[pc] = self.rv.decodeHex(hexd)
 
         # TODO decouple storing frequencies from program?
         self.frequencies[pc] = freq
