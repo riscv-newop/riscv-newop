@@ -1,4 +1,4 @@
-from . import Program
+from .Program import Program
 
 
 class Histogram:

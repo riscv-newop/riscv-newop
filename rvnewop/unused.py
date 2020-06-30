@@ -1,11 +1,10 @@
 import argparse
 from glob import glob
 from os import path
+from pprint import PrettyPrinter
 
 from .Histogram import Histogram
 from .RV32 import RV32
-
-from pprint import PrettyPrinter
 
 
 def unused():
