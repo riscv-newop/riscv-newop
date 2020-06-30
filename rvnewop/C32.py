@@ -240,8 +240,8 @@ class C32:
                 shamt = bitarray([data["offset3"][0]]) + data["offset5"]
                 return RVInstruction(
                     rv_format="CB",
-                    rv_src_registers=[data["register"]],
-                    rv_dest_registers=[data["register"]],
+                    rv_src_registers=[data["rs1_pop"]],
+                    rv_dest_registers=[data["rs1_pop"]],
                     rv_immediates=[fp.immToInt(shamt)],
                     rv_name="c.srai",
                     rv_size=16,

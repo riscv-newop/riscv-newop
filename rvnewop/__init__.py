@@ -1,5 +1,5 @@
 """ A RISC-V New Instruction Recommender System """
-__version__ = "0.5.8"
+__version__ = "0.5.9"
 
 from .RVFormatParser import RVFormatParser
 from .RVInstruction import RVInstruction
