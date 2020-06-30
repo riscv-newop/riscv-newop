@@ -7,7 +7,7 @@ class Program:
     """A Program is a collection of instructions which are mapped to pc values"""
 
     def __init__(self, isa="32I"):
-        self.rv = RV32(isa)
+        self.rv = RV32(isa=isa)
         self.instructions = {}  # maps pc value -> RVInstruction
         self.frequencies = {}  # maps pc value -> frequency of instruction
 
