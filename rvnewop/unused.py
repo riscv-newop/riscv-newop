@@ -25,7 +25,7 @@ def unused():
     files = glob(path.join(args.dirname, "*.hst"))
     programs = [Histogram.parse(file, isa=args.isa) for file in files]
 
-    inst_used = {}
+    inst_used = set()
     for program in programs:
         # populate inst_used
         inst_used.update(program.getInstructionNameSet())
