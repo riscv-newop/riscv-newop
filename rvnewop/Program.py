@@ -11,6 +11,7 @@ class Program:
         self.instructions = {}  # maps pc value -> RVInstruction
         self.frequencies = {}  # maps pc value -> frequency of instruction
         self.instructionNameSet = None
+        self.registerSet = None
 
     def addInstruction(self, pc, hexd, freq):
         """Adds an instruction to a Program given a PC value
@@ -30,6 +31,16 @@ class Program:
                 self.instructions[pc].name for pc in self.instructions
             }
         return self.instructionNameSet
+
+    def getRegisterSet(self):
+        if not self.registerSet:
+            self.registerSet = set()
+            for pc in self.instructions:
+                inst = self.instructions[pc]
+
+                # update registerSet with union of registers used
+                self.registerSet.update(inst.src_registers | inst.dest_registers)
+        return self.registerSet
 
     def printAll(self, file=sys.stdout):
         """Prints out all instructions to file (default is stdout)"""

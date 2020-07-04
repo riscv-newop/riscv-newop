@@ -344,3 +344,6 @@ class I32:
         "ebreak",
         "fence",
     }
+
+    # Registers used in this isa
+    registerSet = {"x{}".format(i) for i in range(32)}
