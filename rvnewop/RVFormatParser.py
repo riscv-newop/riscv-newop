@@ -59,7 +59,9 @@ class RVFormatParser:
     @staticmethod
     def immToInt(imm):
         """Converts imm bitarray into twos complement integer"""
-        return RVFormatParser.twos_compliment(int(bitarray(imm).to01(), 2), len(imm))
+        return str(
+            RVFormatParser.twos_compliment(int(bitarray(imm).to01(), 2), len(imm))
+        )
 
     # Compressed Helper methods
     # These help parse 16bit instructions
@@ -151,9 +153,7 @@ class RVFormatParser:
     @staticmethod
     def NFtoInt(ba):
         """Converts nf bitarray into integer + 1"""
-        return "seg{}".format(
-            util.ba2int(bitarray(ba)) + 1
-        )  # TODO this line probably won't work
+        return "seg{}".format(util.ba2int(bitarray(ba)) + 1)
 
     # end of vector methods
 
@@ -443,6 +443,7 @@ class RVFormatParser:
             "vs2": RVFormatParser.convertToVectorRegister(RVFormatParser.getRS2(ba)),
             "rs1": RVFormatParser.convertToIntRegister(RVFormatParser.getRS1(ba)),
             "width": RVFormatParser.getFunct3(ba),
+            "vs3": RVFormatParser.convertToVectorRegister(RVFormatParser.getRD(ba)),
             "vd": RVFormatParser.convertToVectorRegister(RVFormatParser.getRD(ba)),
             "opcode": RVFormatParser.getOpcode(ba),
         }
@@ -469,9 +470,8 @@ class RVFormatParser:
             "vs2": RVFormatParser.convertToVectorRegister(RVFormatParser.getRS2(ba)),
             "vs1": RVFormatParser.convertToVectorRegister(RVFormatParser.getRS1(ba)),
             "funct3": RVFormatParser.getFunct3(ba),
-            "vd": RVFormatParser.convertToVectorRegister(
-                RVFormatParser.getRD(ba)
-            ),  # TODO how do I specify vd/rd?
+            "vd": RVFormatParser.convertToVectorRegister(RVFormatParser.getRD(ba)),
+            "rd": RVFormatParser.convertToIntRegister(RVFormatParser.getRD(ba)),
             "opcode": RVFormatParser.getOpcode(ba),
         }
 
@@ -510,9 +510,8 @@ class RVFormatParser:
             "vs2": RVFormatParser.convertToVectorRegister(RVFormatParser.getRS2(ba)),
             "rs1": RVFormatParser.convertToIntRegister(RVFormatParser.getRS1(ba)),
             "funct3": RVFormatParser.getFunct3(ba),
-            "vd": RVFormatParser.convertToVectorRegister(
-                RVFormatParser.getRD(ba)
-            ),  # TODO how do I specify vd/rd?
+            "vd": RVFormatParser.convertToVectorRegister(RVFormatParser.getRD(ba)),
+            "rd": RVFormatParser.convertToIntRegister(RVFormatParser.getRD(ba)),
             "opcode": RVFormatParser.getOpcode(ba),
         }
 
@@ -524,7 +523,7 @@ class RVFormatParser:
             "zimm": RVFormatParser.immToInt(
                 RVFormatParser.getVSetVLZeros(ba) + RVFormatParser.getRS2(ba)
             ),
-            "rs1": RVFormatParser.convertTIntRegister(RVFormatParser.getRS1(ba)),
+            "rs1": RVFormatParser.convertToIntRegister(RVFormatParser.getRS1(ba)),
             "funct3": RVFormatParser.getFunct3(ba),
             "rd": RVFormatParser.convertToIntRegister(RVFormatParser.getRD(ba)),
             "opcode": RVFormatParser.getOpcode(ba),
@@ -537,7 +536,7 @@ class RVFormatParser:
             "vsetmsb": RVFormatParser.getVSetMSB(ba),
             "vsetvlzeros": RVFormatParser.getVSetVLZeros(ba),
             "rs2": RVFormatParser.convertToIntRegister(RVFormatParser.getRS2(ba)),
-            "rs1": RVFormatParser.convertTIntRegister(RVFormatParser.getRS1(ba)),
+            "rs1": RVFormatParser.convertToIntRegister(RVFormatParser.getRS1(ba)),
             "funct3": RVFormatParser.getFunct3(ba),
             "rd": RVFormatParser.convertToIntRegister(RVFormatParser.getRD(ba)),
             "opcode": RVFormatParser.getOpcode(ba),

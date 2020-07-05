@@ -27,7 +27,7 @@ class RVInstruction:
         self.src_registers = rv_src_registers if rv_src_registers is not None else []
         self.dest_registers = rv_dest_registers if rv_dest_registers is not None else []
         self.immediates = rv_immediates if rv_immediates is not None else []
-        self.mask = rv_mask if rv_mask is not None else ""
+        self.mask = rv_mask if rv_mask is not None else []
         self.name = rv_name if rv_name is not None else ""
         self.size = rv_size if rv_size is not None else 0
         self.binary = rv_binary if rv_binary is not None else ""
@@ -63,9 +63,9 @@ class RVInstruction:
             elif xval >= 28 and xval <= 31:
                 return "t{}".format(xval - 25)
 
-            # note: float registers have not been implemented
-            # also vector registers
-            return register_name
+        # note: float registers have not been implemented
+        # also vector registers
+        return register_name
 
     def __str__(self):
         """Create a printable string from Instruction"""
@@ -81,8 +81,8 @@ class RVInstruction:
             else [self.get_print_name(x) for x in self.src_registers]
         )
         imm = [] if self.immediates is None else self.immediates
-        mask = "" if self.mask is None else self.mask
+        mask = [] if self.mask is None else self.mask
 
-        parameters = ",".join(dest + src + imm)
+        parameters = ",".join(dest + src + imm + mask)
 
-        return "{} {} {}".format(name, parameters, mask).strip()
+        return "{} {}".format(name, parameters).strip()
