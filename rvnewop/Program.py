@@ -39,7 +39,9 @@ class Program:
                 inst = self.instructions[pc]
 
                 # update registerSet with union of registers used
-                self.registerSet.update(inst.src_registers | inst.dest_registers)
+                self.registerSet.update(
+                    set(inst.src_registers) | set(inst.dest_registers)
+                )
         return self.registerSet
 
     def printAll(self, file=sys.stdout):
