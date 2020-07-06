@@ -26,14 +26,15 @@ def unused():
 
     inst_used, reg_used = set(), set()
     format_ranges = dict.fromkeys(
-        [format for format in program.formatSet for program in programs]
+        [format for program in programs for format in program.formatSet]
     )
 
     for program in programs:
         inst_used.update(program.instructionNameSet)
         reg_used.update(program.registerSet)
 
-        for inst in program.instructions:
+        for pc in program.instructions:
+            inst = program.instructions[pc]
             if not inst.immediates:
                 # no immediates in instruction
                 continue
