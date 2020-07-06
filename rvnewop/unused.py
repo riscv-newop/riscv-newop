@@ -1,4 +1,3 @@
-import sys
 import argparse
 from glob import glob
 from os import path
@@ -27,7 +26,7 @@ def unused():
 
     inst_used, reg_used = set(), set()
     format_ranges = dict.fromkeys(
-        [format for format in progam.formatSet for program in programs]
+        [format for format in program.formatSet for program in programs]
     )
 
     for program in programs:
