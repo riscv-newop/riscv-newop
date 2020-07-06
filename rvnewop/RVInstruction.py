@@ -23,7 +23,8 @@ class RVInstruction:
             - size: the size of the instruction in bits
             - binary: the original binary representation of the instruction
         """
-        self.format = rv_format if rv_format is not None else "" self.src_registers = rv_src_registers if rv_src_registers is not None else []
+        self.format = rv_format if rv_format is not None else ""
+        self.src_registers = rv_src_registers if rv_src_registers is not None else []
         self.dest_registers = rv_dest_registers if rv_dest_registers is not None else []
         self.immediates = rv_immediates if rv_immediates is not None else []
         self.mask = rv_mask if rv_mask is not None else []
