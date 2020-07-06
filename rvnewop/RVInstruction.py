@@ -83,6 +83,6 @@ class RVInstruction:
         imm = [] if self.immediates is None else self.immediates
         mask = [] if self.mask is None else self.mask
 
-        parameters = ",".join(dest + src + imm + mask)
+        parameters = ",".join(map(str, dest + src + imm + mask))
 
         return "{} {}".format(name, parameters).strip()
