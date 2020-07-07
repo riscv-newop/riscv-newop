@@ -3,6 +3,7 @@ import pytest
 import string
 from bitarray import bitarray
 from rvnewop import RV32
+from glob import glob
 
 class DumpFileReader:
     def __init__(self, file_name):
@@ -24,11 +25,15 @@ class DumpFileReader:
                     # Remove those by ensuring that the first word is a valid hex value
                     if all(c in string.hexdigits for c in words[0]):
                         instruction_word = words[1]
-                        decoded_str = str(rv.decodeHex(instruction_word)).split()
-                        assert decoded_str[0] == words[2]
+                        decoded_str = rv.decodeHex(instruction_word)
+                        print ("Instruction at : " + str(words[0]))
+                        if decoded_str is None:
+                            continue
+                        decoded_instr = str(decoded_str).split()
+                        assert decoded_instr[0] == words[2]
                         
 
 def test_dump_file():
-    DumpFileReader("sample.dump")
-    assert True
-
+    files = glob(os.path.join(".", "*.dump"))
+    for file in files:
+        DumpFileReader(file)
