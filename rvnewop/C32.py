@@ -154,7 +154,6 @@ class C32:
 
             return RVInstruction(
                 rv_format="CI",
-                rv_src_registers=["x0"],
                 rv_dest_registers=[data["register"]],
                 rv_immediates=[fp.immToInt(imm)],
                 rv_name="c.li",
