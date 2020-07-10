@@ -3,6 +3,7 @@ from . import M32
 from . import RVFormatParser
 from . import V32
 from . import C32
+from . import RVInstruction
 from bitarray import bitarray
 
 
@@ -37,6 +38,8 @@ class RV32:
             # to automate this?
 
     def decodeHex(self, hex):
+        """Decode an instruction encoded in hexadecimal
+        Returns RVInstruction"""
         bstr = bitarray(bin(int(hex, 16))[2:]).to01()
         size = 32
 
@@ -50,4 +53,8 @@ class RV32:
         return self.decode(ba)
 
     def decode(self, ba):
-        return self.instructionTable[RVFormatParser.getOpcode(ba)](ba)
+        """Decode an instruction encoded in binary as a bitarray
+        Returns RVInstruction"""
+        return self.instructionTable.get(
+            RVFormatParser.getOpcode(ba), RVInstruction(rv_name="error")
+        )(ba)
