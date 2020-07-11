@@ -5,6 +5,15 @@ from rvnewop import RV32
 
 import pytest
 
+def isJumpPCRelative(inst_name):
+    if inst_name in ['j', 'jal', 'c.j', 'c.jal']:
+        return True
+    return False
+
+def isBranchPCRelative(inst_name):
+    if inst_name in ['beq', 'bne', 'blt', 'bltu', 'bge', 'bgeu', 'beqz', 'bnez', 'blez', 'bgez', 'bltz', 'bgtz', 'bgt', 'ble', 'bgtu', 'bleu', 'c.beqz', 'c.bnez']:
+        return True
+    return False
 
 class DumpFileReader:
     # TODO get rid of this __init__ and change to a
@@ -27,10 +36,18 @@ class DumpFileReader:
                     # Some false matches such as the line "Disassembly of section .text:"
                     # Remove those by ensuring that the first word is a valid hex value
                     if all(c in string.hexdigits for c in words[0]):
-
+                        inst_pc = words[0]
                         inst_hex = words[1]
                         inst_name = words[2]
                         inst_params = words[3]
+                        if isBranchPCRelative(inst_name):
+                            inst_params_list = inst_params.split(',')
+                            branch_dest = inst_params_list[2]
+                            branch_dest = branch_dest.split()[0] # split on space and pick first entry which is the actual destination PC
+                            # compute PC relative immediate
+                            branch_offset = int(branch_dest, 16) - int(inst_pc, 16)
+                            inst_params_list[2] = branch_offset
+                            inst_params = ','.join([str(elem) for elem in inst_params_list]) 
 
                         predicted_inst = rv.decodeHex(inst_hex)
                         predicted = str(predicted_inst)
@@ -53,3 +70,4 @@ def test_dump_file():
     files = glob(os.path.join("tests", "*.dump"))
     for file in files:
         DumpFileReader(file)
+
