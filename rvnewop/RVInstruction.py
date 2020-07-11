@@ -97,8 +97,13 @@ class RVInstruction:
             "c.lwsp",
             "c.swsp",
         ]:
-            base = "sp" if name in ["c.lwsp", "c.swsp"] else src[0]
-            parameters = ",".join(map(str, dest + src + imm + mask))
+            if name in ["c.lwsp", "c.swsp"]:
+                base = "sp"
+                parameters = ",".join(map(str, dest + src + imm + mask))
+            else:
+                base = src[0]
+                parameters = ",".join(map(str, dest + src[1:] + imm + mask))
+
             return "{} {}({})".format(name, parameters, base).strip()
 
         parameters = ",".join(map(str, dest + src + imm + mask))
