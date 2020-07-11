@@ -96,6 +96,7 @@ class RVInstruction:
             "c.sw",
             "c.lwsp",
             "c.swsp",
+            "jalr",
         ]:
             if name in ["c.lwsp", "c.swsp"]:
                 base = "sp"
