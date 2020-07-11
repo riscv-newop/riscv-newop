@@ -520,9 +520,7 @@ class RVFormatParser:
         """ Parses the Vector vsetvli format of instructions """
         return {
             "vsetmsb": RVFormatParser.getVSetMSB(ba),
-            "zimm": RVFormatParser.immToInt(
-                RVFormatParser.getVSetVLZeros(ba) + RVFormatParser.getRS2(ba)
-            ),
+            "zimm": RVFormatParser.getVSetVLZeros(ba) + RVFormatParser.getRS2(ba),
             "rs1": RVFormatParser.convertToIntRegister(RVFormatParser.getRS1(ba)),
             "funct3": RVFormatParser.getFunct3(ba),
             "rd": RVFormatParser.convertToIntRegister(RVFormatParser.getRD(ba)),
