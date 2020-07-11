@@ -59,7 +59,7 @@ class RVFormatParser:
     @staticmethod
     def immToInt(imm):
         """Converts imm bitarray into twos complement integer"""
-        return str(
+        return int(
             RVFormatParser.twos_compliment(int(bitarray(imm).to01(), 2), len(imm))
         )
 

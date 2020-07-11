@@ -83,6 +83,29 @@ class RVInstruction:
         imm = [] if self.immediates is None else self.immediates
         mask = [] if self.mask is None else self.mask
 
-        parameters = ",".join(dest + src + imm + mask)
+        if name in [
+            "lb",
+            "lh",
+            "lw",
+            "lbu",
+            "lhu",
+            "sb",
+            "sh",
+            "sw",
+            "c.lw",
+            "c.sw",
+            "c.lwsp",
+            "c.swsp",
+            "jalr",
+        ]:
+            if name in ["c.lwsp", "c.swsp"]:
+                base = "sp"
+                parameters = ",".join(map(str, dest + src + imm + mask))
+            else:
+                base = src[0]
+                parameters = ",".join(map(str, dest + src[1:] + imm + mask))
 
+            return "{} {}({})".format(name, parameters, base).strip()
+
+        parameters = ",".join(map(str, dest + src + imm + mask))
         return "{} {}".format(name, parameters).strip()

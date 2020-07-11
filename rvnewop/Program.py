@@ -10,8 +10,11 @@ class Program:
         self.rv = RV32(isa=isa)
         self.instructions = {}  # maps pc value -> RVInstruction
         self.frequencies = {}  # maps pc value -> frequency of instruction
-        self.instructionNameSet = None
-        self.registerSet = None
+
+        # sets of names, registers, and formats for analysis
+        self.instructionNameSet = set()
+        self.registerSet = set()
+        self.formatSet = set()
 
     def addInstruction(self, pc, hexd, freq):
         """Adds an instruction to a Program given a PC value
@@ -20,27 +23,16 @@ class Program:
         pc - (int) program counter (pc)
         hexd - (str) instruction encoded in hexadecimal
         freq - (int) amount of times instruction shows up"""
-        self.instructions[pc] = self.rv.decodeHex(hexd)
+        inst = self.rv.decodeHex(hexd)
+        self.instructions[pc] = inst
+
+        # add to set as you go
+        self.instructionNameSet.add(inst.name)
+        self.registerSet.update(set(inst.src_registers) | set(inst.dest_registers))
+        self.formatSet.add(inst.format)
 
         # TODO decouple storing frequencies from program?
         self.frequencies[pc] = freq
-
-    def getInstructionNameSet(self):
-        if not self.instructionNameSet:
-            self.instructionNameSet = {
-                self.instructions[pc].name for pc in self.instructions
-            }
-        return self.instructionNameSet
-
-    def getRegisterSet(self):
-        if not self.registerSet:
-            self.registerSet = set()
-            for pc in self.instructions:
-                inst = self.instructions[pc]
-
-                # update registerSet with union of registers used
-                self.registerSet.update(inst.src_registers | inst.dest_registers)
-        return self.registerSet
 
     def printAll(self, file=sys.stdout):
         """Prints out all instructions to file (default is stdout)"""
