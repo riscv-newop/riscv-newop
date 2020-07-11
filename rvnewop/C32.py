@@ -421,7 +421,7 @@ class C32:
                     # C.MV
                     return RVInstruction(
                         rv_format="CR",
-                        rv_src_registers=["x0", data["rs2"]],
+                        rv_src_registers=[data["rs2"]],
                         rv_dest_registers=[data["register"]],
                         rv_name="c.mv",
                         rv_size=16,
