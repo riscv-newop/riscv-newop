@@ -38,10 +38,11 @@ class V32:
         if fp.getVM(ba) == bitarray(0):
             vm = ["v0.t"]
 
+        if fp.NFtoInt(fp.getNF(ba)) != "seg1":
+            nf = fp.NFtoInt(fp.getNF(ba))
+
         if mop == bitarray("000") or mop == bitarray("100"):
             data = fp.parseVL(ba)
-            if data["nf"] != "seg1":
-                nf = data["nf"]
             if fp.getRS2(ba) == bitarray("10000"):
                 umop = "ff"
             name = "vl" + nf + width + sign + umop + ".v"
@@ -56,8 +57,6 @@ class V32:
             )
         elif mop == bitarray("010") or mop == bitarray("110"):
             data = fp.parseVLS(ba)
-            if data["nf"] != "seg1":
-                nf = data["nf"]
             name = "vls" + nf + width + sign + ".v"
             return RVInstruction(
                 rv_format="VLS",
@@ -70,8 +69,6 @@ class V32:
             )
         elif mop == bitarray("011") or mop == bitarray("111"):
             data = fp.parseVLX(ba)
-            if data["nf"] != "seg1":
-                nf = data["nf"]
             name = "vlx" + nf + width + sign + ".v"
             return RVInstruction(
                 rv_format="VLX",
@@ -111,10 +108,11 @@ class V32:
         if fp.getVM(ba) == bitarray(0):
             vm = ["v0.t"]
 
+        if fp.NFtoInt(fp.getNF(ba)) != "seg1":
+            nf = fp.NFtoInt(fp.getNF(ba))
+
         if mop == bitarray("000"):
             data = fp.parseVS(ba)
-            if data["nf"] != "seg1":
-                nf = data["nf"]
             name = "vs" + str(nf) + width + ".v"
             return RVInstruction(
                 rv_format="VS",
@@ -126,8 +124,6 @@ class V32:
             )
         elif mop == bitarray("010"):
             data = fp.parseVSS(ba)
-            if data["nf"] != "seg1":
-                nf = data["nf"]
             name = "vss" + nf + width + ".v"
             return RVInstruction(
                 rv_format="VSS",
@@ -139,8 +135,6 @@ class V32:
             )
         elif mop == bitarray("011"):
             data = fp.parseVSX(ba)
-            if data["nf"] != "seg1":
-                nf = data["nf"]
             name = "vsx" + nf + width + ".v"
             return RVInstruction(
                 rv_format="VSX",
@@ -152,8 +146,6 @@ class V32:
             )
         elif mop == bitarray("111"):
             data = fp.parseVSX(ba)
-            if data["nf"] != "seg1":
-                nf = data["nf"]
             name = "vsux" + nf + width + ".v"
             return RVInstruction(
                 rv_format="VSX",
@@ -1184,49 +1176,10 @@ class V32:
                     source = ".vf"
                 if fp.getVM(ba) == bitarray(0):
                     vm = ["v0.t"]
-        elif f3 == bitarray("111"):
-            if bitarray([ba[-32]]) == bitarray("0"):
-                data_vediv = bitarray([ba[-27:-25]])
-                data_vsew = bitarray([ba[-25:-22]])
-                data_vlmul = bitarray([ba[-22:-20]])
-                name = "vsetvli"
-                vediv = ""
-                vsew = ""
-                vlmul = ""
-                if data_vediv == bitarray("00"):
-                    vediv = ""  # EDIV=1
-                elif data_vediv == bitarray("01"):
-                    vediv = "d2"
-                elif data_vediv == bitarray("10"):
-                    vediv = "d4"
-                elif data_vediv == bitarray("11"):
-                    vediv = "d8"
-                # TODO check to see if vsew is implemented correctly. Spec is brief
-                if data_vsew == bitarray("000"):
-                    vsew = "e8"
-                elif data_vsew == bitarray("001"):
-                    vsew = "e16"
-                elif data_vsew == bitarray("010"):
-                    vsew = "e32"
-                elif data_vsew == bitarray("011"):
-                    vsew = "e64"
-                elif data_vsew == bitarray("100"):
-                    vsew = "e128"
-                else:
-                    # TODO spec doesn't say what goes here
-                    pass
-                if data_vlmul == bitarray("00"):
-                    vlmul = ""  # LMUL=1
-                elif data_vlmul == bitarray("01"):
-                    vlmul = "m2"
-                elif data_vlmul == bitarray("10"):
-                    vlmul = "m4"
-                elif data_vlmul == bitarray("11"):
-                    vlmul = "m8"
-            elif bitarray([ba[-32]]) == bitarray("1"):
-                name = "vsetvl"
+        else:
+            pass
 
-        if name == "":
+        if name == "" and f3 != bitarray("111"):
             name = vop + source
 
         if f3 == bitarray("000"):
@@ -1339,12 +1292,49 @@ class V32:
         elif f3 == bitarray("111"):
             if bitarray([ba[-32]]) == bitarray("0"):
                 data = fp.parseVSetVLI(ba)
+                data_vediv = data["zimm"][-5:-4]  # fp.getVSetVLZeros(ba)[6:4]   # bitarray([ba[-27:-25]])
+                data_vsew = data["zimm"][-3:-1]  # bitarray([ba[-25:-22]])
+                data_vlmul = data["zimm"][1:]  # bitarray([ba[-22:-20]])
+                vediv = ""
+                vsew = ""
+                print(data_vsew)
+                vlmul = ""
+                if data_vediv == 00:
+                    vediv = ""  # EDIV=1
+                elif data_vediv == bitarray("01"):
+                    vediv = "d2"
+                elif data_vediv == bitarray("10"):
+                    vediv = "d4"
+                elif data_vediv == bitarray("11"):
+                    vediv = "d8"
+                # TODO check to see if vsew is implemented correctly. Spec is brief
+                if data_vsew == bitarray("000"):
+                    vsew = "e8"
+                elif data_vsew == bitarray("001"):
+                    vsew = "e16"
+                elif data_vsew == bitarray("010"):
+                    vsew = "e32"
+                elif data_vsew == bitarray("011"):
+                    vsew = "e64"
+                elif data_vsew == bitarray("100"):
+                    vsew = "e128"
+                else:
+                    # TODO spec doesn't say what goes here
+                    pass
+                if data_vlmul == bitarray("00"):
+                    vlmul = ""  # LMUL=1
+                elif data_vlmul == bitarray("01"):
+                    vlmul = "m2"
+                elif data_vlmul == bitarray("10"):
+                    vlmul = "m4"
+                elif data_vlmul == bitarray("11"):
+                    vlmul = "m8"
 
                 return RVInstruction(
                     rv_format="vsetvli",
                     rv_src_registers=[data["rs1"]],
                     rv_dest_registers=[data["rd"]],
-                    rv_immediates=[vediv, vsew, vlmul],
+                    rv_immediates=[vsew, vlmul, vediv],
                     rv_name="vsetvli",
                     rv_size=32,
                     rv_binary=ba,
@@ -1360,9 +1350,6 @@ class V32:
                     rv_size=32,
                     rv_binary=ba,
                 )
-        else:
-            # TODO add error message?
-            pass
 
     # dictionary of opcodes --> functions(bitarray) --> RVInstruction
     instructionTable = {
