@@ -56,5 +56,5 @@ class RV32:
         """Decode an instruction encoded in binary as a bitarray
         Returns RVInstruction"""
         return self.instructionTable.get(
-            RVFormatParser.getOpcode(ba), RVInstruction(rv_name="error")
+            RVFormatParser.getOpcode(ba), lambda x:RVInstruction(rv_name="error")
         )(ba)
