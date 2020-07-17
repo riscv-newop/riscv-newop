@@ -95,6 +95,16 @@ class DumpFileReader:
                                 inst_params_temp[0], int(inst_params_temp[1], 16),
                             )
 
+                        if inst_name in ["slli", "srli", "srai"]:
+                            print("{} {}".format(inst_name, inst_params))
+                            inst_params_temp = inst_params.split(",")
+                            inst_params = "{},{},{}".format(
+                                inst_params_temp[0],
+                                inst_params_temp[1],
+                                int(inst_params_temp[2], 16),
+                            )
+                            print(inst_params)
+
                         predicted_inst = rv.decodeHex(inst_hex)
                         predicted = str(predicted_inst)
 

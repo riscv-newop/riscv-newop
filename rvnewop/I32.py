@@ -208,7 +208,7 @@ class I32:
 
         if shift:
             # to account for the shamt, shift amount
-            imm = fp.immToInt(data["imm"][7:])
+            imm = fp.immToInt(data["imm"][6:])
         else:
             # for every other immediate instruction
             imm = fp.immToInt(bitarray(data["imm"]))
