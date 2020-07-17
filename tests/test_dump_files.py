@@ -98,21 +98,19 @@ class DumpFileReader:
                         predicted_inst = rv.decodeHex(inst_hex)
                         predicted = str(predicted_inst)
 
+                        if predicted == "unsupported":
+                            # do not check unsupported instructions
+                            continue
+
                         inst = "{} {}".format(inst_name, inst_params)
 
                         # Check predicted instruction is correct
                         assert predicted == inst
 
-                        print(
-                            "{} == {}".format(
-                                str(predicted_inst).split()[1], inst_params
-                            )
-                        )
-
 
 def test_dump_file():
     # TODO seperate this into multiple functions
     # to see which ISAs failed
-    files = glob(os.path.join("tests", "*.dump"))
+    files = glob(os.path.join("tests", "dump_files/*.dump"))
     for file in files:
         DumpFileReader(file)

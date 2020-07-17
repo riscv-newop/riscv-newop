@@ -279,13 +279,14 @@ class I32:
     @staticmethod
     def ENVIRONMENT(ba):
         data = fp.parseI(ba)
-        name = "ecall" if data["imm"] == 0 else "ebreak"
-        return RVInstruction(rv_name=name, rv_size=32, rv_binary=ba)
+        # both ECALL and EBREAK are now unsupported
+        # name = "ecall" if data["imm"] == 0 else "ebreak"
+        return RVInstruction(rv_name="unsupported", rv_size=32, rv_binary=ba)
 
     @staticmethod
     def FENCE(ba):
-        # TODO actually implement, this is just here to prevent errors
-        return RVInstruction(rv_name="fence", rv_size=32, rv_binary=ba)
+        # FENCE is unsupported
+        return RVInstruction(rv_name="unsupported", rv_size=32, rv_binary=ba)
 
     # dictionary of opcodes --> functions(bitarray) --> RVInstruction
     instructionTable = {
