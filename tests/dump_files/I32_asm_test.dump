@@ -8,8 +8,8 @@ Disassembly of section .text:
    10074:	00000793          	li	a5,0
    10078:	00078863          	beqz	a5,10088 <register_fini+0x14>
    1007c:	00010537          	lui	a0,0x10
-   10080:	53050513          	addi	a0,a0,1328 # 10530 <__libc_fini_array>
-   10084:	5080006f          	j	1058c <atexit>
+   10080:	53450513          	addi	a0,a0,1332 # 10534 <__libc_fini_array>
+   10084:	50c0006f          	j	10590 <atexit>
    10088:	00008067          	ret
 
 0001008c <_start>:
@@ -19,19 +19,19 @@ Disassembly of section .text:
    10098:	c5018613          	addi	a2,gp,-944 # 11ae8 <__BSS_END__>
    1009c:	40a60633          	sub	a2,a2,a0
    100a0:	00000593          	li	a1,0
-   100a4:	290000ef          	jal	ra,10334 <memset>
+   100a4:	294000ef          	jal	ra,10338 <memset>
    100a8:	00000517          	auipc	a0,0x0
-   100ac:	4e450513          	addi	a0,a0,1252 # 1058c <atexit>
+   100ac:	4e850513          	addi	a0,a0,1256 # 10590 <atexit>
    100b0:	00050863          	beqz	a0,100c0 <_start+0x34>
    100b4:	00000517          	auipc	a0,0x0
-   100b8:	47c50513          	addi	a0,a0,1148 # 10530 <__libc_fini_array>
-   100bc:	4d0000ef          	jal	ra,1058c <atexit>
-   100c0:	1d8000ef          	jal	ra,10298 <__libc_init_array>
+   100b8:	48050513          	addi	a0,a0,1152 # 10534 <__libc_fini_array>
+   100bc:	4d4000ef          	jal	ra,10590 <atexit>
+   100c0:	1dc000ef          	jal	ra,1029c <__libc_init_array>
    100c4:	00012503          	lw	a0,0(sp)
    100c8:	00410593          	addi	a1,sp,4
    100cc:	00000613          	li	a2,0
    100d0:	074000ef          	jal	ra,10144 <main>
-   100d4:	1940006f          	j	10268 <exit>
+   100d4:	1980006f          	j	1026c <exit>
 
 000100d8 <__do_global_dtors_aux>:
    100d8:	c341c703          	lbu	a4,-972(gp) # 11acc <completed.1>
@@ -43,7 +43,7 @@ Disassembly of section .text:
    100f0:	00000793          	li	a5,0
    100f4:	00078a63          	beqz	a5,10108 <__do_global_dtors_aux+0x30>
    100f8:	00011537          	lui	a0,0x11
-   100fc:	68450513          	addi	a0,a0,1668 # 11684 <__FRAME_END__>
+   100fc:	68850513          	addi	a0,a0,1672 # 11688 <__FRAME_END__>
    10100:	00000097          	auipc	ra,0x0
    10104:	000000e7          	jalr	zero # 0 <register_fini-0x10074>
    10108:	00100793          	li	a5,1
@@ -59,7 +59,7 @@ Disassembly of section .text:
    10128:	00078c63          	beqz	a5,10140 <frame_dummy+0x1c>
    1012c:	00011537          	lui	a0,0x11
    10130:	c3818593          	addi	a1,gp,-968 # 11ad0 <object.0>
-   10134:	68450513          	addi	a0,a0,1668 # 11684 <__FRAME_END__>
+   10134:	68850513          	addi	a0,a0,1672 # 11688 <__FRAME_END__>
    10138:	00000317          	auipc	t1,0x0
    1013c:	00000067          	jr	zero # 0 <register_fini-0x10074>
    10140:	00008067          	ret
@@ -76,371 +76,372 @@ Disassembly of section .text:
    10164:	0ffffa17          	auipc	s4,0xffff
    10168:	0040016f          	jal	sp,1016c <main+0x28>
    1016c:	004002ef          	jal	t0,10170 <main+0x2c>
-   10170:	01228103          	lb	sp,18(t0)
-   10174:	01229103          	lh	sp,18(t0)
-   10178:	0122a103          	lw	sp,18(t0)
-   1017c:	0122c103          	lbu	sp,18(t0)
-   10180:	0122d103          	lhu	sp,18(t0)
-   10184:	00a60d93          	addi	s11,a2,10
-   10188:	7ff70693          	addi	a3,a4,2047
-   1018c:	00a82793          	slti	a5,a6,10
-   10190:	7ffe2893          	slti	a7,t3,2047
-   10194:	00af3e93          	sltiu	t4,t5,10
-   10198:	7ff5bf93          	sltiu	t6,a1,2047
-   1019c:	00a8c493          	xori	s1,a7,10
-   101a0:	7ff8c813          	xori	a6,a7,2047
-   101a4:	00a8e813          	ori	a6,a7,10
-   101a8:	7ff8e813          	ori	a6,a7,2047
-   101ac:	00a8f813          	andi	a6,a7,10
-   101b0:	7ff8f813          	andi	a6,a7,2047
-   101b4:	00100913          	li	s2,1
-   101b8:	00200993          	li	s3,2
-   101bc:	01391463          	bne	s2,s3,101c4 <main+0x80>
-   101c0:	e45ef06f          	j	4 <register_fini-0x10070>
-   101c4:	00100913          	li	s2,1
-   101c8:	00100993          	li	s3,1
-   101cc:	01390463          	beq	s2,s3,101d4 <main+0x90>
-   101d0:	e35ef06f          	j	4 <register_fini-0x10070>
-   101d4:	00200913          	li	s2,2
-   101d8:	00100993          	li	s3,1
-   101dc:	01395463          	bge	s2,s3,101e4 <main+0xa0>
-   101e0:	e25ef06f          	j	4 <register_fini-0x10070>
-   101e4:	00100913          	li	s2,1
-   101e8:	00200993          	li	s3,2
-   101ec:	01394463          	blt	s2,s3,101f4 <main+0xb0>
-   101f0:	e15ef06f          	j	4 <register_fini-0x10070>
-   101f4:	00200913          	li	s2,2
-   101f8:	00100993          	li	s3,1
-   101fc:	01397463          	bgeu	s2,s3,10204 <main+0xc0>
-   10200:	e05ef06f          	j	4 <register_fini-0x10070>
-   10204:	00100913          	li	s2,1
-   10208:	00200993          	li	s3,2
-   1020c:	01396463          	bltu	s2,s3,10214 <main+0xd0>
-   10210:	df5ef06f          	j	4 <register_fini-0x10070>
-   10214:	002f1313          	slli	t1,t5,0x2
-   10218:	01ff9393          	slli	t2,t6,0x1f
-   1021c:	00265313          	srli	t1,a2,0x2
-   10220:	01f65393          	srli	t2,a2,0x1f
-   10224:	4022d313          	srai	t1,t0,0x2
-   10228:	41f65393          	srai	t2,a2,0x1f
-   1022c:	00567633          	and	a2,a2,t0
-   10230:	40730333          	sub	t1,t1,t2
-   10234:	00941433          	sll	s0,s0,s1
-   10238:	01052533          	slt	a0,a0,a6
-   1023c:	0098b8b3          	sltu	a7,a7,s1
-   10240:	015a4a33          	xor	s4,s4,s5
-   10244:	017b5b33          	srl	s6,s6,s7
-   10248:	419c5c33          	sra	s8,s8,s9
-   1024c:	01186833          	or	a6,a6,a7
-   10250:	00e6f633          	and	a2,a3,a4
-   10254:	00000793          	li	a5,0
-   10258:	00078513          	mv	a0,a5
-   1025c:	01c12403          	lw	s0,28(sp) # a01c <register_fini-0x6058>
-   10260:	02010113          	addi	sp,sp,32
-   10264:	00008067          	ret
+   10170:	00470667          	jalr	a2,4(a4)
+   10174:	01228103          	lb	sp,18(t0)
+   10178:	01229103          	lh	sp,18(t0)
+   1017c:	0122a103          	lw	sp,18(t0)
+   10180:	0122c103          	lbu	sp,18(t0)
+   10184:	0122d103          	lhu	sp,18(t0)
+   10188:	00a60d93          	addi	s11,a2,10
+   1018c:	7ff70693          	addi	a3,a4,2047
+   10190:	00a82793          	slti	a5,a6,10
+   10194:	7ffe2893          	slti	a7,t3,2047
+   10198:	00af3e93          	sltiu	t4,t5,10
+   1019c:	7ff5bf93          	sltiu	t6,a1,2047
+   101a0:	00a8c493          	xori	s1,a7,10
+   101a4:	7ff8c813          	xori	a6,a7,2047
+   101a8:	00a8e813          	ori	a6,a7,10
+   101ac:	7ff8e813          	ori	a6,a7,2047
+   101b0:	00a8f813          	andi	a6,a7,10
+   101b4:	7ff8f813          	andi	a6,a7,2047
+   101b8:	00100913          	li	s2,1
+   101bc:	00200993          	li	s3,2
+   101c0:	01391463          	bne	s2,s3,101c8 <main+0x84>
+   101c4:	e41ef06f          	j	4 <register_fini-0x10070>
+   101c8:	00100913          	li	s2,1
+   101cc:	00100993          	li	s3,1
+   101d0:	01390463          	beq	s2,s3,101d8 <main+0x94>
+   101d4:	e31ef06f          	j	4 <register_fini-0x10070>
+   101d8:	00200913          	li	s2,2
+   101dc:	00100993          	li	s3,1
+   101e0:	01395463          	bge	s2,s3,101e8 <main+0xa4>
+   101e4:	e21ef06f          	j	4 <register_fini-0x10070>
+   101e8:	00100913          	li	s2,1
+   101ec:	00200993          	li	s3,2
+   101f0:	01394463          	blt	s2,s3,101f8 <main+0xb4>
+   101f4:	e11ef06f          	j	4 <register_fini-0x10070>
+   101f8:	00200913          	li	s2,2
+   101fc:	00100993          	li	s3,1
+   10200:	01397463          	bgeu	s2,s3,10208 <main+0xc4>
+   10204:	e01ef06f          	j	4 <register_fini-0x10070>
+   10208:	00100913          	li	s2,1
+   1020c:	00200993          	li	s3,2
+   10210:	01396463          	bltu	s2,s3,10218 <main+0xd4>
+   10214:	df1ef06f          	j	4 <register_fini-0x10070>
+   10218:	002f1313          	slli	t1,t5,0x2
+   1021c:	01ff9393          	slli	t2,t6,0x1f
+   10220:	00265313          	srli	t1,a2,0x2
+   10224:	01f65393          	srli	t2,a2,0x1f
+   10228:	4022d313          	srai	t1,t0,0x2
+   1022c:	41f65393          	srai	t2,a2,0x1f
+   10230:	00567633          	and	a2,a2,t0
+   10234:	40730333          	sub	t1,t1,t2
+   10238:	00941433          	sll	s0,s0,s1
+   1023c:	01052533          	slt	a0,a0,a6
+   10240:	0098b8b3          	sltu	a7,a7,s1
+   10244:	015a4a33          	xor	s4,s4,s5
+   10248:	017b5b33          	srl	s6,s6,s7
+   1024c:	419c5c33          	sra	s8,s8,s9
+   10250:	01186833          	or	a6,a6,a7
+   10254:	00e6f633          	and	a2,a3,a4
+   10258:	00000793          	li	a5,0
+   1025c:	00078513          	mv	a0,a5
+   10260:	01c12403          	lw	s0,28(sp) # a01c <register_fini-0x6058>
+   10264:	02010113          	addi	sp,sp,32
+   10268:	00008067          	ret
 
-00010268 <exit>:
-   10268:	ff010113          	addi	sp,sp,-16
-   1026c:	00000593          	li	a1,0
-   10270:	00812423          	sw	s0,8(sp)
-   10274:	00112623          	sw	ra,12(sp)
-   10278:	00050413          	mv	s0,a0
-   1027c:	194000ef          	jal	ra,10410 <__call_exitprocs>
-   10280:	c281a503          	lw	a0,-984(gp) # 11ac0 <_global_impure_ptr>
-   10284:	03c52783          	lw	a5,60(a0)
-   10288:	00078463          	beqz	a5,10290 <exit+0x28>
-   1028c:	000780e7          	jalr	a5
-   10290:	00040513          	mv	a0,s0
-   10294:	3a4000ef          	jal	ra,10638 <_exit>
+0001026c <exit>:
+   1026c:	ff010113          	addi	sp,sp,-16
+   10270:	00000593          	li	a1,0
+   10274:	00812423          	sw	s0,8(sp)
+   10278:	00112623          	sw	ra,12(sp)
+   1027c:	00050413          	mv	s0,a0
+   10280:	194000ef          	jal	ra,10414 <__call_exitprocs>
+   10284:	c281a503          	lw	a0,-984(gp) # 11ac0 <_global_impure_ptr>
+   10288:	03c52783          	lw	a5,60(a0)
+   1028c:	00078463          	beqz	a5,10294 <exit+0x28>
+   10290:	000780e7          	jalr	a5
+   10294:	00040513          	mv	a0,s0
+   10298:	3a4000ef          	jal	ra,1063c <_exit>
 
-00010298 <__libc_init_array>:
-   10298:	ff010113          	addi	sp,sp,-16
-   1029c:	00812423          	sw	s0,8(sp)
-   102a0:	01212023          	sw	s2,0(sp)
-   102a4:	00011437          	lui	s0,0x11
-   102a8:	00011937          	lui	s2,0x11
-   102ac:	68840793          	addi	a5,s0,1672 # 11688 <__init_array_start>
-   102b0:	68890913          	addi	s2,s2,1672 # 11688 <__init_array_start>
-   102b4:	40f90933          	sub	s2,s2,a5
-   102b8:	00112623          	sw	ra,12(sp)
-   102bc:	00912223          	sw	s1,4(sp)
-   102c0:	40295913          	srai	s2,s2,0x2
-   102c4:	02090063          	beqz	s2,102e4 <__libc_init_array+0x4c>
-   102c8:	68840413          	addi	s0,s0,1672
-   102cc:	00000493          	li	s1,0
-   102d0:	00042783          	lw	a5,0(s0)
-   102d4:	00148493          	addi	s1,s1,1
-   102d8:	00440413          	addi	s0,s0,4
-   102dc:	000780e7          	jalr	a5
-   102e0:	fe9918e3          	bne	s2,s1,102d0 <__libc_init_array+0x38>
-   102e4:	00011437          	lui	s0,0x11
-   102e8:	00011937          	lui	s2,0x11
-   102ec:	68840793          	addi	a5,s0,1672 # 11688 <__init_array_start>
-   102f0:	69090913          	addi	s2,s2,1680 # 11690 <__do_global_dtors_aux_fini_array_entry>
-   102f4:	40f90933          	sub	s2,s2,a5
-   102f8:	40295913          	srai	s2,s2,0x2
-   102fc:	02090063          	beqz	s2,1031c <__libc_init_array+0x84>
-   10300:	68840413          	addi	s0,s0,1672
-   10304:	00000493          	li	s1,0
-   10308:	00042783          	lw	a5,0(s0)
-   1030c:	00148493          	addi	s1,s1,1
-   10310:	00440413          	addi	s0,s0,4
-   10314:	000780e7          	jalr	a5
-   10318:	fe9918e3          	bne	s2,s1,10308 <__libc_init_array+0x70>
-   1031c:	00c12083          	lw	ra,12(sp)
-   10320:	00812403          	lw	s0,8(sp)
-   10324:	00412483          	lw	s1,4(sp)
-   10328:	00012903          	lw	s2,0(sp)
-   1032c:	01010113          	addi	sp,sp,16
-   10330:	00008067          	ret
+0001029c <__libc_init_array>:
+   1029c:	ff010113          	addi	sp,sp,-16
+   102a0:	00812423          	sw	s0,8(sp)
+   102a4:	01212023          	sw	s2,0(sp)
+   102a8:	00011437          	lui	s0,0x11
+   102ac:	00011937          	lui	s2,0x11
+   102b0:	68c40793          	addi	a5,s0,1676 # 1168c <__init_array_start>
+   102b4:	68c90913          	addi	s2,s2,1676 # 1168c <__init_array_start>
+   102b8:	40f90933          	sub	s2,s2,a5
+   102bc:	00112623          	sw	ra,12(sp)
+   102c0:	00912223          	sw	s1,4(sp)
+   102c4:	40295913          	srai	s2,s2,0x2
+   102c8:	02090063          	beqz	s2,102e8 <__libc_init_array+0x4c>
+   102cc:	68c40413          	addi	s0,s0,1676
+   102d0:	00000493          	li	s1,0
+   102d4:	00042783          	lw	a5,0(s0)
+   102d8:	00148493          	addi	s1,s1,1
+   102dc:	00440413          	addi	s0,s0,4
+   102e0:	000780e7          	jalr	a5
+   102e4:	fe9918e3          	bne	s2,s1,102d4 <__libc_init_array+0x38>
+   102e8:	00011437          	lui	s0,0x11
+   102ec:	00011937          	lui	s2,0x11
+   102f0:	68c40793          	addi	a5,s0,1676 # 1168c <__init_array_start>
+   102f4:	69490913          	addi	s2,s2,1684 # 11694 <__do_global_dtors_aux_fini_array_entry>
+   102f8:	40f90933          	sub	s2,s2,a5
+   102fc:	40295913          	srai	s2,s2,0x2
+   10300:	02090063          	beqz	s2,10320 <__libc_init_array+0x84>
+   10304:	68c40413          	addi	s0,s0,1676
+   10308:	00000493          	li	s1,0
+   1030c:	00042783          	lw	a5,0(s0)
+   10310:	00148493          	addi	s1,s1,1
+   10314:	00440413          	addi	s0,s0,4
+   10318:	000780e7          	jalr	a5
+   1031c:	fe9918e3          	bne	s2,s1,1030c <__libc_init_array+0x70>
+   10320:	00c12083          	lw	ra,12(sp)
+   10324:	00812403          	lw	s0,8(sp)
+   10328:	00412483          	lw	s1,4(sp)
+   1032c:	00012903          	lw	s2,0(sp)
+   10330:	01010113          	addi	sp,sp,16
+   10334:	00008067          	ret
 
-00010334 <memset>:
-   10334:	00f00313          	li	t1,15
-   10338:	00050713          	mv	a4,a0
-   1033c:	02c37e63          	bgeu	t1,a2,10378 <memset+0x44>
-   10340:	00f77793          	andi	a5,a4,15
-   10344:	0a079063          	bnez	a5,103e4 <memset+0xb0>
-   10348:	08059263          	bnez	a1,103cc <memset+0x98>
-   1034c:	ff067693          	andi	a3,a2,-16
-   10350:	00f67613          	andi	a2,a2,15
-   10354:	00e686b3          	add	a3,a3,a4
-   10358:	00b72023          	sw	a1,0(a4)
-   1035c:	00b72223          	sw	a1,4(a4)
-   10360:	00b72423          	sw	a1,8(a4)
-   10364:	00b72623          	sw	a1,12(a4)
-   10368:	01070713          	addi	a4,a4,16
-   1036c:	fed766e3          	bltu	a4,a3,10358 <memset+0x24>
-   10370:	00061463          	bnez	a2,10378 <memset+0x44>
-   10374:	00008067          	ret
-   10378:	40c306b3          	sub	a3,t1,a2
-   1037c:	00269693          	slli	a3,a3,0x2
-   10380:	00000297          	auipc	t0,0x0
-   10384:	005686b3          	add	a3,a3,t0
-   10388:	00c68067          	jr	12(a3)
-   1038c:	00b70723          	sb	a1,14(a4)
-   10390:	00b706a3          	sb	a1,13(a4)
-   10394:	00b70623          	sb	a1,12(a4)
-   10398:	00b705a3          	sb	a1,11(a4)
-   1039c:	00b70523          	sb	a1,10(a4)
-   103a0:	00b704a3          	sb	a1,9(a4)
-   103a4:	00b70423          	sb	a1,8(a4)
-   103a8:	00b703a3          	sb	a1,7(a4)
-   103ac:	00b70323          	sb	a1,6(a4)
-   103b0:	00b702a3          	sb	a1,5(a4)
-   103b4:	00b70223          	sb	a1,4(a4)
-   103b8:	00b701a3          	sb	a1,3(a4)
-   103bc:	00b70123          	sb	a1,2(a4)
-   103c0:	00b700a3          	sb	a1,1(a4)
-   103c4:	00b70023          	sb	a1,0(a4)
-   103c8:	00008067          	ret
-   103cc:	0ff5f593          	andi	a1,a1,255
-   103d0:	00859693          	slli	a3,a1,0x8
-   103d4:	00d5e5b3          	or	a1,a1,a3
-   103d8:	01059693          	slli	a3,a1,0x10
-   103dc:	00d5e5b3          	or	a1,a1,a3
-   103e0:	f6dff06f          	j	1034c <memset+0x18>
-   103e4:	00279693          	slli	a3,a5,0x2
-   103e8:	00000297          	auipc	t0,0x0
-   103ec:	005686b3          	add	a3,a3,t0
-   103f0:	00008293          	mv	t0,ra
-   103f4:	fa0680e7          	jalr	-96(a3)
-   103f8:	00028093          	mv	ra,t0
-   103fc:	ff078793          	addi	a5,a5,-16
-   10400:	40f70733          	sub	a4,a4,a5
-   10404:	00f60633          	add	a2,a2,a5
-   10408:	f6c378e3          	bgeu	t1,a2,10378 <memset+0x44>
-   1040c:	f3dff06f          	j	10348 <memset+0x14>
+00010338 <memset>:
+   10338:	00f00313          	li	t1,15
+   1033c:	00050713          	mv	a4,a0
+   10340:	02c37e63          	bgeu	t1,a2,1037c <memset+0x44>
+   10344:	00f77793          	andi	a5,a4,15
+   10348:	0a079063          	bnez	a5,103e8 <memset+0xb0>
+   1034c:	08059263          	bnez	a1,103d0 <memset+0x98>
+   10350:	ff067693          	andi	a3,a2,-16
+   10354:	00f67613          	andi	a2,a2,15
+   10358:	00e686b3          	add	a3,a3,a4
+   1035c:	00b72023          	sw	a1,0(a4)
+   10360:	00b72223          	sw	a1,4(a4)
+   10364:	00b72423          	sw	a1,8(a4)
+   10368:	00b72623          	sw	a1,12(a4)
+   1036c:	01070713          	addi	a4,a4,16
+   10370:	fed766e3          	bltu	a4,a3,1035c <memset+0x24>
+   10374:	00061463          	bnez	a2,1037c <memset+0x44>
+   10378:	00008067          	ret
+   1037c:	40c306b3          	sub	a3,t1,a2
+   10380:	00269693          	slli	a3,a3,0x2
+   10384:	00000297          	auipc	t0,0x0
+   10388:	005686b3          	add	a3,a3,t0
+   1038c:	00c68067          	jr	12(a3)
+   10390:	00b70723          	sb	a1,14(a4)
+   10394:	00b706a3          	sb	a1,13(a4)
+   10398:	00b70623          	sb	a1,12(a4)
+   1039c:	00b705a3          	sb	a1,11(a4)
+   103a0:	00b70523          	sb	a1,10(a4)
+   103a4:	00b704a3          	sb	a1,9(a4)
+   103a8:	00b70423          	sb	a1,8(a4)
+   103ac:	00b703a3          	sb	a1,7(a4)
+   103b0:	00b70323          	sb	a1,6(a4)
+   103b4:	00b702a3          	sb	a1,5(a4)
+   103b8:	00b70223          	sb	a1,4(a4)
+   103bc:	00b701a3          	sb	a1,3(a4)
+   103c0:	00b70123          	sb	a1,2(a4)
+   103c4:	00b700a3          	sb	a1,1(a4)
+   103c8:	00b70023          	sb	a1,0(a4)
+   103cc:	00008067          	ret
+   103d0:	0ff5f593          	andi	a1,a1,255
+   103d4:	00859693          	slli	a3,a1,0x8
+   103d8:	00d5e5b3          	or	a1,a1,a3
+   103dc:	01059693          	slli	a3,a1,0x10
+   103e0:	00d5e5b3          	or	a1,a1,a3
+   103e4:	f6dff06f          	j	10350 <memset+0x18>
+   103e8:	00279693          	slli	a3,a5,0x2
+   103ec:	00000297          	auipc	t0,0x0
+   103f0:	005686b3          	add	a3,a3,t0
+   103f4:	00008293          	mv	t0,ra
+   103f8:	fa0680e7          	jalr	-96(a3)
+   103fc:	00028093          	mv	ra,t0
+   10400:	ff078793          	addi	a5,a5,-16
+   10404:	40f70733          	sub	a4,a4,a5
+   10408:	00f60633          	add	a2,a2,a5
+   1040c:	f6c378e3          	bgeu	t1,a2,1037c <memset+0x44>
+   10410:	f3dff06f          	j	1034c <memset+0x14>
 
-00010410 <__call_exitprocs>:
-   10410:	fd010113          	addi	sp,sp,-48
-   10414:	01412c23          	sw	s4,24(sp)
-   10418:	c281aa03          	lw	s4,-984(gp) # 11ac0 <_global_impure_ptr>
-   1041c:	03212023          	sw	s2,32(sp)
-   10420:	02112623          	sw	ra,44(sp)
-   10424:	148a2903          	lw	s2,328(s4) # 1000f2ac <__global_pointer$+0xfffd414>
-   10428:	02812423          	sw	s0,40(sp)
-   1042c:	02912223          	sw	s1,36(sp)
-   10430:	01312e23          	sw	s3,28(sp)
-   10434:	01512a23          	sw	s5,20(sp)
-   10438:	01612823          	sw	s6,16(sp)
-   1043c:	01712623          	sw	s7,12(sp)
-   10440:	01812423          	sw	s8,8(sp)
-   10444:	04090063          	beqz	s2,10484 <__call_exitprocs+0x74>
-   10448:	00050b13          	mv	s6,a0
-   1044c:	00058b93          	mv	s7,a1
-   10450:	00100a93          	li	s5,1
-   10454:	fff00993          	li	s3,-1
-   10458:	00492483          	lw	s1,4(s2)
-   1045c:	fff48413          	addi	s0,s1,-1
-   10460:	02044263          	bltz	s0,10484 <__call_exitprocs+0x74>
-   10464:	00249493          	slli	s1,s1,0x2
-   10468:	009904b3          	add	s1,s2,s1
-   1046c:	040b8463          	beqz	s7,104b4 <__call_exitprocs+0xa4>
-   10470:	1044a783          	lw	a5,260(s1)
-   10474:	05778063          	beq	a5,s7,104b4 <__call_exitprocs+0xa4>
-   10478:	fff40413          	addi	s0,s0,-1
-   1047c:	ffc48493          	addi	s1,s1,-4
-   10480:	ff3416e3          	bne	s0,s3,1046c <__call_exitprocs+0x5c>
-   10484:	02c12083          	lw	ra,44(sp)
-   10488:	02812403          	lw	s0,40(sp)
-   1048c:	02412483          	lw	s1,36(sp)
-   10490:	02012903          	lw	s2,32(sp)
-   10494:	01c12983          	lw	s3,28(sp)
-   10498:	01812a03          	lw	s4,24(sp)
-   1049c:	01412a83          	lw	s5,20(sp)
-   104a0:	01012b03          	lw	s6,16(sp)
-   104a4:	00c12b83          	lw	s7,12(sp)
-   104a8:	00812c03          	lw	s8,8(sp)
-   104ac:	03010113          	addi	sp,sp,48
-   104b0:	00008067          	ret
-   104b4:	00492783          	lw	a5,4(s2)
-   104b8:	0044a683          	lw	a3,4(s1)
-   104bc:	fff78793          	addi	a5,a5,-1
-   104c0:	04878e63          	beq	a5,s0,1051c <__call_exitprocs+0x10c>
-   104c4:	0004a223          	sw	zero,4(s1)
-   104c8:	fa0688e3          	beqz	a3,10478 <__call_exitprocs+0x68>
-   104cc:	18892783          	lw	a5,392(s2)
-   104d0:	008a9733          	sll	a4,s5,s0
-   104d4:	00492c03          	lw	s8,4(s2)
-   104d8:	00f777b3          	and	a5,a4,a5
-   104dc:	02079263          	bnez	a5,10500 <__call_exitprocs+0xf0>
-   104e0:	000680e7          	jalr	a3
-   104e4:	00492703          	lw	a4,4(s2)
-   104e8:	148a2783          	lw	a5,328(s4)
-   104ec:	01871463          	bne	a4,s8,104f4 <__call_exitprocs+0xe4>
-   104f0:	f92784e3          	beq	a5,s2,10478 <__call_exitprocs+0x68>
-   104f4:	f80788e3          	beqz	a5,10484 <__call_exitprocs+0x74>
-   104f8:	00078913          	mv	s2,a5
-   104fc:	f5dff06f          	j	10458 <__call_exitprocs+0x48>
-   10500:	18c92783          	lw	a5,396(s2)
-   10504:	0844a583          	lw	a1,132(s1)
-   10508:	00f77733          	and	a4,a4,a5
-   1050c:	00071c63          	bnez	a4,10524 <__call_exitprocs+0x114>
-   10510:	000b0513          	mv	a0,s6
-   10514:	000680e7          	jalr	a3
-   10518:	fcdff06f          	j	104e4 <__call_exitprocs+0xd4>
-   1051c:	00892223          	sw	s0,4(s2)
-   10520:	fa9ff06f          	j	104c8 <__call_exitprocs+0xb8>
-   10524:	00058513          	mv	a0,a1
-   10528:	000680e7          	jalr	a3
-   1052c:	fb9ff06f          	j	104e4 <__call_exitprocs+0xd4>
+00010414 <__call_exitprocs>:
+   10414:	fd010113          	addi	sp,sp,-48
+   10418:	01412c23          	sw	s4,24(sp)
+   1041c:	c281aa03          	lw	s4,-984(gp) # 11ac0 <_global_impure_ptr>
+   10420:	03212023          	sw	s2,32(sp)
+   10424:	02112623          	sw	ra,44(sp)
+   10428:	148a2903          	lw	s2,328(s4) # 1000f2ac <__global_pointer$+0xfffd414>
+   1042c:	02812423          	sw	s0,40(sp)
+   10430:	02912223          	sw	s1,36(sp)
+   10434:	01312e23          	sw	s3,28(sp)
+   10438:	01512a23          	sw	s5,20(sp)
+   1043c:	01612823          	sw	s6,16(sp)
+   10440:	01712623          	sw	s7,12(sp)
+   10444:	01812423          	sw	s8,8(sp)
+   10448:	04090063          	beqz	s2,10488 <__call_exitprocs+0x74>
+   1044c:	00050b13          	mv	s6,a0
+   10450:	00058b93          	mv	s7,a1
+   10454:	00100a93          	li	s5,1
+   10458:	fff00993          	li	s3,-1
+   1045c:	00492483          	lw	s1,4(s2)
+   10460:	fff48413          	addi	s0,s1,-1
+   10464:	02044263          	bltz	s0,10488 <__call_exitprocs+0x74>
+   10468:	00249493          	slli	s1,s1,0x2
+   1046c:	009904b3          	add	s1,s2,s1
+   10470:	040b8463          	beqz	s7,104b8 <__call_exitprocs+0xa4>
+   10474:	1044a783          	lw	a5,260(s1)
+   10478:	05778063          	beq	a5,s7,104b8 <__call_exitprocs+0xa4>
+   1047c:	fff40413          	addi	s0,s0,-1
+   10480:	ffc48493          	addi	s1,s1,-4
+   10484:	ff3416e3          	bne	s0,s3,10470 <__call_exitprocs+0x5c>
+   10488:	02c12083          	lw	ra,44(sp)
+   1048c:	02812403          	lw	s0,40(sp)
+   10490:	02412483          	lw	s1,36(sp)
+   10494:	02012903          	lw	s2,32(sp)
+   10498:	01c12983          	lw	s3,28(sp)
+   1049c:	01812a03          	lw	s4,24(sp)
+   104a0:	01412a83          	lw	s5,20(sp)
+   104a4:	01012b03          	lw	s6,16(sp)
+   104a8:	00c12b83          	lw	s7,12(sp)
+   104ac:	00812c03          	lw	s8,8(sp)
+   104b0:	03010113          	addi	sp,sp,48
+   104b4:	00008067          	ret
+   104b8:	00492783          	lw	a5,4(s2)
+   104bc:	0044a683          	lw	a3,4(s1)
+   104c0:	fff78793          	addi	a5,a5,-1
+   104c4:	04878e63          	beq	a5,s0,10520 <__call_exitprocs+0x10c>
+   104c8:	0004a223          	sw	zero,4(s1)
+   104cc:	fa0688e3          	beqz	a3,1047c <__call_exitprocs+0x68>
+   104d0:	18892783          	lw	a5,392(s2)
+   104d4:	008a9733          	sll	a4,s5,s0
+   104d8:	00492c03          	lw	s8,4(s2)
+   104dc:	00f777b3          	and	a5,a4,a5
+   104e0:	02079263          	bnez	a5,10504 <__call_exitprocs+0xf0>
+   104e4:	000680e7          	jalr	a3
+   104e8:	00492703          	lw	a4,4(s2)
+   104ec:	148a2783          	lw	a5,328(s4)
+   104f0:	01871463          	bne	a4,s8,104f8 <__call_exitprocs+0xe4>
+   104f4:	f92784e3          	beq	a5,s2,1047c <__call_exitprocs+0x68>
+   104f8:	f80788e3          	beqz	a5,10488 <__call_exitprocs+0x74>
+   104fc:	00078913          	mv	s2,a5
+   10500:	f5dff06f          	j	1045c <__call_exitprocs+0x48>
+   10504:	18c92783          	lw	a5,396(s2)
+   10508:	0844a583          	lw	a1,132(s1)
+   1050c:	00f77733          	and	a4,a4,a5
+   10510:	00071c63          	bnez	a4,10528 <__call_exitprocs+0x114>
+   10514:	000b0513          	mv	a0,s6
+   10518:	000680e7          	jalr	a3
+   1051c:	fcdff06f          	j	104e8 <__call_exitprocs+0xd4>
+   10520:	00892223          	sw	s0,4(s2)
+   10524:	fa9ff06f          	j	104cc <__call_exitprocs+0xb8>
+   10528:	00058513          	mv	a0,a1
+   1052c:	000680e7          	jalr	a3
+   10530:	fb9ff06f          	j	104e8 <__call_exitprocs+0xd4>
 
-00010530 <__libc_fini_array>:
-   10530:	ff010113          	addi	sp,sp,-16
-   10534:	00812423          	sw	s0,8(sp)
-   10538:	000117b7          	lui	a5,0x11
-   1053c:	00011437          	lui	s0,0x11
-   10540:	69040413          	addi	s0,s0,1680 # 11690 <__do_global_dtors_aux_fini_array_entry>
-   10544:	69478793          	addi	a5,a5,1684 # 11694 <__fini_array_end>
-   10548:	408787b3          	sub	a5,a5,s0
-   1054c:	00912223          	sw	s1,4(sp)
-   10550:	00112623          	sw	ra,12(sp)
-   10554:	4027d493          	srai	s1,a5,0x2
-   10558:	02048063          	beqz	s1,10578 <__libc_fini_array+0x48>
-   1055c:	ffc78793          	addi	a5,a5,-4
-   10560:	00878433          	add	s0,a5,s0
-   10564:	00042783          	lw	a5,0(s0)
-   10568:	fff48493          	addi	s1,s1,-1
-   1056c:	ffc40413          	addi	s0,s0,-4
-   10570:	000780e7          	jalr	a5
-   10574:	fe0498e3          	bnez	s1,10564 <__libc_fini_array+0x34>
-   10578:	00c12083          	lw	ra,12(sp)
-   1057c:	00812403          	lw	s0,8(sp)
-   10580:	00412483          	lw	s1,4(sp)
-   10584:	01010113          	addi	sp,sp,16
-   10588:	00008067          	ret
+00010534 <__libc_fini_array>:
+   10534:	ff010113          	addi	sp,sp,-16
+   10538:	00812423          	sw	s0,8(sp)
+   1053c:	000117b7          	lui	a5,0x11
+   10540:	00011437          	lui	s0,0x11
+   10544:	69440413          	addi	s0,s0,1684 # 11694 <__do_global_dtors_aux_fini_array_entry>
+   10548:	69878793          	addi	a5,a5,1688 # 11698 <impure_data>
+   1054c:	408787b3          	sub	a5,a5,s0
+   10550:	00912223          	sw	s1,4(sp)
+   10554:	00112623          	sw	ra,12(sp)
+   10558:	4027d493          	srai	s1,a5,0x2
+   1055c:	02048063          	beqz	s1,1057c <__libc_fini_array+0x48>
+   10560:	ffc78793          	addi	a5,a5,-4
+   10564:	00878433          	add	s0,a5,s0
+   10568:	00042783          	lw	a5,0(s0)
+   1056c:	fff48493          	addi	s1,s1,-1
+   10570:	ffc40413          	addi	s0,s0,-4
+   10574:	000780e7          	jalr	a5
+   10578:	fe0498e3          	bnez	s1,10568 <__libc_fini_array+0x34>
+   1057c:	00c12083          	lw	ra,12(sp)
+   10580:	00812403          	lw	s0,8(sp)
+   10584:	00412483          	lw	s1,4(sp)
+   10588:	01010113          	addi	sp,sp,16
+   1058c:	00008067          	ret
 
-0001058c <atexit>:
-   1058c:	00050593          	mv	a1,a0
-   10590:	00000693          	li	a3,0
-   10594:	00000613          	li	a2,0
-   10598:	00000513          	li	a0,0
-   1059c:	0040006f          	j	105a0 <__register_exitproc>
+00010590 <atexit>:
+   10590:	00050593          	mv	a1,a0
+   10594:	00000693          	li	a3,0
+   10598:	00000613          	li	a2,0
+   1059c:	00000513          	li	a0,0
+   105a0:	0040006f          	j	105a4 <__register_exitproc>
 
-000105a0 <__register_exitproc>:
-   105a0:	c281a703          	lw	a4,-984(gp) # 11ac0 <_global_impure_ptr>
-   105a4:	14872783          	lw	a5,328(a4)
-   105a8:	04078c63          	beqz	a5,10600 <__register_exitproc+0x60>
-   105ac:	0047a703          	lw	a4,4(a5)
-   105b0:	01f00813          	li	a6,31
-   105b4:	06e84e63          	blt	a6,a4,10630 <__register_exitproc+0x90>
-   105b8:	00271813          	slli	a6,a4,0x2
-   105bc:	02050663          	beqz	a0,105e8 <__register_exitproc+0x48>
-   105c0:	01078333          	add	t1,a5,a6
-   105c4:	08c32423          	sw	a2,136(t1) # 101c0 <main+0x7c>
-   105c8:	1887a883          	lw	a7,392(a5)
-   105cc:	00100613          	li	a2,1
-   105d0:	00e61633          	sll	a2,a2,a4
-   105d4:	00c8e8b3          	or	a7,a7,a2
-   105d8:	1917a423          	sw	a7,392(a5)
-   105dc:	10d32423          	sw	a3,264(t1)
-   105e0:	00200693          	li	a3,2
-   105e4:	02d50463          	beq	a0,a3,1060c <__register_exitproc+0x6c>
-   105e8:	00170713          	addi	a4,a4,1
-   105ec:	00e7a223          	sw	a4,4(a5)
-   105f0:	010787b3          	add	a5,a5,a6
-   105f4:	00b7a423          	sw	a1,8(a5)
-   105f8:	00000513          	li	a0,0
-   105fc:	00008067          	ret
-   10600:	14c70793          	addi	a5,a4,332
-   10604:	14f72423          	sw	a5,328(a4)
-   10608:	fa5ff06f          	j	105ac <__register_exitproc+0xc>
-   1060c:	18c7a683          	lw	a3,396(a5)
-   10610:	00170713          	addi	a4,a4,1
-   10614:	00e7a223          	sw	a4,4(a5)
-   10618:	00c6e633          	or	a2,a3,a2
-   1061c:	18c7a623          	sw	a2,396(a5)
-   10620:	010787b3          	add	a5,a5,a6
-   10624:	00b7a423          	sw	a1,8(a5)
-   10628:	00000513          	li	a0,0
-   1062c:	00008067          	ret
-   10630:	fff00513          	li	a0,-1
-   10634:	00008067          	ret
+000105a4 <__register_exitproc>:
+   105a4:	c281a703          	lw	a4,-984(gp) # 11ac0 <_global_impure_ptr>
+   105a8:	14872783          	lw	a5,328(a4)
+   105ac:	04078c63          	beqz	a5,10604 <__register_exitproc+0x60>
+   105b0:	0047a703          	lw	a4,4(a5)
+   105b4:	01f00813          	li	a6,31
+   105b8:	06e84e63          	blt	a6,a4,10634 <__register_exitproc+0x90>
+   105bc:	00271813          	slli	a6,a4,0x2
+   105c0:	02050663          	beqz	a0,105ec <__register_exitproc+0x48>
+   105c4:	01078333          	add	t1,a5,a6
+   105c8:	08c32423          	sw	a2,136(t1) # 101c0 <main+0x7c>
+   105cc:	1887a883          	lw	a7,392(a5)
+   105d0:	00100613          	li	a2,1
+   105d4:	00e61633          	sll	a2,a2,a4
+   105d8:	00c8e8b3          	or	a7,a7,a2
+   105dc:	1917a423          	sw	a7,392(a5)
+   105e0:	10d32423          	sw	a3,264(t1)
+   105e4:	00200693          	li	a3,2
+   105e8:	02d50463          	beq	a0,a3,10610 <__register_exitproc+0x6c>
+   105ec:	00170713          	addi	a4,a4,1
+   105f0:	00e7a223          	sw	a4,4(a5)
+   105f4:	010787b3          	add	a5,a5,a6
+   105f8:	00b7a423          	sw	a1,8(a5)
+   105fc:	00000513          	li	a0,0
+   10600:	00008067          	ret
+   10604:	14c70793          	addi	a5,a4,332
+   10608:	14f72423          	sw	a5,328(a4)
+   1060c:	fa5ff06f          	j	105b0 <__register_exitproc+0xc>
+   10610:	18c7a683          	lw	a3,396(a5)
+   10614:	00170713          	addi	a4,a4,1
+   10618:	00e7a223          	sw	a4,4(a5)
+   1061c:	00c6e633          	or	a2,a3,a2
+   10620:	18c7a623          	sw	a2,396(a5)
+   10624:	010787b3          	add	a5,a5,a6
+   10628:	00b7a423          	sw	a1,8(a5)
+   1062c:	00000513          	li	a0,0
+   10630:	00008067          	ret
+   10634:	fff00513          	li	a0,-1
+   10638:	00008067          	ret
 
-00010638 <_exit>:
-   10638:	00000593          	li	a1,0
-   1063c:	00000613          	li	a2,0
-   10640:	00000693          	li	a3,0
-   10644:	00000713          	li	a4,0
-   10648:	00000793          	li	a5,0
-   1064c:	05d00893          	li	a7,93
-   10650:	00000073          	ecall
-   10654:	00054463          	bltz	a0,1065c <_exit+0x24>
-   10658:	0000006f          	j	10658 <_exit+0x20>
-   1065c:	ff010113          	addi	sp,sp,-16
-   10660:	00812423          	sw	s0,8(sp)
-   10664:	00050413          	mv	s0,a0
-   10668:	00112623          	sw	ra,12(sp)
-   1066c:	40800433          	neg	s0,s0
-   10670:	00c000ef          	jal	ra,1067c <__errno>
-   10674:	00852023          	sw	s0,0(a0)
-   10678:	0000006f          	j	10678 <_exit+0x40>
+0001063c <_exit>:
+   1063c:	00000593          	li	a1,0
+   10640:	00000613          	li	a2,0
+   10644:	00000693          	li	a3,0
+   10648:	00000713          	li	a4,0
+   1064c:	00000793          	li	a5,0
+   10650:	05d00893          	li	a7,93
+   10654:	00000073          	ecall
+   10658:	00054463          	bltz	a0,10660 <_exit+0x24>
+   1065c:	0000006f          	j	1065c <_exit+0x20>
+   10660:	ff010113          	addi	sp,sp,-16
+   10664:	00812423          	sw	s0,8(sp)
+   10668:	00050413          	mv	s0,a0
+   1066c:	00112623          	sw	ra,12(sp)
+   10670:	40800433          	neg	s0,s0
+   10674:	00c000ef          	jal	ra,10680 <__errno>
+   10678:	00852023          	sw	s0,0(a0)
+   1067c:	0000006f          	j	1067c <_exit+0x40>
 
-0001067c <__errno>:
-   1067c:	c301a503          	lw	a0,-976(gp) # 11ac8 <_impure_ptr>
-   10680:	00008067          	ret
+00010680 <__errno>:
+   10680:	c301a503          	lw	a0,-976(gp) # 11ac8 <_impure_ptr>
+   10684:	00008067          	ret
 
 Disassembly of section .eh_frame:
 
-00011684 <__FRAME_END__>:
-   11684:	0000                	unimp
+00011688 <__FRAME_END__>:
+   11688:	0000                	unimp
 	...
 
 Disassembly of section .init_array:
 
-00011688 <__init_array_start>:
-   11688:	0074                	addi	a3,sp,12
-   1168a:	0001                	nop
-
-0001168c <__frame_dummy_init_array_entry>:
-   1168c:	0124                	addi	s1,sp,136
+0001168c <__init_array_start>:
+   1168c:	0074                	addi	a3,sp,12
    1168e:	0001                	nop
+
+00011690 <__frame_dummy_init_array_entry>:
+   11690:	0124                	addi	s1,sp,136
+   11692:	0001                	nop
 
 Disassembly of section .fini_array:
 
-00011690 <__do_global_dtors_aux_fini_array_entry>:
-   11690:	00d8                	addi	a4,sp,68
-   11692:	0001                	nop
+00011694 <__do_global_dtors_aux_fini_array_entry>:
+   11694:	00d8                	addi	a4,sp,68
+   11696:	0001                	nop
 
 Disassembly of section .data:
 
