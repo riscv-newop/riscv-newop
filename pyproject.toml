@@ -20,6 +20,7 @@ classifiers = [
 [tool.flit.scripts]
 rvnewop = "rvnewop:main"
 rvunused = "rvnewop:unused"
+rvrecommend = "rvnewop:recommend"
 
 [dev-dependencies]
 black = "^19.10"
