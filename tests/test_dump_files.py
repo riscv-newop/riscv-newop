@@ -7,10 +7,14 @@ import pytest
 
 
 def isJumpPCRelative(inst_name):
-    if inst_name in ["j", "jal", "c.j", "c.jal"]:
+    if inst_name in ["j", "c.j"]:
         return True
     return False
 
+def isJumpLinkPCRelative(inst_name):
+    if inst_name in ["jal", "c.jal"]:
+        return True
+    return False
 
 def isBranchPCRelative(inst_name):
     if inst_name in [
@@ -74,9 +78,12 @@ class DumpFileReader:
                         if isCompressedBranchPCRelative(inst_name):
                             inst_is_branch_jump = True
                             branch_dest_param_pos = 1
-                        if isJumpPCRelative(inst_name):
+                        if isJumpLinkPCRelative(inst_name):
                             inst_is_branch_jump = True
                             branch_dest_param_pos = 1
+                        if isJumpPCRelative(inst_name):
+                            inst_is_branch_jump = True
+                            branch_dest_param_pos = 0
                         if inst_is_branch_jump:
                             inst_params_list = inst_params.split(",")
                             branch_dest = inst_params_list[branch_dest_param_pos]
