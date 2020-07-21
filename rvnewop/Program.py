@@ -60,8 +60,7 @@ class Program:
                 while next_pc in self.instructions and next_pc not in self.leader:
                     prev_pc = next_pc
                     next_pc = prev_pc + self.instructions[next_pc].sizeInBytes()
-                freq = 1
-                self.basicBlocks.append(BasicBlock(start_pc, prev_pc, freq, self.instructions))
+                self.basicBlocks.append(BasicBlock(start_pc, prev_pc, self.frequencies[prev_pc], self.instructions))
 
     def findBasicBlocks(self):
         self.visited = {}
@@ -108,7 +107,7 @@ class Program:
                     leader_pc = pc + insn.sizeInBytes()
                     if leader_pc not in self.leader:
                         self.leader[leader_pc] = True
-                        explore_leader.append(int(leader_pc))
+                        explore_leader.append(leader_pc)
                     """ we check if control transfer instruction is PC relative.
                         If yes, then we can determine the branch target address.
                         That address wil be another leader. """
@@ -116,5 +115,5 @@ class Program:
                         target_pc = pc + insn.immediates[0]
                         if target_pc not in self.leader:
                             self.leader[target_pc] = True
-                            explore_leader.append(int(target_pc))
+                            explore_leader.append(target_pc)
         self.createBasicBlocks()
