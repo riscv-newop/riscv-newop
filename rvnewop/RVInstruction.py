@@ -68,7 +68,7 @@ class RVInstruction:
         return register_name
 
     def sizeInBytes(self):
-        return self.size/8 
+        return int(self.size/8)
 
     def isJump(self):
         if self.name in ['j','jal','jalr','jr','c.j','c.jal','c.jalr','c.jr']:

@@ -39,63 +39,82 @@ class Program:
     def printAll(self, file=sys.stdout):
         """Prints out all instructions to file (default is stdout)"""
         for pc in self.instructions:
-            print("{}: {}".format(hex(pc), self.instructions[pc]), file=file)
+            print(self.name + ': ' + "{}: {}".format(hex(pc), self.instructions[pc]), file=file)
+
+    def getNextUnvisited(self):
+        min_pc = 2*sys.maxsize + 1
+        for pc in self.instructions:
+            if not self.visited[pc]:
+                if pc < min_pc:
+                    min_pc = pc
+        if min_pc < 2*sys.maxsize+1:
+            return min_pc
+        return None
+
+    def createBasicBlocks(self):
+        for entry in self.leader:
+            if entry in self.instructions:
+                start_pc = entry
+                prev_pc = start_pc
+                next_pc = prev_pc + self.instructions[start_pc].sizeInBytes()
+                while next_pc in self.instructions and next_pc not in self.leader:
+                    prev_pc = next_pc
+                    next_pc = prev_pc + self.instructions[next_pc].sizeInBytes()
+                freq = 1
+                self.basicBlocks.append(BasicBlock(start_pc, prev_pc, freq, self.instructions))
 
     def findBasicBlocks(self):
-        min_pc = 2*sys.maxsize + 1
-        visited = {}
-        leader = {}
+        self.visited = {}
+        self.leader = {}
         for pc in self.instructions:
-            visited[pc] = False
-            if pc < min_pc:
-                min_pc = pc
-        # first leader is the min_pc
-        leader[min_pc] = True
-        visited[min_pc] = True
-        print(self.name +':' + 'Discovered leader ' + hex(int(min_pc)))
+            self.visited[pc] = False
 
         explore_leader = []
-        explore_leader.append(min_pc)
-        while len(explore_leader):
-            pc = explore_leader[0]
-            explore_leader.remove(pc)
-            if pc not in self.instructions:
-                continue 
-            """ scan sequentially starting at this PC
-                until one of:
-                - no next PC 
-                - branch/jump 
-                If no next PC, then we are done with this PC
-                If branch/jump, then add branch/jump destination as a leader
-                (if we know the address)
-                Also add the instruction following branch/jump PC as another 
-                leader """
-            insn = self.instructions[pc]
-            end_of_sequence = False
-            while not insn.isControlTransfer():
-                pc = pc + insn.sizeInBytes()
-                if pc not in self.instructions: 
-                    end_of_sequence = True
-                    break
-                visited[pc] = True
+        while self.getNextUnvisited() is not None:
+            min_pc = self.getNextUnvisited()
+            # first leader is the min_pc
+            self.leader[min_pc] = True
+            self.visited[min_pc] = True
+
+            explore_leader.append(min_pc)
+            while len(explore_leader):
+                pc = explore_leader[0]
+                explore_leader.remove(pc)
+                if pc not in self.instructions:
+                    continue 
+                """ scan sequentially starting at this PC
+                    until one of:
+                    - no next PC 
+                    - branch/jump 
+                    If no next PC, then we are done with this PC
+                    If branch/jump, then add branch/jump destination as a leader
+                    (if we know the address)
+                    Also add the instruction following branch/jump PC as another 
+                    leader """
                 insn = self.instructions[pc]
-            if not end_of_sequence:
-                """ we encountered a control transfer instruction
-                mark the next PC following the control transfer
-                as a leader """
-                visited[pc] = True 
-                leader_pc = pc + insn.sizeInBytes()
-                if leader_pc not in leader:
-                    leader[leader_pc] = True
-                    visited[leader_pc] = True 
-                    explore_leader.append(leader_pc)
-                    print(self.name +':' + 'Discovered leader ' + hex(int(leader_pc)))
-                """ we check if control transfer instruction is PC relative.
-                    If yes, then we can determine the branch target address.
-                    That address wil be another leader. """
-                if insn.isControlTransferPCRelative():
-                    target_pc = pc + insn.immediates[0]
-                    if target_pc not in leader:
-                        print(self.name +':' + 'Discovered leader ' + hex(int(target_pc)))
-                        leader[target_pc] = True
-                        explore_leader.append(target_pc)
+                end_of_sequence = False
+                while not insn.isControlTransfer():
+                    self.visited[pc] = True
+                    pc = pc + insn.sizeInBytes()
+                    if pc not in self.instructions: 
+                        end_of_sequence = True
+                        break
+                    insn = self.instructions[pc]
+                if not end_of_sequence:
+                    """ we encountered a control transfer instruction
+                    mark the next PC following the control transfer
+                    as a leader """
+                    self.visited[pc] = True 
+                    leader_pc = pc + insn.sizeInBytes()
+                    if leader_pc not in self.leader:
+                        self.leader[leader_pc] = True
+                        explore_leader.append(int(leader_pc))
+                    """ we check if control transfer instruction is PC relative.
+                        If yes, then we can determine the branch target address.
+                        That address wil be another leader. """
+                    if insn.isControlTransferPCRelative():
+                        target_pc = pc + insn.immediates[0]
+                        if target_pc not in self.leader:
+                            self.leader[target_pc] = True
+                            explore_leader.append(int(target_pc))
+        self.createBasicBlocks()
