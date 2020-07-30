@@ -1,1 +1,2 @@
-bitarray==1.2.2
+bitarray>=1.2.2
+networkx>=2.4
