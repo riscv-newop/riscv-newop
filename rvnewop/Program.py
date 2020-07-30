@@ -7,8 +7,6 @@ import sys
 class Program:
     """A Program is a collection of instructions which are mapped to pc values"""
 
-    basicBlocks = []
-
     def __init__(self, name, isa="32I"):
         self.name = name
         self.rv = RV32(isa=isa)
@@ -19,6 +17,7 @@ class Program:
         self.instructionNameSet = set()
         self.registerSet = set()
         self.formatSet = set()
+        self.basicBlocks = list()
 
     def addInstruction(self, pc, hexd, freq):
         """Adds an instruction to a Program given a PC value
@@ -126,3 +125,9 @@ class Program:
                             self.leader[target_pc] = True
                             explore_leader.append(target_pc)
         self.createBasicBlocks()
+
+    def printBasicBlocks(self):
+        print ("Basic blocks in Program: " + self.name)
+        for bb in self.basicBlocks:
+            print ("S: " + hex(bb.start))
+            print ("E: " + hex(bb.end))

@@ -24,3 +24,5 @@ def newop():
 
     for program in programs:
         program.findBasicBlocks()
+    for program in programs:
+        program.printBasicBlocks()
