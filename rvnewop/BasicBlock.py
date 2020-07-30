@@ -1,5 +1,5 @@
 import networkx as nx
-from networkx.drawing.nx_agraph import graphviz_layout
+#from networkx.drawing.nx_agraph import graphviz_layout
 import matplotlib.pyplot as plt  # for graph visualization
 
 
@@ -18,6 +18,10 @@ class BasicBlock:
         self.end = end
         self.frequency = freq
         self.instructions = instructions
+    
+    def __str__(self):
+        print ("Start PC: " + hex(self.start))
+        print ("End PC: " + hex(self.end))
 
     # TODO come up with a better name for this function??
     # People were right... there are only 3 hard problems in
@@ -29,7 +33,7 @@ class BasicBlock:
 
         current = self.start
         while True:
-            print(current)
+            #print(current)
             if current == self.end:
                 # reached last instruction
                 # return it and exit
@@ -37,7 +41,7 @@ class BasicBlock:
                 break
             else:
                 yield self.instructions[current]
-                current += self.instructions[current].size
+                current += self.instructions[current].sizeInBytes()
 
     def constructDAG(self):
         """Construct Directed Acyclic Graph representation
@@ -68,8 +72,8 @@ class BasicBlock:
                     # set current to latest value
                     current_node[d] = node
 
-        plt.clf()
-        pos = graphviz_layout(graph, prog="dot")
-        nx.draw(graph, pos, with_labels=True)
-        plt.savefig("output.png")
+        #plt.clf()
+        #pos = graphviz_layout(graph, prog="dot")
+        #nx.draw(graph, pos, with_labels=True)
+        #plt.savefig("output.png")
         return graph
