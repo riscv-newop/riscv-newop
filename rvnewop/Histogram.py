@@ -7,7 +7,7 @@ class Histogram:
     @staticmethod
     def parse(filename, isa="I32"):
         """Parses a given file and converts into a program"""
-        program = Program(isa=isa)
+        program = Program(name=filename, isa=isa)
         with open(filename) as infile:
             start = False
 

@@ -5,7 +5,6 @@ from pprint import PrettyPrinter
 
 from .Histogram import Histogram
 
-
 def unused():
 
     parser = argparse.ArgumentParser(
