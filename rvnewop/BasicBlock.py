@@ -1,4 +1,5 @@
 import networkx as nx
+from networkx.drawing.nx_agraph import graphviz_layout
 import matplotlib.pyplot as plt  # for graph visualization
 
 
@@ -28,6 +29,7 @@ class BasicBlock:
 
         current = self.start
         while True:
+            print(current)
             if current == self.end:
                 # reached last instruction
                 # return it and exit
@@ -47,8 +49,9 @@ class BasicBlock:
             for inst in self.bbInstructions()
             for reg in (inst.src_registers + inst.dest_registers)
         }
+        print(registers)
 
-        current_node = dict.fromkeys(registers)
+        current_node = {reg: reg for reg in registers}
         graph.add_nodes_from(registers, type="register")
 
         for inst in self.bbInstructions():
@@ -65,4 +68,8 @@ class BasicBlock:
                     # set current to latest value
                     current_node[d] = node
 
+        plt.clf()
+        pos = graphviz_layout(graph, prog="dot")
+        nx.draw(graph, pos, with_labels=True)
+        plt.savefig("output.png")
         return graph
