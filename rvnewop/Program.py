@@ -91,12 +91,12 @@ class Program:
                     continue
                 """ scan sequentially starting at this PC
                     until one of:
-                    - no next PC 
-                    - branch/jump 
+                    - no next PC
+                    - branch/jump
                     If no next PC, then we are done with this PC
                     If branch/jump, then add branch/jump destination as a leader
                     (if we know the address)
-                    Also add the instruction following branch/jump PC as another 
+                    Also add the instruction following branch/jump PC as another
                     leader """
                 insn = self.instructions[pc]
                 end_of_sequence = False
@@ -118,7 +118,7 @@ class Program:
                         explore_leader.append(leader_pc)
                     """ we check if control transfer instruction is PC relative.
                         If yes, then we can determine the branch target address.
-                        That address wil be another leader. """
+                        That address will be another leader. """
                     if insn.isControlTransferPCRelative():
                         target_pc = pc + insn.immediates[0]
                         if target_pc not in self.leader:
@@ -127,7 +127,7 @@ class Program:
         self.createBasicBlocks()
 
     def printBasicBlocks(self):
-        print ("Basic blocks in Program: " + self.name)
+        print("Basic blocks in Program: " + self.name)
         for bb in self.basicBlocks:
-            print ("S: " + hex(bb.start))
-            print ("E: " + hex(bb.end))
+            print("S: " + hex(bb.start))
+            print("E: " + hex(bb.end))

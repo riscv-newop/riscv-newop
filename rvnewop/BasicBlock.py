@@ -1,6 +1,4 @@
 import networkx as nx
-#from networkx.drawing.nx_agraph import graphviz_layout
-import matplotlib.pyplot as plt  # for graph visualization
 
 
 class BasicBlock:
@@ -18,10 +16,10 @@ class BasicBlock:
         self.end = end
         self.frequency = freq
         self.instructions = instructions
-    
+
     def __str__(self):
-        print ("Start PC: " + hex(self.start))
-        print ("End PC: " + hex(self.end))
+        print("Start PC: " + hex(self.start))
+        print("End PC: " + hex(self.end))
 
     # TODO come up with a better name for this function??
     # People were right... there are only 3 hard problems in
@@ -33,7 +31,7 @@ class BasicBlock:
 
         current = self.start
         while True:
-            #print(current)
+            # print(current)
             if current == self.end:
                 # reached last instruction
                 # return it and exit
@@ -59,21 +57,24 @@ class BasicBlock:
         graph.add_nodes_from(registers, type="register")
 
         for inst in self.bbInstructions():
-            if not inst.dest_registers:
-                # no dest registers, skip
+            if not inst.dest_registers or inst.isControlTransfer():
+                # no dest registers or control transfer, skip
                 continue
             else:
-                node = str(inst)
+                pc = list(self.instructions.keys())[
+                    list(self.instructions.values()).index(inst)
+                ]
+                node = str(hex(pc)) + ": " + str(inst)
                 graph.add_node(node, type="instruction", instruction=inst)
                 for s in inst.src_registers:
-                    graph.add_edge(current_node[s], node)
+                    graph.add_edge(node, current_node[s])
 
                 for d in inst.dest_registers:
                     # set current to latest value
                     current_node[d] = node
 
-        #plt.clf()
-        #pos = graphviz_layout(graph, prog="dot")
-        #nx.draw(graph, pos, with_labels=True)
-        #plt.savefig("output.png")
+        # plt.clf()
+        # pos = graphviz_layout(graph, prog="dot")
+        # nx.draw(graph, pos, with_labels=True)
+        # plt.savefig("output.png")
         return graph

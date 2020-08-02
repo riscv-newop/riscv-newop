@@ -68,34 +68,41 @@ class RVInstruction:
         return register_name
 
     def sizeInBytes(self):
-        return int(self.size/8)
+        return int(self.size / 8)
 
     def isJump(self):
-        if self.name in ['j','jal','jalr','jr','c.j','c.jal','c.jalr','c.jr']:
-            return True
-        return False
+        return self.name in ["j", "jal", "jalr", "jr", "c.j", "c.jal", "c.jalr", "c.jr"]
 
     def isJumpPCRelative(self):
-        if self.name in ['j','jal','c.j','c.jal']:
-            return True
-        return False
+        return self.name in ["j", "jal", "c.j", "c.jal"]
 
     def isBranch(self):
-        if self.name in ['beq', 'bne', 'blt', 'bltu', 'bge', 'bgeu', 'beqz', 'bnez', 'blez', 'bgez', 'bltz', 'bgtz', 'bgt', 'ble', 'bgtu', 'bleu', 'c.beqz', 'c.bnez']:
-            return True
-        return False
+        return self.name in [
+            "beq",
+            "bne",
+            "blt",
+            "bltu",
+            "bge",
+            "bgeu",
+            "beqz",
+            "bnez",
+            "blez",
+            "bgez",
+            "bltz",
+            "bgtz",
+            "bgt",
+            "ble",
+            "bgtu",
+            "bleu",
+            "c.beqz",
+            "c.bnez",
+        ]
 
     def isControlTransfer(self):
-        if self.isJump():
-            return True
-        if self.isBranch():
-            return True
+        return self.isJump() or self.isBranch()
 
     def isControlTransferPCRelative(self):
-        if self.isJumpPCRelative():
-            return True
-        if self.isBranch():
-            return True
+        return self.isJumpPCRelative() or self.isBranch()
 
     def __str__(self):
         """Create a printable string from Instruction"""

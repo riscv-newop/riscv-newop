@@ -9,7 +9,9 @@ author-email = "pranoydll@gmail.com"
 home-page = "https://github.com/riscv-newop/riscv-newop"
 license = "BSD-2-Clause"
 requires = [
-    "bitarray >= 1.2.2"
+    "bitarray >= 1.2.2",
+    "networkx >= 2.4",
+    "matplotlib >= 3.3.0"
 ]
 description-file = "README.md"
 classifiers = [
