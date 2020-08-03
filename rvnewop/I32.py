@@ -86,8 +86,7 @@ class I32:
             # BGEU
             name = "bgeu"
         else:
-            # TODO error??
-            pass
+            return None
 
         return RVInstruction(
             rv_format="B",
@@ -121,8 +120,7 @@ class I32:
             # LHU
             name = "lhu"
         else:
-            # TODO error??
-            pass
+            return None
 
         return RVInstruction(
             rv_format="I",
@@ -151,8 +149,7 @@ class I32:
             # SW
             name = "sw"
         else:
-            # TODO error??
-            pass
+            return None
 
         return RVInstruction(
             rv_format="S",
@@ -257,15 +254,14 @@ class I32:
             elif f7[1] == 1:
                 # SRA
                 name = "sra"
-        elif f3 == bitarray("110"):
+        elif f3 == bitarray("110") and f7[-1] == False:
             # OR
             name = "or"
         elif f3 == bitarray("111"):
             # AND
             name = "and"
         else:
-            # TODO error??
-            pass
+            return None
 
         return RVInstruction(
             rv_format="R",

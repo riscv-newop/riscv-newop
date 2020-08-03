@@ -412,7 +412,7 @@ class C32:
                     # C.JR
                     return RVInstruction(
                         rv_format="CR",
-                        rv_src_registers=[data["rs2"], data["register"]],
+                        rv_src_registers=[data["register"]],
                         rv_name="c.jr",
                         rv_size=16,
                         rv_binary=ba,
