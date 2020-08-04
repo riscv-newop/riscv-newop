@@ -69,6 +69,8 @@ class Program:
                         start_pc, prev_pc, self.frequencies[prev_pc], self.instructions
                     )
                 )
+        for block in self.basicBlocks:
+            block.getSubBlocks()
 
     def findBasicBlocks(self):
         self.visited = {}
@@ -131,3 +133,9 @@ class Program:
         for bb in self.basicBlocks:
             print("S: " + hex(bb.start))
             print("E: " + hex(bb.end))
+            print([str(x) for x in bb.bbInstructions()])
+            print("Sub-blocks in basic block:")
+            for sbb in bb.sub_blocks:
+                print("SB: S: " + hex(sbb.start))
+                print("SB: E: " + hex(sbb.end))
+                print([str(x) for x in sbb.bbInstructions()])

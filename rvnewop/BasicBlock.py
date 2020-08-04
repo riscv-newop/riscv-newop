@@ -21,23 +21,25 @@ class BasicBlock:
     def getSubBlocks(self):
         pc = self.start
         s_pc = pc
-        l_pc = pc
+        l_pc = None
         making_sub_block = True
         while pc <= self.end:
             insn = self.instructions[pc]
             if insn.isControlTransfer():
                 if making_sub_block:
                     """ We are done making the sub-block """
-                    self.sub_blocks.append(
-                        BasicBlock(s_pc, l_pc, self.frequency, self.instructions)
-                    )
+                    if l_pc is not None:
+                        self.sub_blocks.append(
+                            BasicBlock(s_pc, l_pc, self.frequency, self.instructions)
+                        )
                     making_sub_block = False
             elif insn.isMemAccess():
                 if making_sub_block:
                     """ We are done making the sub-block """
-                    self.sub_blocks.append(
-                        BasicBlock(s_pc, l_pc, self.frequency, self.instructions)
-                    )
+                    if l_pc is not None:
+                        self.sub_blocks.append(
+                            BasicBlock(s_pc, l_pc, self.frequency, self.instructions)
+                        )
                     making_sub_block = False
             else:
                 if not making_sub_block:
@@ -47,7 +49,8 @@ class BasicBlock:
             pc += insn.sizeInBytes()
 
         if making_sub_block:
-            self.sub_blocks.append(BasicBlock(s_pc, l_pc, freq, self.instructions))
+            if l_pc is not None:
+                self.sub_blocks.append(BasicBlock(s_pc, l_pc, self.frequency, self.instructions))
 
     def __str__(self):
         print("Start PC: " + hex(self.start))
