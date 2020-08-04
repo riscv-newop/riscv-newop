@@ -15,3 +15,5 @@ from .Program import Program
 from .main import main
 from .unused import unused
 from .newop import newop
+
+import .analysis

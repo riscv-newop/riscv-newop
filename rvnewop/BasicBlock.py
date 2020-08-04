@@ -73,8 +73,7 @@ class BasicBlock:
                     # set current to latest value
                     current_node[d] = node
 
-        # plt.clf()
-        # pos = graphviz_layout(graph, prog="dot")
-        # nx.draw(graph, pos, with_labels=True)
-        # plt.savefig("output.png")
+        graph.remove_nodes_from([n for n, d in graph.degree if d == 0])
+        if graph.number_of_nodes == 0:
+            return None
         return graph
