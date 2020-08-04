@@ -1,3 +1,4 @@
+from . import RV32
 import networkx as nx
 
 
@@ -16,6 +17,35 @@ class BasicBlock:
         self.end = end
         self.frequency = freq
         self.instructions = instructions
+        self.sub_blocks = []
+        self.getSubBlocks()
+
+    def getSubBlocks(self):
+        pc = self.start
+        s_pc = pc
+        l_pc = pc
+        making_sub_block = True
+        while pc <= self.end:
+            insn = self.instructions[pc]
+            if insn.isControlTransfer():
+                if making_sub_block:
+                    """ We are done making the sub-block """
+                    self.sub_blocks.append(BasicBlock(s_pc, l_pc, freq, self.instructions))
+                    making_sub_block = False
+            elif insn.isMemAccess():
+                if making_sub_block:
+                    """ We are done making the sub-block """
+                    self.sub_blocks.append(BasicBlock(s_pc, l_pc, freq, self.instructions))
+                    making_sub_block = False
+            else:
+                if not making_sub_block:
+                    s_pc = pc
+                    making_sub_block = True 
+            l_pc = pc
+            pc += insn.sizeInBytes()
+
+        if making_sub_block:
+            self.sub_blocks.append(BasicBlock(s_pc, l_pc, freq, self.instructions))
 
     def __str__(self):
         print("Start PC: " + hex(self.start))
