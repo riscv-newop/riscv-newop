@@ -9,17 +9,19 @@ def isCandidate(node, dag):
         - not have more than two register nodes connected to it
         - have at least one non-register node connected to it"""
 
-    if dag[node]["type"] == "register":
+    if dag.nodes[node]["type"] == "register":
         return False
 
     leaf_count = 0
     has_inst = False
     visited = {node}
-    for n in nx.bfs_edges(dag, source=node):
+    # for n in dict(nx.bfs_successors(dag, source=node))[node]:
+    for n in [y for x in nx.bfs_edges(dag, source=node) for y in x if y is not node]:
         if n not in visited:
-            if n["type"] == "register":
+            type = dag.nodes[n]["type"]
+            if type == "register":
                 leaf_count += 1
-            if n["type"] == "instruction":
+            if type == "instruction":
                 has_inst = True
             visited.add(n)
 

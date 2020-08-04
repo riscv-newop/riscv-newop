@@ -51,7 +51,7 @@ class BasicBlock:
             for inst in self.bbInstructions()
             for reg in (inst.src_registers + inst.dest_registers)
         }
-        print(registers)
+        # print(registers)
 
         current_node = {reg: reg for reg in registers}
         graph.add_nodes_from(registers, type="register")

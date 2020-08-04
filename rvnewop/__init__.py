@@ -16,4 +16,4 @@ from .main import main
 from .unused import unused
 from .newop import newop
 
-import .analysis
+from . import analysis
