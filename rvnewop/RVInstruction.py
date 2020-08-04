@@ -104,6 +104,46 @@ class RVInstruction:
     def isControlTransferPCRelative(self):
         return self.isJumpPCRelative() or self.isBranch()
 
+    def isLoad(self):
+        return self.name in [
+            "c.fld",
+            "c.lq",
+            "c.lw",
+            "c.flw",
+            "c.ld",
+            "c.fldsp",
+            "c.lwsp",
+            "c.flwsp",
+            "c.ldsp",
+            "lb",
+            "lh",
+            "lw",
+            "lbu",
+            "lhu",
+            "ld",
+            "lwu",
+        ] 
+
+    def isStore(self):
+        return self.name in [
+            "c.fsd",
+            "c.sq",
+            "c.sw",
+            "c.fsw",
+            "c.sd",
+            "c.fsdsp",
+            "c.swsp",
+            "c.fswsp",
+            "c.sdsp",
+            "sb",
+            "sh",
+            "sw",
+            "sd",
+        ] 
+
+    def isMemAccess(self):
+        return self.isLoad() or self.isStore()
+
     def __str__(self):
         """Create a printable string from Instruction"""
         name = self.name
