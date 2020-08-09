@@ -2680,7 +2680,6 @@ Disassembly of section .rodata:
    1286a:	8000                	0x8000
    1286c:	0000                	c.unimp
    1286e:	0000                	c.unimp
-   12870:	8081                	c.srli64	s1
    12872:	8000                	0x8000
    12874:	0000                	c.unimp
    12876:	8000                	0x8000
@@ -2733,7 +2732,6 @@ Disassembly of section .rodata:
    128da:	8000                	0x8000
    128dc:	0000                	c.unimp
    128de:	8000                	0x8000
-   128e0:	8081                	c.srli64	s1
    128e2:	8000                	0x8000
    128e4:	0000                	c.unimp
    128e6:	8000                	0x8000

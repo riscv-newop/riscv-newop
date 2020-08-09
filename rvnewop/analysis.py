@@ -68,3 +68,48 @@ def hashDAG(dag):
             h += stringToNum(u.split()[1]) % stringToNum(v.split()[1])
 
     return h
+
+
+def findRoot(dag, node):
+    """Finds root of the DAG"""
+    parent = list(dag.predecessors(node))
+    if len(parent) == 0:
+        return node
+    else:
+        return findRoot(dag, parent[0])
+
+
+def graphToString(dag):
+    """converts a graph to a string"""
+    out = ""
+    depth = 1
+    layer_length = 1
+    current = 0
+    root = findRoot(dag, list(dag)[0])
+    to_visit = [root]
+
+    while to_visit:
+        for s in dag.successors(to_visit[0]):
+            temp = []
+            if dag.nodes[s]["type"] == "instruction":
+                temp.append(s)
+
+            to_visit += sorted(temp, key=lambda x: x.split()[1])
+
+        out += to_visit[0].split()[1] + ("_" * depth)
+        to_visit.pop(0)
+        i += 1
+
+        # just to make sure the correct number of
+        # underscores are being used
+        if layer_length == current:
+            depth += 1
+            current = 0
+            layer_length = len(to_visit)
+
+    return out.strip("_")
+
+
+def isIsomorphic(a, b):
+    """Checks if two DAGs are isomorphic"""
+    return graphToString(a) == graphToString(b)

@@ -212,7 +212,7 @@ class C32:
         elif f3 == bitarray("100"):
             # C.SRLI, C.SRAI, C.ANDI, C.SUB, C.XOR, C.OR, C.AND
             f2 = ba[-12:-10]
-            if f2 == "00":
+            if f2 == bitarray("00"):
                 # C.SRLI
                 data = fp.parseCB(ba)
                 if data["offset3"][0] == "1":
