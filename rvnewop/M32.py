@@ -13,6 +13,9 @@ class M32:
         f3 = data["funct3"]
         name = ""
 
+        if not data["funct7"] == bitarray("0000001"):
+            return None
+
         if f3 == bitarray("000"):
             # MUL
             name = "mul"
@@ -38,8 +41,7 @@ class M32:
             # REMU
             name = "remu"
         else:
-            # TODO error
-            pass
+            return None
 
         return RVInstruction(
             rv_format="R",

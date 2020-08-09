@@ -11,10 +11,12 @@ def isJumpPCRelative(inst_name):
         return True
     return False
 
+
 def isJumpLinkPCRelative(inst_name):
     if inst_name in ["jal", "c.jal"]:
         return True
     return False
+
 
 def isBranchPCRelative(inst_name):
     if inst_name in [
@@ -49,7 +51,7 @@ class DumpFileReader:
     # TODO get rid of this __init__ and change to a
     # seperate static method since this doesn't require state
     def __init__(self, file_name):
-        rv = RV32("32IC")
+        rv = RV32("32IMC")
         if os.path.exists(file_name) == False:
             print("Fatal: Unable to find the file: " + file_name)
         else:
@@ -103,14 +105,14 @@ class DumpFileReader:
                             )
 
                         if inst_name in ["slli", "srli", "srai"]:
-                            print("{} {}".format(inst_name, inst_params))
+                            # print("{} {}".format(inst_name, inst_params))
                             inst_params_temp = inst_params.split(",")
                             inst_params = "{},{},{}".format(
                                 inst_params_temp[0],
                                 inst_params_temp[1],
                                 int(inst_params_temp[2], 16),
                             )
-                            print(inst_params)
+                            # print(inst_params)
 
                         predicted_inst = rv.decodeHex(inst_hex)
                         predicted = str(predicted_inst)

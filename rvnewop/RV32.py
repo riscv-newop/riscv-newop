@@ -15,7 +15,8 @@ class RV32:
         """Returns a composition of multiple instruction functions"""
 
         def f3(ba):
-            return f1(ba) or f2(ba)
+            # return first non-None value
+            return next(x for x in [f1(ba), f2(ba)] if x)
 
         return f3
 

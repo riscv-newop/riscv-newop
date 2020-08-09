@@ -63,6 +63,11 @@ class RVFormatParser:
             RVFormatParser.twos_compliment(int(bitarray(imm).to01(), 2), len(imm))
         )
 
+    @staticmethod
+    def immToUInt(imm):
+        """Converts imm bitarray into unsigned integer"""
+        return int(bitarray(imm).to01(), 2)
+
     # Compressed Helper methods
     # These help parse 16bit instructions
 
@@ -188,7 +193,7 @@ class RVFormatParser:
     def parseU(ba):
         """ Parses the U format of instructions, examples: ECALL, EBREAK, etc """
         return {
-            "imm": RVFormatParser.immToInt(bitarray(ba[:-12])),
+            "imm": RVFormatParser.immToUInt(bitarray(ba[:-12])),
             "rd": RVFormatParser.convertToIntRegister(RVFormatParser.getRD(ba)),
             "opcode": RVFormatParser.getOpcode(ba),
         }

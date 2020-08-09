@@ -16,6 +16,41 @@ class BasicBlock:
         self.end = end
         self.frequency = freq
         self.instructions = instructions
+        self.sub_blocks = []
+
+    def getSubBlocks(self):
+        pc = self.start
+        s_pc = pc
+        l_pc = None
+        making_sub_block = True
+        while pc <= self.end:
+            insn = self.instructions[pc]
+            if insn.isControlTransfer():
+                if making_sub_block:
+                    """ We are done making the sub-block """
+                    if l_pc is not None:
+                        self.sub_blocks.append(
+                            BasicBlock(s_pc, l_pc, self.frequency, self.instructions)
+                        )
+                    making_sub_block = False
+            elif insn.isMemAccess():
+                if making_sub_block:
+                    """ We are done making the sub-block """
+                    if l_pc is not None:
+                        self.sub_blocks.append(
+                            BasicBlock(s_pc, l_pc, self.frequency, self.instructions)
+                        )
+                    making_sub_block = False
+            else:
+                if not making_sub_block:
+                    s_pc = pc
+                    making_sub_block = True
+            l_pc = pc
+            pc += insn.sizeInBytes()
+
+        if making_sub_block:
+            if l_pc is not None:
+                self.sub_blocks.append(BasicBlock(s_pc, l_pc, self.frequency, self.instructions))
 
     def __str__(self):
         print("Start PC: " + hex(self.start))
@@ -51,7 +86,7 @@ class BasicBlock:
             for inst in self.bbInstructions()
             for reg in (inst.src_registers + inst.dest_registers)
         }
-        print(registers)
+        # print(registers)
 
         current_node = {reg: reg for reg in registers}
         graph.add_nodes_from(registers, type="register")
@@ -73,8 +108,7 @@ class BasicBlock:
                     # set current to latest value
                     current_node[d] = node
 
-        # plt.clf()
-        # pos = graphviz_layout(graph, prog="dot")
-        # nx.draw(graph, pos, with_labels=True)
-        # plt.savefig("output.png")
+        graph.remove_nodes_from([n for n, d in graph.degree if d == 0])
+        if graph.number_of_nodes == 0:
+            return None
         return graph
