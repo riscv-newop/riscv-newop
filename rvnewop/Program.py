@@ -70,7 +70,7 @@ class Program:
                     )
                 )
         for block in self.basicBlocks:
-            block.getSubBlocks()
+            block.genSubBlocks()
 
     def findBasicBlocks(self):
         self.visited = {}
@@ -139,3 +139,9 @@ class Program:
                 print("SB: S: " + hex(sbb.start))
                 print("SB: E: " + hex(sbb.end))
                 print([str(x) for x in sbb.bbInstructions()])
+
+    def getSubBlocks(self):
+        """Returns an array of subblocks"""
+        return [
+            subblock for bblock in self.basicBlocks for subblock in bblock.sub_blocks
+        ]

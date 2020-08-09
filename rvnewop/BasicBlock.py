@@ -18,7 +18,11 @@ class BasicBlock:
         self.instructions = instructions
         self.sub_blocks = []
 
-    def getSubBlocks(self):
+    def genSubBlocks(self):
+        """Generate subblocks within existing basic block
+
+        Subblocks share the properties of a basic block but are broken up
+        by load and store instructions as well as the normal jump and branch instructions."""
         pc = self.start
         s_pc = pc
         l_pc = None
@@ -50,7 +54,9 @@ class BasicBlock:
 
         if making_sub_block:
             if l_pc is not None:
-                self.sub_blocks.append(BasicBlock(s_pc, l_pc, self.frequency, self.instructions))
+                self.sub_blocks.append(
+                    BasicBlock(s_pc, l_pc, self.frequency, self.instructions)
+                )
 
     def __str__(self):
         print("Start PC: " + hex(self.start))
