@@ -113,3 +113,33 @@ def graphToString(dag):
 def isIsomorphic(a, b):
     """Checks if two DAGs are isomorphic"""
     return graphToString(a) == graphToString(b)
+
+
+def graphToParenStringRecursive(node, dag):
+    """subroutine to converts a graph to a parenthesized string
+
+    used in graphToParenString"""
+    if not node or dag.nodes[node]["type"] == "register":
+        return ""
+
+    # lexographically sorted children
+    lex = sorted(
+        [
+            child
+            for child in dag.successors(node)
+            if dag.nodes[child]["type"] == "instruction"
+        ],
+        key=lambda x: x.split()[1],
+    )
+
+    return "({}{})".format(
+        node.split()[1],
+        "".join([graphToParenStringRecursive(child, dag) for child in lex]),
+    )
+
+
+def graphToParenString(dag):
+    """converts a graph to a parenthesized string"""
+    root = findRoot(dag, list(dag)[0])
+
+    return graphToParenStringRecursive(root, dag)
