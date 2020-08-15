@@ -75,11 +75,11 @@ class RV32:
         bstr = bstr.zfill(size)
         ba = bitarray(bstr)
 
-        return self.decode(ba)
+        return self.decode(ba, size)
 
-    def decode(self, ba):
+    def decode(self, ba, size):
         """Decode an instruction encoded in binary as a bitarray
         Returns RVInstruction"""
         return self.instructionTable.get(
-            RVFormatParser.getOpcode(ba), lambda x: RVInstruction(rv_name="error")
+            RVFormatParser.getOpcode(ba), lambda x: RVInstruction(rv_name="error", rv_size=size)
         )(ba)
