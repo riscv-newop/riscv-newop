@@ -37,6 +37,12 @@ class Program:
         # TODO decouple storing frequencies from program?
         self.frequencies[pc] = freq
 
+    def getTotalInstructionCount(self):
+        total_ins = 0
+        for pc in self.frequencies:
+            total_ins += self.frequencies[pc] 
+        return total_ins
+
     def printAll(self, file=sys.stdout):
         """Prints out all instructions to file (default is stdout)"""
         for pc in self.instructions:
@@ -139,6 +145,9 @@ class Program:
                 print("SB: S: " + hex(sbb.start))
                 print("SB: E: " + hex(sbb.end))
                 print([str(x) for x in sbb.bbInstructions()])
+
+    def printTotalInsCount(self):
+        print("Total Instructions in " + self.name + " are "  + str(self.getTotalInstructionCount()))
 
     def getSubBlocks(self):
         """Returns an array of subblocks"""
