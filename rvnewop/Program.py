@@ -146,9 +146,6 @@ class Program:
                 print("SB: E: " + hex(sbb.end))
                 print([str(x) for x in sbb.bbInstructions()])
 
-    def printTotalInsCount(self):
-        print("Total Instructions in " + self.name + " are "  + str(self.getTotalInstructionCount()))
-
     def getSubBlocks(self):
         """Returns an array of subblocks"""
         return [
