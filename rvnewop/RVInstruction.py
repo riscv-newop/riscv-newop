@@ -11,6 +11,7 @@ class RVInstruction:
         rv_name=None,
         rv_size=None,
         rv_binary=None,
+        rv_freq=None,
     ):
         """Constructs a RV Instruction based on parameters
 
@@ -31,6 +32,7 @@ class RVInstruction:
         self.name = rv_name if rv_name is not None else ""
         self.size = rv_size if rv_size is not None else 0
         self.binary = rv_binary if rv_binary is not None else ""
+        self.freq = rv_freq if rv_freq is not None else 0
 
     @staticmethod
     def get_print_name(register_name):
@@ -122,7 +124,7 @@ class RVInstruction:
             "lhu",
             "ld",
             "lwu",
-        ] 
+        ]
 
     def isStore(self):
         return self.name in [
@@ -139,7 +141,7 @@ class RVInstruction:
             "sh",
             "sw",
             "sd",
-        ] 
+        ]
 
     def isMemAccess(self):
         return self.isLoad() or self.isStore()

@@ -27,6 +27,10 @@ class Program:
         hexd - (str) instruction encoded in hexadecimal
         freq - (int) amount of times instruction shows up"""
         inst = self.rv.decodeHex(hexd)
+        if not inst:
+            print("ERROR decoding: {}".format(hexd))
+            return
+        inst.freq = freq
         self.instructions[pc] = inst
         if inst is None:
             print (hexd)
@@ -42,7 +46,7 @@ class Program:
     def getTotalInstructionCount(self):
         total_ins = 0
         for pc in self.frequencies:
-            total_ins += self.frequencies[pc] 
+            total_ins += self.frequencies[pc]
         return total_ins
 
     def printAll(self, file=sys.stdout):
