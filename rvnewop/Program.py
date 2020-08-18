@@ -28,6 +28,8 @@ class Program:
         freq - (int) amount of times instruction shows up"""
         inst = self.rv.decodeHex(hexd)
         self.instructions[pc] = inst
+        if inst is None:
+            print (hexd)
 
         # add to set as you go
         self.instructionNameSet.add(inst.name)
