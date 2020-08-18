@@ -11,6 +11,7 @@ from .V32 import V32
 from .RV32 import RV32
 from .Histogram import Histogram
 from .Program import Program
+from .Subgraph import Subgraph
 
 from .main import main
 from .unused import unused

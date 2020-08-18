@@ -23,6 +23,10 @@ def isCandidate(node, dag):
                 leaf_count += 1
             if type == "instruction":
                 has_inst = True
+
+                # we consider the pc to be a register "source"
+                if dag.nodes[n]["instruction"].name == "auipc":
+                    leaf_count += 1
             visited.add(n)
 
     if leaf_count > 2:
