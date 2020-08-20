@@ -22,6 +22,7 @@ for b in tqdm(prog.getSubBlocks()):
     for n in rv.analysis.findCandidateSubgraphs(graph):
         plt.clf()
         sg = rv.analysis.createSubtreeFromNode(graph, n)
+        subgraph = rv.Subgraph(sg, n)
 
         # print(
         #     "{} hash: {} paren: {}".format(
@@ -33,5 +34,6 @@ for b in tqdm(prog.getSubBlocks()):
 
         pos = graphviz_layout(graph, prog="dot")
         nx.draw(sg, pos, with_labels=True, font_size=20)
-        plt.savefig("output" + str(i) + ".png")
+
+        plt.savefig("output{}_{}.png".format(i, subgraph.score))
         i += 1
