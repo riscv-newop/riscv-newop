@@ -39,7 +39,7 @@ for FILENAME in glob("./embench_hst/*.hst"):
 
         # add candidate subgraph with highest score to new instructions list
         if temp:
-            sorted(temp, key=lambda sg: sg.score, reverse=True)
+            temp = sorted(temp, key=lambda sg: sg.score, reverse=True)
             new_instructions.append(temp[0])
 
     saved_cycles = sum([sg.score for sg in new_instructions])
