@@ -2,6 +2,7 @@ from . import RV32
 from . import BasicBlock
 
 import sys
+import networkx as nx
 
 
 class Program:
@@ -67,7 +68,35 @@ class Program:
             return min_pc
         return None
 
+    def createSubBlockGraph(self):
+        self.sbGraph = nx.DiGraph()
+        self.sbbd=dict()
+        for block in self.basicBlocks:
+            for sbb in block.sub_blocks:
+                s_pc = sbb.start
+                self.sbbd[s_pc] = sbb
+                n = sbb.name
+                self.sbGraph.add_node(n, type="subblock", subblock = sbb)
+
+        # add edges for sequential successors
+        for pc in self.sbbd:
+            e_pc = self.sbbd[pc].end
+            n_pc = e_pc + self.instructions[e_pc].sizeInBytes()
+            if n_pc in self.sbbd:
+                self.sbGraph.add_edge(self.sbbd[pc].name, self.sbbd[n_pc].name)
+                
+        # add edges for branch targets
+        for pc in self.sbbd:
+            e_pc = self.sbbd[pc].end
+            insn = self.instructions[e_pc]
+            if insn.isControlTransferPCRelative():
+                target_pc = e_pc + insn.immediates[0]
+                if target_pc in self.sbbd:
+                    self.sbGraph.add_edge(self.sbbd[pc].name, self.sbbd[target_pc].name)
+        return
+
     def createBasicBlocks(self):
+        idx = 0
         for entry in self.leader:
             if entry in self.instructions:
                 start_pc = entry
@@ -76,13 +105,15 @@ class Program:
                 while next_pc in self.instructions and next_pc not in self.leader:
                     prev_pc = next_pc
                     next_pc = prev_pc + self.instructions[next_pc].sizeInBytes()
-                self.basicBlocks.append(
-                    BasicBlock(
-                        start_pc, prev_pc, self.frequencies[prev_pc], self.instructions
-                    )
-                )
+                bb = BasicBlock(
+                        "B" + str(idx), start_pc, prev_pc, self.frequencies[prev_pc], self.instructions
+                     )
+                self.basicBlocks.append(bb)
+                idx += 1
         for block in self.basicBlocks:
             block.genSubBlocks()
+
+        self.createSubBlockGraph()
 
     def findBasicBlocks(self):
         self.visited = {}
@@ -143,14 +174,20 @@ class Program:
     def printBasicBlocks(self):
         print("Basic blocks in Program: " + self.name)
         for bb in self.basicBlocks:
-            print("S: " + hex(bb.start))
-            print("E: " + hex(bb.end))
+            print(bb.name + " S: " + hex(bb.start))
+            print(bb.name + " E: " + hex(bb.end))
             print([str(x) for x in bb.bbInstructions()])
             print("Sub-blocks in basic block:")
             for sbb in bb.sub_blocks:
-                print("SB: S: " + hex(sbb.start))
-                print("SB: E: " + hex(sbb.end))
+                print(sbb.name + " S: " + hex(sbb.start))
+                print(sbb.name + " E: " + hex(sbb.end))
                 print([str(x) for x in sbb.bbInstructions()])
+
+    def printSubBlocks(self):
+        for pc in self.sbbd:
+            sbb = self.sbbd[pc]
+            print(sbb.name + " S: " + hex(sbb.start))
+            print(sbb.name + " E: " + hex(sbb.end))
 
     def getSubBlocks(self):
         """Returns an array of subblocks"""

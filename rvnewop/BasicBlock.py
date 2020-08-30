@@ -4,7 +4,7 @@ import networkx as nx
 class BasicBlock:
     """A class that contains the beginning and end of basic blocks"""
 
-    def __init__(self, start, end, freq, instructions):
+    def __init__(self, name, start, end, freq, instructions):
         """The start and end values are the pc values
            for the basic block begins and ends.
            freq is the count of how many times the block
@@ -12,6 +12,7 @@ class BasicBlock:
            instructions is a dictionary of decoded instructions
            keyed by PC values. """
 
+        self.name = name
         self.start = start
         self.end = end
         self.frequency = freq
@@ -26,41 +27,58 @@ class BasicBlock:
         pc = self.start
         s_pc = pc
         l_pc = None
-        making_sub_block = True
+        making_arith_block = True
+        making_mem_block = False
+        idx = 0
         while pc <= self.end:
             insn = self.instructions[pc]
             if insn.isControlTransfer():
-                if making_sub_block:
+                if making_arith_block or making_mem_block:
                     """ We are done making the sub-block """
-                    if l_pc is not None:
-                        self.sub_blocks.append(
-                            BasicBlock(s_pc, l_pc, self.frequency, self.instructions)
-                        )
-                    making_sub_block = False
+                    """ Include this last control transfer PC in the sub-block """
+                    self.sub_blocks.append(
+                        BasicBlock(self.name+"."+str(idx), s_pc, pc, self.frequency, self.instructions)
+                    )
+                    idx += 1
+                    making_arith_block = False
+                    making_mem_block = False
             elif insn.isMemAccess():
-                if making_sub_block:
-                    """ We are done making the sub-block """
+                if making_arith_block:
+                    """ We are done making some previous sub-block """
                     if l_pc is not None:
                         self.sub_blocks.append(
-                            BasicBlock(s_pc, l_pc, self.frequency, self.instructions)
+                            BasicBlock(self.name+"."+str(idx), s_pc, l_pc, self.frequency, self.instructions)
                         )
-                    making_sub_block = False
-            else:
-                if not making_sub_block:
+                        idx += 1
+
+                    """ set s_pc for memory sub-block """
                     s_pc = pc
-                    making_sub_block = True
+                    making_arith_block = False
+                    making_mem_block = True
+            else:
+                if not making_arith_block:
+                    """ Make a sub-block for mem accesses """
+                    if making_mem_block:
+                        self.sub_blocks.append(
+                            BasicBlock(self.name+"."+str(idx), s_pc, l_pc, self.frequency, self.instructions)
+                        )
+                        idx += 1
+                        making_mem_block = False
+                    s_pc = pc
+                    making_arith_block = True
             l_pc = pc
             pc += insn.sizeInBytes()
 
-        if making_sub_block:
+        if making_arith_block or making_mem_block:
             if l_pc is not None:
                 self.sub_blocks.append(
-                    BasicBlock(s_pc, l_pc, self.frequency, self.instructions)
+                    BasicBlock(self.name+"."+str(idx), s_pc, l_pc, self.frequency, self.instructions)
                 )
+                idx += 1
 
     def __str__(self):
-        print("Start PC: " + hex(self.start))
-        print("End PC: " + hex(self.end))
+        print(self.name + ": Start PC: " + hex(self.start))
+        print(self.name + ": End PC: " + hex(self.end))
 
     # TODO come up with a better name for this function??
     # People were right... there are only 3 hard problems in
