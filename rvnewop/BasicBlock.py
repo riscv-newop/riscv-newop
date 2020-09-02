@@ -37,7 +37,13 @@ class BasicBlock:
                     """ We are done making the sub-block """
                     """ Include this last control transfer PC in the sub-block """
                     self.sub_blocks.append(
-                        BasicBlock(self.name+"."+str(idx), s_pc, pc, self.frequency, self.instructions)
+                        BasicBlock(
+                            self.name + "." + str(idx),
+                            s_pc,
+                            pc,
+                            self.frequency,
+                            self.instructions,
+                        )
                     )
                     idx += 1
                     making_arith_block = False
@@ -47,7 +53,13 @@ class BasicBlock:
                     """ We are done making some previous sub-block """
                     if l_pc is not None:
                         self.sub_blocks.append(
-                            BasicBlock(self.name+"."+str(idx), s_pc, l_pc, self.frequency, self.instructions)
+                            BasicBlock(
+                                self.name + "." + str(idx),
+                                s_pc,
+                                l_pc,
+                                self.frequency,
+                                self.instructions,
+                            )
                         )
                         idx += 1
 
@@ -60,7 +72,13 @@ class BasicBlock:
                     """ Make a sub-block for mem accesses """
                     if making_mem_block:
                         self.sub_blocks.append(
-                            BasicBlock(self.name+"."+str(idx), s_pc, l_pc, self.frequency, self.instructions)
+                            BasicBlock(
+                                self.name + "." + str(idx),
+                                s_pc,
+                                l_pc,
+                                self.frequency,
+                                self.instructions,
+                            )
                         )
                         idx += 1
                         making_mem_block = False
@@ -72,7 +90,13 @@ class BasicBlock:
         if making_arith_block or making_mem_block:
             if l_pc is not None:
                 self.sub_blocks.append(
-                    BasicBlock(self.name+"."+str(idx), s_pc, l_pc, self.frequency, self.instructions)
+                    BasicBlock(
+                        self.name + "." + str(idx),
+                        s_pc,
+                        l_pc,
+                        self.frequency,
+                        self.instructions,
+                    )
                 )
                 idx += 1
 
@@ -99,6 +123,16 @@ class BasicBlock:
             else:
                 yield self.instructions[current]
                 current += self.instructions[current].sizeInBytes()
+
+    def getLiveRegisters(self):
+        """Returns set of registers the basic block requires to be live as well as
+        a set of registers that the basic block kills"""
+        need_live = set()
+        kills = set()
+        for inst in self.bbInstructions():
+            kills.update([x for x in inst.dest_registers if x])
+            need_live.update([x for x in inst.src_registers if x and x not in killed])
+        return (need_live, kills)
 
     def constructDAG(self):
         """Construct Directed Acyclic Graph representation
