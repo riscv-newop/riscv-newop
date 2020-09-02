@@ -34,7 +34,7 @@ class Program:
         inst.freq = freq
         self.instructions[pc] = inst
         if inst is None:
-            print (hexd)
+            print(hexd)
 
         # add to set as you go
         self.instructionNameSet.add(inst.name)
@@ -50,12 +50,12 @@ class Program:
             total_ins += self.frequencies[pc]
         return total_ins
 
-    def printAll(self, file=sys.stdout):
+    def printAll(self, ofile=sys.stdout):
         """Prints out all instructions to file (default is stdout)"""
         for pc in self.instructions:
             print(
-                self.name + ": " + "{}: {}".format(hex(pc), self.instructions[pc]),
-                file=file,
+                "{} {}: {}".format(self.name, hex(pc), self.instructions[pc]),
+                file=ofile,
             )
 
     def getNextUnvisited(self):
@@ -70,13 +70,13 @@ class Program:
 
     def createSubBlockGraph(self):
         self.sbGraph = nx.DiGraph()
-        self.sbbd=dict()
+        self.sbbd = dict()
         for block in self.basicBlocks:
             for sbb in block.sub_blocks:
                 s_pc = sbb.start
                 self.sbbd[s_pc] = sbb
                 n = sbb.name
-                self.sbGraph.add_node(n, type="subblock", subblock = sbb)
+                self.sbGraph.add_node(n, type="subblock", subblock=sbb, pc=s_pc)
 
         # add edges for sequential successors
         for pc in self.sbbd:
@@ -84,7 +84,7 @@ class Program:
             n_pc = e_pc + self.instructions[e_pc].sizeInBytes()
             if n_pc in self.sbbd:
                 self.sbGraph.add_edge(self.sbbd[pc].name, self.sbbd[n_pc].name)
-                
+
         # add edges for branch targets
         for pc in self.sbbd:
             e_pc = self.sbbd[pc].end
@@ -106,8 +106,12 @@ class Program:
                     prev_pc = next_pc
                     next_pc = prev_pc + self.instructions[next_pc].sizeInBytes()
                 bb = BasicBlock(
-                        "B" + str(idx), start_pc, prev_pc, self.frequencies[prev_pc], self.instructions
-                     )
+                    "B" + str(idx),
+                    start_pc,
+                    prev_pc,
+                    self.frequencies[prev_pc],
+                    self.instructions,
+                )
                 self.basicBlocks.append(bb)
                 idx += 1
         for block in self.basicBlocks:
@@ -153,9 +157,9 @@ class Program:
                         break
                     insn = self.instructions[pc]
                 if not end_of_sequence:
-                    """ we encountered a control transfer instruction
+                    """we encountered a control transfer instruction
                     mark the next PC following the control transfer
-                    as a leader """
+                    as a leader"""
                     self.visited[pc] = True
                     leader_pc = pc + insn.sizeInBytes()
                     if leader_pc not in self.leader:
@@ -194,3 +198,31 @@ class Program:
         return [
             subblock for bblock in self.basicBlocks for subblock in bblock.sub_blocks
         ]
+
+    def setSubBlockLiveness(self, graph, current, add_live=set()):
+        """Sets current node's liveness attributes"""
+        (needs_live, kills) = self.sbbd[graph.nodes[current]["pc"]].getLiveRegisters()
+
+        graph.nodes[current]["needs_live"] = needs_live | add_live
+        graph.nodes[current]["kills"] = kills
+
+    def depthFirstTraversalLiveness(self, graph, current):
+        """Sets liveness values of a whole graph via a depth first traversal"""
+        successors = graph.successors(current)
+
+        # no children
+        if len(list(successors)) == 0:
+            self.setSubBlockLiveness(graph, current)
+            return
+
+        # has children
+        else:
+            (needs_live, kills) = self.sbbd[
+                graph.nodes[current]["pc"]
+            ].getLiveRegisters()
+            add_live = set()
+            for child in successors:
+                depthFirstTraversalLiveness(graph, child)
+                add_live.update(graph.nodes[child]["needs_live"] - kills)
+
+            setSubBlockLiveness(graph, current, add_live=add_live)
