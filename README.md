@@ -12,10 +12,8 @@ python3 -m pip install rvnewop
 ## Usage
 ```Python
 from rvnewop import RV32
-from bitarray import bitarray
 
 isa_model = RV32("32I")
-
 print(isa_model.decodeHex("00e787b3"))
 ```
 output
