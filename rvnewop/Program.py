@@ -20,6 +20,9 @@ class Program:
         self.formatSet = set()
         self.basicBlocks = list()
 
+        # list for liveness graph
+        self.loop_backs = []
+
     def addInstruction(self, pc, hexd, freq):
         """Adds an instruction to a Program given a PC value
         and the instruction hex value
@@ -71,7 +74,7 @@ class Program:
     def createSubBlockGraph(self):
         self.sbGraph = nx.DiGraph()
         self.sbbd = dict()
-        for block in self.basicBlocks:
+        for block in self.basicBlocks
             for sbb in block.sub_blocks:
                 s_pc = sbb.start
                 self.sbbd[s_pc] = sbb
@@ -220,9 +223,16 @@ class Program:
             (needs_live, kills) = self.sbbd[
                 graph.nodes[current]["pc"]
             ].getLiveRegisters()
+
             add_live = set()
             for child in successors:
-                depthFirstTraversalLiveness(graph, child)
-                add_live.update(graph.nodes[child]["needs_live"] - kills)
+                # if child loops back, save its value and skip
+                elif graph.nodes[child] < graph.nodes[current]:
+                    self.loop_backs.append((current, child))
+                else:
+                    depthFirstTraversalLiveness(graph, child)
+                    add_live.update(graph.nodes[child]["needs_live"] - kills)
 
-            setSubBlockLiveness(graph, current, add_live=add_live)
+            self.setSubBlockLiveness(graph, current, add_live=add_live)
+
+    # TODO go back
