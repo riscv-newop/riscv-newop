@@ -74,7 +74,7 @@ class Program:
     def createSubBlockGraph(self):
         self.sbGraph = nx.DiGraph()
         self.sbbd = dict()
-        for block in self.basicBlocks
+        for block in self.basicBlocks:
             for sbb in block.sub_blocks:
                 s_pc = sbb.start
                 self.sbbd[s_pc] = sbb
@@ -227,12 +227,51 @@ class Program:
             add_live = set()
             for child in successors:
                 # if child loops back, save its value and skip
-                elif graph.nodes[child] < graph.nodes[current]:
+                if graph.nodes[child] < graph.nodes[current]:
                     self.loop_backs.append((current, child))
+
+                # go down and check the children
                 else:
                     depthFirstTraversalLiveness(graph, child)
                     add_live.update(graph.nodes[child]["needs_live"] - kills)
 
             self.setSubBlockLiveness(graph, current, add_live=add_live)
 
-    # TODO go back
+    def propagateLivenessUpdate(self, graph, current):
+        while True:
+            parents = list(graph.predecessors(current))
+
+            if len(parents) == 0:
+                return
+
+            # now we can assume there is only one parent due to the
+            # construction of the graph
+            parent = parents[0]
+
+            original_list = graph.nodes[current]["needs_live"]
+            modified_list = graph.nodes[parent]["needs_live"] | (
+                graph.nodes[current]["needs_live"] - graph.nodes[parent]["kills"]
+            )
+
+            # done if there are no more changes to propagate
+            if original_list == modified_list:
+                return
+
+            # modify parent liveness list and set current to parent
+            graph.nodes[parent]["needs_live"] = modified_list
+            current = parent
+
+    # NOTE: you have to call createSubBlockGraph before function can be called
+    def addLivenessValuesToGraph(self, graph):
+
+        # find root and run Depth First traversal from root
+        self.root = self.sbbd[min([pc for pc in self.sbbd])]
+        self.depthFirstTraversalLiveness(graph, root)
+
+        for (current, child) in self.loop_backs:
+
+            # update current with child's values and propagate values upwards
+            graph.nodes[current]["needs_live"] = graph.nodes[current]["needs_live"] | (
+                graph.nodes[child]["needs_live"] - graph.nodes[current]["kills"]
+            )
+            self.propagateLivenessUpdate(graph, current)
