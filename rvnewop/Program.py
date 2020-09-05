@@ -47,26 +47,6 @@ class Program:
         # TODO decouple storing frequencies from program?
         self.frequencies[pc] = freq
 
-    def addInstructionObj(self, inst, freq=1):
-        """
-        Adds RVInstruction object to instructions list
-
-        inst - RVInstruction object to add
-        freq (optional) - frequency of instruction
-        """
-        if not inst:
-            return
-        inst.freq = freq
-        self.instructions[pc] = inst
-
-        # add to set as you go
-        self.instructionNameSet.add(inst.name)
-        self.registerSet.update(set(inst.src_registers) | set(inst.dest_registers))
-        self.formatSet.add(inst.format)
-
-        # TODO decouple storing frequencies from program?
-        self.frequencies[pc] = freq
-
     def getTotalInstructionCount(self):
         total_ins = 0
         for pc in self.frequencies:
