@@ -23,6 +23,26 @@ class Program:
         # list for liveness graph
         self.loop_backs = []
 
+    def _addInstruction(self, pc, inst, freq):
+        inst.freq = freq
+        self.instructions[pc] = inst
+
+        # add to set as you go
+        self.instructionNameSet.add(inst.name)
+        self.registerSet.update(set(inst.src_registers) | set(inst.dest_registers))
+        self.formatSet.add(inst.format)
+
+        # TODO decouple storing frequencies from program?
+        self.frequencies[pc] = inst.freq
+
+    """ This function is mostly meant for easily creating
+        synthetic programs that can be used for testing
+        the analysis routines"""
+    def addInstructionObj(self, pc, inst, freq):
+        if inst is None:
+            return
+        self._addInstruction(pc, inst, freq)
+
     def addInstruction(self, pc, hexd, freq):
         """Adds an instruction to a Program given a PC value
         and the instruction hex value
@@ -34,18 +54,7 @@ class Program:
         if not inst:
             print("ERROR decoding: {}".format(hexd))
             return
-        inst.freq = freq
-        self.instructions[pc] = inst
-        if inst is None:
-            print(hexd)
-
-        # add to set as you go
-        self.instructionNameSet.add(inst.name)
-        self.registerSet.update(set(inst.src_registers) | set(inst.dest_registers))
-        self.formatSet.add(inst.format)
-
-        # TODO decouple storing frequencies from program?
-        self.frequencies[pc] = freq
+        self._addInstruction(pc, inst, freq)
 
     def getTotalInstructionCount(self):
         total_ins = 0
