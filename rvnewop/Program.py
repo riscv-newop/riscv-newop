@@ -308,3 +308,21 @@ class Program:
                     "needs_live"
                 ] | (graph.nodes[child]["needs_live"] - graph.nodes[current]["kills"])
                 self.propagateLivenessUpdate(graph, current)
+
+    def needsToStayLive(self, current, register):
+        """
+        Returns if `register` needs to stay live from `current` subbasicblock
+
+        note: MUST be called after addLivenessValuesToGraph
+        """
+        return any(
+            [
+                (register in self.sbGraph[child]["needs_live"])
+                for child in self.sbGraph.successors(current)
+            ]
+        )
+
+        # for child in self.sbGraph.successors(current):
+        #     if register in self.sbGraph[child]["needs_live"]:
+        #         return True
+        # return False
