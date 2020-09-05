@@ -130,8 +130,13 @@ class BasicBlock:
         need_live = set()
         kills = set()
         for inst in self.bbInstructions():
+            # fix edge case of using and killing same register in one instruction
+            for dest in inst.dest_registers:
+                if dest in inst.src_registers and dest not in kills:
+                    need_live.add(dest)
+                    kills.add(dest)
             kills.update([x for x in inst.dest_registers if x])
-            need_live.update([x for x in inst.src_registers if x and x not in killed])
+            need_live.update([x for x in inst.src_registers if x and x not in kills])
         return (need_live, kills)
 
     def constructDAG(self):

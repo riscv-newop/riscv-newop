@@ -47,6 +47,26 @@ class Program:
         # TODO decouple storing frequencies from program?
         self.frequencies[pc] = freq
 
+    def addInstructionObj(self, inst, freq=1):
+        """
+        Adds RVInstruction object to instructions list
+
+        inst - RVInstruction object to add
+        freq (optional) - frequency of instruction
+        """
+        if not inst:
+            return
+        inst.freq = freq
+        self.instructions[pc] = inst
+
+        # add to set as you go
+        self.instructionNameSet.add(inst.name)
+        self.registerSet.update(set(inst.src_registers) | set(inst.dest_registers))
+        self.formatSet.add(inst.format)
+
+        # TODO decouple storing frequencies from program?
+        self.frequencies[pc] = freq
+
     def getTotalInstructionCount(self):
         total_ins = 0
         for pc in self.frequencies:
@@ -212,6 +232,7 @@ class Program:
     def depthFirstTraversalLiveness(self, graph, current):
         """Sets liveness values of a whole graph via a depth first traversal"""
         successors = graph.successors(current)
+        self.visitedLive.add(current)
 
         # no children
         if len(list(successors)) == 0:
@@ -246,32 +267,44 @@ class Program:
 
             # now we can assume there is only one parent due to the
             # construction of the graph
-            parent = parents[0]
+            for parent in parents:
+                original_list = graph.nodes[current]["needs_live"]
+                modified_list = graph.nodes[parent]["needs_live"] | (
+                    graph.nodes[current]["needs_live"] - graph.nodes[parent]["kills"]
+                )
 
-            original_list = graph.nodes[current]["needs_live"]
-            modified_list = graph.nodes[parent]["needs_live"] | (
-                graph.nodes[current]["needs_live"] - graph.nodes[parent]["kills"]
-            )
+                # done if there are no more changes to propagate
+                if original_list == modified_list:
+                    return
 
-            # done if there are no more changes to propagate
-            if original_list == modified_list:
-                return
-
-            # modify parent liveness list and set current to parent
-            graph.nodes[parent]["needs_live"] = modified_list
-            current = parent
+                # modify parent liveness list and set current to parent
+                graph.nodes[parent]["needs_live"] = modified_list
+                propagateLivenessUpdate(graph, parent)
 
     # NOTE: you have to call createSubBlockGraph before function can be called
-    def addLivenessValuesToGraph(self, graph):
+    def addLivenessValuesToGraph(self):
+        graph = self.sbGraph
+
+        self.visitedLive = set()
 
         # find root and run Depth First traversal from root
-        self.root = self.sbbd[min([pc for pc in self.sbbd])]
-        self.depthFirstTraversalLiveness(graph, root)
+        N = len(self.sbbd)
+        while len(self.visitedLive) < N:
+            self.root = self.sbbd[
+                min(
+                    [
+                        pc
+                        for pc in self.sbbd
+                        if self.sbbd[pc].name not in self.visitedLive
+                    ]
+                )
+            ]
+            self.depthFirstTraversalLiveness(graph, root)
 
-        for (current, child) in self.loop_backs:
+            for (current, child) in self.loop_backs:
 
-            # update current with child's values and propagate values upwards
-            graph.nodes[current]["needs_live"] = graph.nodes[current]["needs_live"] | (
-                graph.nodes[child]["needs_live"] - graph.nodes[current]["kills"]
-            )
-            self.propagateLivenessUpdate(graph, current)
+                # update current with child's values and propagate values upwards
+                graph.nodes[current]["needs_live"] = graph.nodes[current][
+                    "needs_live"
+                ] | (graph.nodes[child]["needs_live"] - graph.nodes[current]["kills"])
+                self.propagateLivenessUpdate(graph, current)
