@@ -38,6 +38,7 @@ class Program:
     """ This function is mostly meant for easily creating
         synthetic programs that can be used for testing
         the analysis routines"""
+
     def addInstructionObj(self, pc, inst, freq):
         if inst is None:
             return
@@ -220,8 +221,8 @@ class Program:
 
     def depthFirstTraversalLiveness(self, graph, current):
         """Sets liveness values of a whole graph via a depth first traversal"""
-        successors = graph.successors(current)
         self.visitedLive.add(current)
+        successors = graph.successors(current)
 
         # no children
         if len(list(successors)) == 0:
@@ -272,14 +273,12 @@ class Program:
 
     # NOTE: you have to call createSubBlockGraph before function can be called
     def addLivenessValuesToGraph(self):
-        graph = self.sbGraph
-
         self.visitedLive = set()
 
         # find root and run Depth First traversal from root
         N = len(self.sbbd)
         while len(self.visitedLive) < N:
-            self.root = self.sbbd[
+            root = self.sbbd[
                 min(
                     [
                         pc
@@ -287,16 +286,19 @@ class Program:
                         if self.sbbd[pc].name not in self.visitedLive
                     ]
                 )
-            ]
-            self.depthFirstTraversalLiveness(graph, root)
+            ].name
+            self.depthFirstTraversalLiveness(self.sbGraph, root)
 
             for (current, child) in self.loop_backs:
 
                 # update current with child's values and propagate values upwards
-                graph.nodes[current]["needs_live"] = graph.nodes[current][
+                self.sbGraph.nodes[current]["needs_live"] = self.sbGraph.nodes[current][
                     "needs_live"
-                ] | (graph.nodes[child]["needs_live"] - graph.nodes[current]["kills"])
-                self.propagateLivenessUpdate(graph, current)
+                ] | (
+                    self.sbGraph.nodes[child]["needs_live"]
+                    - self.sbGraph.nodes[current]["kills"]
+                )
+                self.propagateLivenessUpdate(self.sbGraph, current)
 
     def needsToStayLive(self, current, register):
         """
