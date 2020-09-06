@@ -308,7 +308,7 @@ class Program:
         """
         return any(
             [
-                (register in self.sbGraph[child]["needs_live"])
+                (register in self.sbGraph.nodes[child]["needs_live"])
                 for child in self.sbGraph.successors(current)
             ]
         )

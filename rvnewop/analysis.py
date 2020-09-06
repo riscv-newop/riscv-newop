@@ -1,7 +1,7 @@
 import networkx as nx
 
 
-def isCandidate(node, dag):
+def isCandidate(prog, node, dag):
     """Returns whether node and everything from it makes a feasible candidate subgraph,
 
     a candidate must:
@@ -15,7 +15,17 @@ def isCandidate(node, dag):
     leaf_count = 0
     has_inst = False
     visited = {node}
+
+    """ Record dst registers of root """
+    dst_registers_root = getDstRegisters(dag, node)
+
+    """For liveness check, build list of destination registers
+    written to by intermediate instructions"""
+    dst_registers = set()
+
     # for n in dict(nx.bfs_successors(dag, source=node))[node]:
+    """Note: nx.bfs_edges returns a set of all edges traversed starting with
+    the node, therefore we do not add nodes layer by layer"""
     for n in [y for x in nx.bfs_edges(dag, source=node) for y in x if y is not node]:
         if n not in visited:
             type = dag.nodes[n]["type"]
@@ -27,13 +37,29 @@ def isCandidate(node, dag):
                 # we consider the pc to be a register "source"
                 if dag.nodes[n]["instruction"].name == "auipc":
                     leaf_count += 1
+
+                # add dst registers of this instruction to the list
+                dst_n = getDstRegisters(dag, n)
+                dst_registers.update(dst_n)
+                
             visited.add(n)
+
+    """ Track only those registers that are not also written to by the
+    root node of the candidate """
+    dst_registers = dst_registers - set(dst_registers_root)
 
     if leaf_count > 2:
         return False
 
     if not has_inst:
         return False
+
+    """ check that making a complex single instruction out of this candidate
+    does not violate liveness properties of the sub-block's successors"""
+    for r in dst_registers:
+        if prog.needsToStayLive(dag.graph["sub_block"], r):
+            print("Failed due to liveness requirement..")
+            return False
 
     return True
 
@@ -44,10 +70,10 @@ def createSubtreeFromNode(graph, node):
     return graph.subgraph([y for x in nx.bfs_edges(graph, node) for y in x])
 
 
-def findCandidateSubgraphs(dag):
+def findCandidateSubgraphs(prog, dag):
     """Searches DAG for candidate subgraphs
     returns an array of candidate starting nodes"""
-    return [n for n in dag if isCandidate(n, dag)]
+    return [n for n in dag if isCandidate(prog, n, dag)]
 
 
 def stringToNum(string):
@@ -81,6 +107,12 @@ def findRoot(dag, node):
         return node
     else:
         return findRoot(dag, parent[0])
+
+def getDstRegisters(dag, node_key):
+    node = dag.nodes[node_key]
+    if node["type"] == 'instruction':
+        return node["instruction"].dest_registers 
+    return None
 
 
 def graphToString(dag):

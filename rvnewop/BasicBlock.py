@@ -143,7 +143,7 @@ class BasicBlock:
         """Construct Directed Acyclic Graph representation
         of the Basic Block"""
 
-        graph = nx.DiGraph()
+        graph = nx.DiGraph(sub_block=self.name)
         registers = {
             reg
             for inst in self.bbInstructions()
