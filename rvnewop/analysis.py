@@ -16,17 +16,22 @@ def isCandidate(prog, node, dag):
     has_inst = False
     visited = {node}
 
+    subgraph_nodes = [
+        y for x in nx.bfs_edges(dag, source=node) for y in x if y is not node
+    ]
+
     """ Record dst registers of root """
     dst_registers_root = getDstRegisters(dag, node)
 
     """For liveness check, build list of destination registers
     written to by intermediate instructions"""
     dst_registers = set()
+    intermediate_nodes = []
 
     # for n in dict(nx.bfs_successors(dag, source=node))[node]:
     """Note: nx.bfs_edges returns a set of all edges traversed starting with
     the node, therefore we do not add nodes layer by layer"""
-    for n in [y for x in nx.bfs_edges(dag, source=node) for y in x if y is not node]:
+    for n in subgraph_nodes:
         if n not in visited:
             type = dag.nodes[n]["type"]
             if type == "register":
@@ -41,7 +46,8 @@ def isCandidate(prog, node, dag):
                 # add dst registers of this instruction to the list
                 dst_n = getDstRegisters(dag, n)
                 dst_registers.update(dst_n)
-                
+                intermediate_nodes.append(n)
+
             visited.add(n)
 
     """ Track only those registers that are not also written to by the
@@ -60,6 +66,13 @@ def isCandidate(prog, node, dag):
         if prog.needsToStayLive(dag.graph["sub_block"], r):
             print("Failed due to liveness requirement..")
             return False
+
+    # check that the intermediate dst registers are not required
+    # to be live within the subbasicblock itself
+    for n in intermediate_nodes:
+        for s in dag.predecessors(n):
+            if s not in subgraph_nodes and s is not node:
+                return False
 
     return True
 
@@ -108,10 +121,11 @@ def findRoot(dag, node):
     else:
         return findRoot(dag, parent[0])
 
+
 def getDstRegisters(dag, node_key):
     node = dag.nodes[node_key]
-    if node["type"] == 'instruction':
-        return node["instruction"].dest_registers 
+    if node["type"] == "instruction":
+        return node["instruction"].dest_registers
     return None
 
 

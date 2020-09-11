@@ -6,11 +6,11 @@ class BasicBlock:
 
     def __init__(self, name, start, end, freq, instructions):
         """The start and end values are the pc values
-           for the basic block begins and ends.
-           freq is the count of how many times the block
-           was executed.
-           instructions is a dictionary of decoded instructions
-           keyed by PC values. """
+        for the basic block begins and ends.
+        freq is the count of how many times the block
+        was executed.
+        instructions is a dictionary of decoded instructions
+        keyed by PC values."""
 
         self.name = name
         self.start = start
@@ -104,12 +104,8 @@ class BasicBlock:
         print(self.name + ": Start PC: " + hex(self.start))
         print(self.name + ": End PC: " + hex(self.end))
 
-    # TODO come up with a better name for this function??
-    # People were right... there are only 3 hard problems in
-    # computer science: cache invalidation, naming stuff,
-    # and off-by-one errors.
-    def bbInstructions(self):
-        """A generator to loop through *only* the instructions
+    def bbPCs(self):
+        """A generator to loop through *only* the PC values
         contained in a basic block."""
 
         current = self.start
@@ -118,11 +114,33 @@ class BasicBlock:
             if current == self.end:
                 # reached last instruction
                 # return it and exit
-                yield self.instructions[current]
+                yield current
                 break
             else:
-                yield self.instructions[current]
+                yield current
                 current += self.instructions[current].sizeInBytes()
+
+    # TODO come up with a better name for this function??
+    # People were right... there are only 3 hard problems in
+    # computer science: cache invalidation, naming stuff,
+    # and off-by-one errors.
+    def bbInstructions(self):
+        """A generator to loop through *only* the instructions
+        contained in a basic block."""
+        for pc in self.bbPCs():
+            yield self.instructions[pc]
+
+        # current = self.start
+        # while True:
+        #     # print(current)
+        #     if current == self.end:
+        #         # reached last instruction
+        #         # return it and exit
+        #         yield self.instructions[current]
+        #         break
+        #     else:
+        #         yield self.instructions[current]
+        #         current += self.instructions[current].sizeInBytes()
 
     def getLiveRegisters(self):
         """Returns set of registers the basic block requires to be live as well as
@@ -163,7 +181,7 @@ class BasicBlock:
                     list(self.instructions.values()).index(inst)
                 ]
                 node = str(hex(pc)) + ": " + str(inst)
-                graph.add_node(node, type="instruction", instruction=inst)
+                graph.add_node(node, type="instruction", instruction=inst, pc=pc)
                 for s in inst.src_registers:
                     graph.add_edge(node, current_node[s])
 
