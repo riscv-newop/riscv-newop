@@ -13,7 +13,7 @@ from glob import glob
 
 FILENAME = "./matmult-int.hst"
 
-#for FILENAME in glob("./embench_hst/*.hst"):
+# for FILENAME in glob("./embench_hst/*.hst"):
 print("Processing {}...".format(FILENAME))
 
 prog = rv.Histogram.parse(FILENAME, isa="32ICM")

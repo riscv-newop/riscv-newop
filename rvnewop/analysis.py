@@ -71,6 +71,8 @@ def isCandidate(prog, node, dag):
     # to be live within the subbasicblock itself
     for n in intermediate_nodes:
         for s in dag.predecessors(n):
+            # if a node has an edge coming to it from another subgraph
+            # this will fail the liveness check
             if s not in subgraph_nodes and s is not node:
                 return False
 
