@@ -1,3 +1,6 @@
+from . import M32
+
+
 class Subgraph:
     def __init__(self, graph, root):
         self.graph = graph
@@ -18,3 +21,20 @@ class Subgraph:
             - len([n for n in graph.nodes if graph.nodes[n]["type"] == "register"])
             - 1
         ) * graph.nodes[root]["instruction"].freq
+
+        self.depth = self.calcDepth(self.root)
+
+    def calcDepth(self, current):
+        """Calculate the depth of a DAG recursively"""
+        if len(list(self.graph.successors(current))) == 0:
+            return 0
+        return max([self.calcDepth(s) for s in self.graph.successors(current)]) + 1
+
+    def containsMultiplyInstruction(self):
+        return any(
+            [
+                self.graph.nodes[node]["instruction"].name in M32.instructionNameSet
+                for node in self.graph
+                if self.graph.nodes[node]["type"] == "instruction"
+            ]
+        )
