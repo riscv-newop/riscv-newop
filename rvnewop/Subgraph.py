@@ -23,6 +23,10 @@ class Subgraph:
         ) * graph.nodes[root]["instruction"].freq
 
         self.depth = self.calcDepth(self.root)
+        if self.depth < 2:
+            print("depth error!!!")
+            print(self.graph.nodes)
+            pass
 
     def calcDepth(self, current):
         """Calculate the depth of a DAG recursively"""

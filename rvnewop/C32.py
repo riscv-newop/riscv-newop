@@ -110,7 +110,7 @@ class C32:
                 # C.ADDI
                 return RVInstruction(
                     rv_format="CI",
-                    # rv_src_registers=[data["register"]], # does not show up in output
+                    rv_src_registers=[data["register"]], # does not show up in output
                     rv_dest_registers=[data["register"]],
                     rv_immediates=[fp.immToInt(imm)],
                     rv_name="c.addi",

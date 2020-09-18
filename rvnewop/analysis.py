@@ -13,6 +13,7 @@ def isCandidate(prog, node, dag):
         return False
 
     leaf_count = 0
+    inst_count = 0
     has_inst = False
     visited = {node}
 
@@ -38,7 +39,7 @@ def isCandidate(prog, node, dag):
                 leaf_count += 1
             if type == "instruction":
                 has_inst = True
-
+                inst_count += 1
                 # we consider the pc to be a register "source"
                 if dag.nodes[n]["instruction"].name == "auipc":
                     leaf_count += 1
@@ -55,6 +56,9 @@ def isCandidate(prog, node, dag):
     dst_registers = dst_registers - set(dst_registers_root)
 
     if leaf_count > 2:
+        return False
+    
+    if inst_count < 2:
         return False
 
     if not has_inst:
