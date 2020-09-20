@@ -23,16 +23,12 @@ class Subgraph:
         ) * graph.nodes[root]["instruction"].freq
 
         self.depth = self.calcDepth(self.root)
-        if self.depth < 2:
-            print("depth error!!!")
-            print(self.graph.nodes)
-            pass
-
+        
     def calcDepth(self, current):
         """Calculate the depth of a DAG recursively"""
         if len(list(self.graph.successors(current))) == 0:
             return 0
-        return max([self.calcDepth(s) for s in self.graph.successors(current)]) + 1
+        return max([self.calcDepth(s) for s in self.graph.successors(current)]) + (1 if self.graph.nodes[current]['instruction'].name not in ['mv','c.mv'] else 0)
 
     def containsMultiplyInstruction(self):
         return any(
