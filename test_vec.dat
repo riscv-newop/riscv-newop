@@ -1,9 +1,0 @@
-Mnemonic: vadd.vv v0,v1,v2,v0.t Opcode: 0x110057
-Mnemonic: vadd.vx v3,v4,zero,v0.t Opcode: 0x4041d7
-Mnemonic: vadd.vi v5,v6,16,v0.t Opcode: 0x6832d7
-Mnemonic: vredsum.vs v7,v8,v9,v0.t Opcode: 0x84a3d7
-Mnemonic: vslide1up.vx v10,v11,ra,v0.t Opcode: 0x38b0e557
-Mnemonic: vfadd.vv v12,v13,v14,v0.t Opcode: 0xd71657
-Mnemonic: vfadd.vf v15,v16,sp,v0.t Opcode: 0x10157d7
-Mnemonic: vfredsum.vs v17,v18,v19,v0.t Opcode: 0x52998d7
-Mnemonic: vadc.vvm v20,v21,v22,v0 Opcode: 0x435b0a57
