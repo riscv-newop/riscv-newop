@@ -167,10 +167,12 @@ class BasicBlock:
             for inst in self.bbInstructions()
             for reg in (inst.src_registers + inst.dest_registers)
         }
-        # print(registers)
+
+        constants = {imm for inst in self.bbInstructions() for imm in inst.immediates}
 
         current_node = {reg: reg for reg in registers}
         graph.add_nodes_from(registers, type="register")
+        graph.add_nodes_from(constants, type="constants")
 
         for inst in self.bbInstructions():
             if not inst.dest_registers or inst.isControlTransfer():
@@ -184,6 +186,9 @@ class BasicBlock:
                 graph.add_node(node, type="instruction", instruction=inst, pc=pc)
                 for s in inst.src_registers:
                     graph.add_edge(node, current_node[s])
+
+                for imm in inst.immediates:
+                    graph.add_edge(node, imm)
 
                 for d in inst.dest_registers:
                     # set current to latest value

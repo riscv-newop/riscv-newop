@@ -57,7 +57,7 @@ def isCandidate(prog, node, dag):
 
     if leaf_count > 2:
         return False
-    
+
     if inst_count < 2:
         return False
 
