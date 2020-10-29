@@ -1,0 +1,135 @@
+{
+"instructions":[
+{
+"name": "mod",
+"graph": {
+    "directed": true,
+    "multigraph": false,
+    "graph": [
+        [
+            "sub_block",
+            "B108.0"
+        ]
+    ],
+    "nodes": [
+        {
+            "type": "register",
+            "id": "x18"
+        },
+        {
+            "type": "instruction",
+            "pc": 66206,
+            "id": "0x1029e: c.mv a4,s2"
+        },
+        {
+            "type": "instruction",
+            "pc": 66208,
+            "id": "0x102a0: c.mv a5,a4"
+        },
+        {
+            "type": "instruction",
+            "pc": 66210,
+            "id": "0x102a2: c.slli a5,a5,2"
+        },
+        {
+            "type": "instruction",
+            "pc": 66212,
+            "id": "0x102a4: c.add a5,a5,a4"
+        },
+        {
+            "type": "instruction",
+            "pc": 66214,
+            "id": "0x102a6: c.slli a5,a5,4"
+        },
+        {
+            "type": "instruction",
+            "pc": 66216,
+            "id": "0x102a8: c.mv a4,a5"
+        }
+    ],
+    "adjacency": [
+        [],
+        [
+            {
+                "id": "x18"
+            }
+        ],
+        [
+            {
+                "id": "0x1029e: c.mv a4,s2"
+            }
+        ],
+        [
+            {
+                "id": "0x102a0: c.mv a5,a4"
+            }
+        ],
+        [
+            {
+                "id": "0x102a2: c.slli a5,a5,2"
+            },
+            {
+                "id": "0x1029e: c.mv a4,s2"
+            }
+        ],
+        [
+            {
+                "id": "0x102a4: c.add a5,a5,a4"
+            }
+        ],
+        [
+            {
+                "id": "0x102a6: c.slli a5,a5,4"
+            }
+        ]
+    ]
+},
+"encoding": 
+{
+"width": 32,
+"field_count": 6,
+"fields": [
+{
+"name": "custom-0",
+"type": "opcode",
+"start": 0,
+"width": 7,
+"value": "0xb"
+},
+{
+"name": "src1",
+"type": "register",
+"start": 15,
+"width": 5
+},
+{
+"name": "src2",
+"type": "register",
+"start": 20,
+"width": 5
+},
+{
+"name": "dest",
+"type": "register",
+"start": 7,
+"width": 5
+},
+{
+"name": "funct3",
+"type": "functt3",
+"start": 12,
+"width": 3,
+"value": "0x3"
+},
+{
+"name": "funct7",
+"type": "funct7",
+"start": 25,
+"width": 7,
+"value": "0xa7"
+}
+]
+}
+}
+]
+}
