@@ -23,12 +23,22 @@ class Subgraph:
         ) * graph.nodes[root]["instruction"].freq
 
         self.depth = self.calcDepth(self.root)
-        
+
+        # Range of immediates stored
+        immediates = [
+            int(n) for n in graph.nodes if graph.nodes[n]["type"] == "constant"
+        ]
+        self.imm_range = (min(immediates), max(immediates)) if immediates else None
+
     def calcDepth(self, current):
         """Calculate the depth of a DAG recursively"""
         if len(list(self.graph.successors(current))) == 0:
             return 0
-        return max([self.calcDepth(s) for s in self.graph.successors(current)]) + (1 if self.graph.nodes[current]['instruction'].name not in ['mv','c.mv'] else 0)
+        return max([self.calcDepth(s) for s in self.graph.successors(current)]) + (
+            1
+            if self.graph.nodes[current]["instruction"].name not in ["mv", "c.mv"]
+            else 0
+        )
 
     def containsMultiplyInstruction(self):
         return any(

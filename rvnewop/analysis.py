@@ -9,7 +9,7 @@ def isCandidate(prog, node, dag):
         - not have more than two register nodes connected to it
         - have at least one non-register node connected to it"""
 
-    if dag.nodes[node]["type"] == "register":
+    if dag.nodes[node]["type"] in ["register", "constant"]:
         return False
 
     leaf_count = 0
@@ -35,6 +35,8 @@ def isCandidate(prog, node, dag):
     for n in subgraph_nodes:
         if n not in visited:
             type = dag.nodes[n]["type"]
+            if type == "constant":
+                continue
             if type == "register":
                 leaf_count += 1
             if type == "instruction":
@@ -53,7 +55,10 @@ def isCandidate(prog, node, dag):
 
     """ Track only those registers that are not also written to by the
     root node of the candidate """
-    dst_registers = dst_registers - set(dst_registers_root)
+    if dst_registers_root:
+        dst_registers = dst_registers - set(dst_registers_root)
+    else:
+        dst_registers_root = dst_registers
 
     if leaf_count > 2:
         return False
@@ -143,6 +148,8 @@ def graphToString(dag):
     current = 0
     root = findRoot(dag, list(dag)[0])
     to_visit = [root]
+
+    dag = nx.subgraph(dag, [n for n in dag.nodes if dag.nodes[n]["type"] != "constant"])
 
     while to_visit:
         for s in dag.successors(to_visit[0]):
