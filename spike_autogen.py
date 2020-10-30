@@ -23,7 +23,7 @@ class AutoGen:
             for insn in insn_dict:
                 print(insn)
             # get name of new insn and save in var insn_name
-            insn_name = ["MOD", "name1", "name3"]
+            insn_name = ["MOD", "name6", "name7"]
             # get "value" of custom-0 (and maybe of funct3 and funct7?)
             insn_match = [0xB, 0x1, 0x2]
             # get "width" of funct7 (or funct6?), funct3, and custon-0, left shift by "start", or with each other
@@ -49,12 +49,14 @@ class AutoGen:
                 substring3 = "// DECLARE AUTOGEN START"
                 substring4 = "// DECLARE AUTOGEN END"
 
-                # Remove lines between autogen start and autogen end
+                # Find Autogen section
                 for i, s in enumerate(str_list):
                     if substring1 in s:
                         match_start = i
                     if substring2 in s:
                         match_end = i
+
+                # Remove lines between Autogen start and Autogen end
                 del str_list[match_start + 1 : match_end]
 
                 # Add match/mask lines for each insn
@@ -68,12 +70,14 @@ class AutoGen:
                         "#define MASK_" + insn_name[i] + " " + hex(insn_mask[i]),
                     )
 
-                # Remove lines between autogen start and autogen end
+                # Find Autogen section
                 for i, s in enumerate(str_list):
                     if substring3 in s:
                         match_start = i
                     if substring4 in s:
                         match_end = i
+
+                # Remove lines between Autogen start and Autogen end
                 del str_list[match_start + 1 : match_end]
 
                 # Add declare lines for each insn
@@ -148,42 +152,24 @@ class AutoGen:
             print("\n".join(str_list), file=backup_handle)
             backup_handle.close()
 
-            # If Autogen section exists
-            if "# AUTOGEN START" in str_list:
-                substring1 = "# AUTOGEN START"
-                substring2 = "# AUTOGEN END"
+            # Find line before Autogen section
+            substring1 = "riscv_insn_ext_i = \\"
+            substring2 = "\tadd \\"
+            for i, s in enumerate(str_list):
+                if substring1 in s:
+                    match_start = i
+                if substring2 in s:
+                    match_end = i
 
-                # Remove lines between Autogen start and end
-                for i, s in enumerate(str_list):
-                    if substring1 in s:
-                        match_start = i
-                    if substring2 in s:
-                        match_end = i
-                del str_list[match_start + 1 : match_end]
+            # Remove lines between Autogen start and end
+            del str_list[match_start + 1 : match_end]
 
-                # Add lines for each insn
-                for i in range(len(insn_name)):
-                    str_list.insert(
-                        match_start + 1 + i,
-                        "\t" + insn_name[i] + " \\",
-                    )
-
-            # If Autogen section does not exist
-            else:
-                # Find line before Autogen section
-                substr = "riscv_insn_ext_i = \\"
-                for i, s in enumerate(str_list):
-                    if substr in s:
-                        match_str = i
-
-                # Add lines for each insn
-                str_list.insert(match_str + 1, "# AUTOGEN START")
-                for i in range(len(insn_name)):
-                    str_list.insert(
-                        match_str + 2 + i,
-                        "\t" + insn_name[i] + " \\",
-                    )
-                str_list.insert(match_str + 3 + i, "# AUTOGEN END")
+            # Add lines for each insn
+            for i in range(len(insn_name)):
+                str_list.insert(
+                    match_start + 1 + i,
+                    "\t" + insn_name[i] + " \\",
+                )
 
             # Write str_list to riscv.mk.in
             make_handle = open(os.path.join(path_name, "riscv.mk.in"), "w")
