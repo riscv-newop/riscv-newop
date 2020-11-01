@@ -6,16 +6,20 @@ import json
 from glob import glob
 from pathlib import Path
 from bitarray import bitarray
+import sys
 
-import pytest
-
+def usage():
+    print("Program takes three arguments:")
+    print("New instructions JSON file")
+    print("Path to RISCV SPIKE Installation")
+    print("Path to a folder/worksapce")
 
 class AutoGen:
-    def __init__(self, path_name):
-        if os.path.exists(path_name) == False:
-            print("Fatal: Unable to find the path: " + path_name)
+    def __init__(self, new_insn_json, riscv_path_name, backup_path):
+        if os.path.exists(riscv_path_name) == False:
+            print("Fatal: Unable to find the path: " + riscv_path_name)
         else:
-            json_handle = open("inst.json", "r")
+            json_handle = open(new_insn_json, "r")
 
             # TODO get data from json
             insn_dict = json.load(json_handle)
@@ -31,13 +35,13 @@ class AutoGen:
             # get contents of new insn that will go in insns/insn_name.h
 
             # Write to encoding.h
-            encoding_handle = open(os.path.join(path_name, "encoding.h"), "r")
+            encoding_handle = open(os.path.join(riscv_path_name, "encoding.h"), "r")
             str_list = encoding_handle.read().split("\n")
             encoding_handle.close()
 
             # Backup encoding.h
             backup_handle = open(
-                os.path.join(path_name, "../backup/encoding_backup.h"), "w"
+                os.path.join(backup_path, "encoding_backup.h"), "w"
             )
             print("\n".join(str_list), file=backup_handle)
             backup_handle.close()
@@ -136,18 +140,18 @@ class AutoGen:
                 str_list.insert(match_str + 3 + i, "// DECLARE AUTOGEN END")
 
             # Write str_list to encoding.h
-            encoding_handle = open(os.path.join(path_name, "encoding.h"), "w")
+            encoding_handle = open(os.path.join(riscv_path_name, "encoding.h"), "w")
             print("\n".join(str_list), file=encoding_handle)
 
             # Write to riscv.mk.in
             # TODO needs to be able to determine the extension of the insn
-            make_handle = open(os.path.join(path_name, "riscv.mk.in"), "r+")
+            make_handle = open(os.path.join(riscv_path_name, "riscv.mk.in"), "r+")
             str_list = make_handle.read().split("\n")
             make_handle.close()
 
             # Backup riscv.mk.in
             backup_handle = open(
-                os.path.join(path_name, "../backup/riscv_backup.mk.in"), "w"
+                os.path.join(backup_path, "riscv_backup.mk.in"), "w"
             )
             print("\n".join(str_list), file=backup_handle)
             backup_handle.close()
@@ -172,20 +176,20 @@ class AutoGen:
                 )
 
             # Write str_list to riscv.mk.in
-            make_handle = open(os.path.join(path_name, "riscv.mk.in"), "w")
+            make_handle = open(os.path.join(riscv_path_name, "riscv.mk.in"), "w")
             print("\n".join(str_list), file=make_handle)
 
             # Write to files inside insns/
             # Backup existing insns files with same insn_name
             for i in insn_name:
-                f = Path(path_name, "insns/", i + ".h")
+                f = Path(riscv_path_name, "insns/", i + ".h")
                 if f.is_file():
-                    i_handle = open(os.path.join(path_name, "insns/" + i + ".h"), "r")
+                    i_handle = open(os.path.join(riscv_path_name, "insns/" + i + ".h"), "r")
                     str_list = i_handle.read().split("\n")
                     i_handle.close()
 
                     backup_handle = open(
-                        os.path.join(path_name, "../backup/" + i + "_backup.h"), "w"
+                        os.path.join(backup_path, i + "_backup.h"), "w"
                     )
                     print("\n".join(str_list), file=backup_handle)
                     backup_handle.close()
@@ -193,7 +197,7 @@ class AutoGen:
             # Create new files inside insns/
             for i in range(len(insn_name)):
                 insn_handle = open(
-                    os.path.join(path_name, "insns/", insn_name[i] + ".h"), "w+"
+                    os.path.join(riscv_path_name, "insns/", insn_name[i] + ".h"), "w+"
                 )
                 insn_handle.close()
 
@@ -203,9 +207,12 @@ class AutoGen:
             json_handle.close()
 
 
-def spike_autogen():
-    path = "../../RISCV/riscv-isa-sim/riscv/"
-    AutoGen(path)
+if len(sys.argv) < 4:
+    usage()
+    sys.exit()
 
+new_insn_json = sys.argv[1]
+path = sys.argv[2]
+backup = sys.argv[3]
 
-spike_autogen()
+AutoGen(new_insn_json, path, backup)
