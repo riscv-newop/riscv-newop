@@ -23,15 +23,12 @@ class AutoGen:
 
             # TODO get data from json
             insn_dict = json.load(json_handle)
-            print(insn_dict)
-            for insn in insn_dict:
-                print(insn)
             # get name of new insn and save in var insn_name
-            insn_name = ["MOD", "name6", "name7"]
+            #insn_name = ["MOD", "name6", "name7"]
             # get "value" of custom-0 (and maybe of funct3 and funct7?)
-            insn_match = [0xB, 0x1, 0x2]
+            #insn_match = [0xB, 0x1, 0x2]
             # get "width" of funct7 (or funct6?), funct3, and custon-0, left shift by "start", or with each other
-            insn_mask = [0xFE00707F, 0x1, 0x2]
+            #insn_mask = [0xFE00707F, 0x1, 0x2]
             # get contents of new insn that will go in insns/insn_name.h
 
             # Write to encoding.h
@@ -64,14 +61,15 @@ class AutoGen:
                 del str_list[match_start + 1 : match_end]
 
                 # Add match/mask lines for each insn
-                for i in range(len(insn_name)):
+                for i in range(len(insn_dict["instructions"])):
+                    print(insn_dict["instructions"][i]) 
                     str_list.insert(
                         match_start + 1 + (i * 2),
-                        "#define MATCH_" + insn_name[i] + " " + hex(insn_match[i]),
+                        "#define MATCH_" + insn_dict["instructions"][i]["insn_name"] + " " + insn_dict["instructions"][i]["match"],
                     )
                     str_list.insert(
                         match_start + 2 + (i * 2),
-                        "#define MASK_" + insn_name[i] + " " + hex(insn_mask[i]),
+                        "#define MASK_" + insn_dict["instructions"][i]["insn_name"]+ " " + insn_dict["instructions"][i]["mask"],
                     )
 
                 # Find Autogen section
@@ -85,15 +83,15 @@ class AutoGen:
                 del str_list[match_start + 1 : match_end]
 
                 # Add declare lines for each insn
-                for i in range(len(insn_name)):
+                for i in range(len(insn_dict["instructions"])):
                     str_list.insert(
                         match_start + 1 + i,
                         "DECLARE_INSN("
-                        + insn_name[i]
+                        + insn_dict["instructions"][i]["insn_name"]
                         + ", MATCH_"
-                        + insn_name[i]
+                        + insn_dict["instructions"][i]["insn_name"]
                         + ", MASK_"
-                        + insn_name[i]
+                        + insn_dict["instructions"][i]["insn_name"]
                         + ")",
                     )
 
@@ -107,14 +105,14 @@ class AutoGen:
 
                 # Add matck/mask lines for each insn
                 str_list.insert(match_str + 1, "// MATCH/MASK AUTOGEN START")
-                for i in range(len(insn_name)):
+                for i in range(len(insn_dict["instructions"])):
                     str_list.insert(
                         match_str + 2 + (i * 2),
-                        "#define MATCH_" + insn_name[i] + " " + hex(insn_match[i]),
+                        "#define MATCH_" + insn_dict["instructions"][i]["insn_name"] + " " + insn_dict["instructions"][i]["match"],
                     )
                     str_list.insert(
                         match_str + 3 + (i * 2),
-                        "#define MASK_" + insn_name[i] + " " + hex(insn_mask[i]),
+                        "#define MASK_" + insn_dict["instructions"][i]["insn_name"] + " " + insn_dict["instructions"][i]["mask"],
                     )
                 str_list.insert(match_str + 4 + (i * 2), "// MATCH/MASK AUTOGEN END")
 
@@ -126,15 +124,15 @@ class AutoGen:
 
                 # Add declare lines for each insn
                 str_list.insert(match_str + 1, "// DECLARE AUTOGEN START")
-                for i in range(len(insn_name)):
+                for i in range(len(insn_dict["instructions"])):
                     str_list.insert(
                         match_str + 2 + i,
                         "DECLARE_INSN("
-                        + insn_name[i]
+                        + insn_dict["instructions"][i]["insn_name"]
                         + ", MATCH_"
-                        + insn_name[i]
+                        + insn_dict["instructions"][i]["match"]
                         + ", MASK_"
-                        + insn_name[i]
+                        + insn_dict["instructions"][i]["mask"]
                         + ")",
                     )
                 str_list.insert(match_str + 3 + i, "// DECLARE AUTOGEN END")
@@ -169,10 +167,10 @@ class AutoGen:
             del str_list[match_start + 1 : match_end]
 
             # Add lines for each insn
-            for i in range(len(insn_name)):
+            for i in range(len(insn_dict["instructions"])):
                 str_list.insert(
                     match_start + 1 + i,
-                    "\t" + insn_name[i] + " \\",
+                    "\t" + insn_dict["instructions"][i]["insn_name"] + " \\",
                 )
 
             # Write str_list to riscv.mk.in
@@ -181,10 +179,10 @@ class AutoGen:
 
             # Write to files inside insns/
             # Backup existing insns files with same insn_name
-            for i in insn_name:
-                f = Path(riscv_path_name, "insns/", i + ".h")
+            for i in range(len(insn_dict["instructions"])):
+                f = Path(riscv_path_name, "insns/", insn_dict["instructions"][i]["insn_name"] + ".h")
                 if f.is_file():
-                    i_handle = open(os.path.join(riscv_path_name, "insns/" + i + ".h"), "r")
+                    i_handle = open(os.path.join(riscv_path_name, "insns/" + insn_dict[i]["insn_name"] + ".h"), "r")
                     str_list = i_handle.read().split("\n")
                     i_handle.close()
 
@@ -195,9 +193,9 @@ class AutoGen:
                     backup_handle.close()
 
             # Create new files inside insns/
-            for i in range(len(insn_name)):
+            for i in range(len(insn_dict["instructions"])):
                 insn_handle = open(
-                    os.path.join(riscv_path_name, "insns/", insn_name[i] + ".h"), "w+"
+                    os.path.join(riscv_path_name, "insns/", insn_dict["instructions"][i]["insn_name"] + ".h"), "w+"
                 )
                 insn_handle.close()
 
