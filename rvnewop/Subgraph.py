@@ -18,7 +18,13 @@ class Subgraph:
         #               frequency as all the rest
         self.score = (
             len(graph.nodes)
-            - len([n for n in graph.nodes if graph.nodes[n]["type"] == "register"])
+            - len(
+                [
+                    n
+                    for n in graph.nodes
+                    if graph.nodes[n]["type"] in ["register", "constant"]
+                ]
+            )
             - 1
         ) * graph.nodes[root]["instruction"].freq
 

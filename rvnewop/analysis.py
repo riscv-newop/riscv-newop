@@ -5,7 +5,7 @@ def isCandidate(prog, node, dag):
     """Returns whether node and everything from it makes a feasible candidate subgraph,
 
     a candidate must:
-        - not be a leaf (not a register)
+        - not be a leaf (not a register or a constant)
         - not have more than two register nodes connected to it
         - have at least one non-register node connected to it"""
 
