@@ -120,6 +120,16 @@ for sg in new_instructions[:10]:
 
     #plt.savefig("test{}.png".format(i))
 
+    num_consts = 0
+    for n in sg.graph:
+        if sg.graph.nodes[n]["type"] == "constant":
+            num_consts += 1
+
+    if num_consts > 2:
+        print("Instruction can not be encoded as it has " + str(num_consts) + " constants")
+        i += 1
+        continue
+
     # print out JSON
     for n in sg.graph:
         if sg.graph.nodes[n]["type"] == "instruction":
@@ -128,7 +138,7 @@ for sg in new_instructions[:10]:
             except:
                 pass
 
-    new_insn_name = (rv.analysis.graphToParenString(sg.graph)).replace('(','_').replace(')','_')
+    new_insn_name = (rv.analysis.graphToParenString(sg.graph)).replace('(','_').replace(')','_').replace('.','_')
     new_insn_json = ''
     new_insn_json += '{\n'
     new_insn_json += '"insn_name":' + '"' + new_insn_name + '",\n'
@@ -160,6 +170,29 @@ for sg in new_instructions[:10]:
     new_insn_json += '"start":' + str(7)+',\n'
     new_insn_json += '"width":' + str(5)+'\n'
     new_insn_json += '}\n'
+    if num_consts > 0:
+        new_insn_json += ',\n'
+
+        const_field_start = 25
+        const_field_width = 3
+        c = 0
+        for n in sg.graph:
+            if sg.graph.nodes[n]["type"] == "constant":
+                # add a constant field to instruction
+                new_insn_json += '{\n'
+                new_insn_json += '"type":"imm' + str(c) +'",\n' 
+                new_insn_json += '"start":' + str(const_field_start)+',\n'
+                new_insn_json += '"width":' + str(const_field_width)+'\n'
+                new_insn_json += '}\n'
+
+                # link this field information into the node in the graph
+                sg.graph.nodes[n]["offset"] = const_field_start
+                  
+                const_field_start += const_field_width
+                c+= 1
+                if c < num_consts:
+                    new_insn_json += ',\n'
+        
     new_insn_json += '],\n'
     new_insn_json += '"match":' + '"' + hex(getOpcode(i) | getFunct3(i) << 12) + '",\n'
     new_insn_json += '"mask":' + '"0x707f",\n'
@@ -168,7 +201,6 @@ for sg in new_instructions[:10]:
     new_insn_json += "\"graph\":\n"
     new_insn_json += json.dumps(data)
     new_insn_json += '}\n'
-    #print(json.dumps(data))
     out_json += new_insn_json
     if i < (n_i-1):
         out_json += ','
