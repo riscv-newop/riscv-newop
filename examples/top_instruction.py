@@ -5,13 +5,35 @@ from itertools import accumulate
 import json
 
 import matplotlib.pyplot as plt
-from networkx.drawing.nx_agraph import graphviz_layout
+#from networkx.drawing.nx_agraph import graphviz_layout
 
 import networkx as nx
 from networkx.readwrite import json_graph
 
-FILENAME = "./embench_hst/matmult-int.hst"
+def getOpcode(ins_num):
+    # we use custom_0 or custom_1 space
+    if ins_num <= 7:
+        # custom_0
+        return 11 #00_010_11
+    else:
+        # custom_1
+        return 43 #01_010_11
+
+def getFunct3(ins_num):
+    # we use custom_0 or custom_1 space
+    if ins_num <= 7:
+        # custom_0
+        return ins_num
+    else:
+        # custom_1
+        return ins_num - 8
+
+#FILENAME = "./embench_hst/matmult-int.hst"
+FILENAME = "./compute.hst"
 print("Processing {}...".format(FILENAME))
+
+OUT_FILENAME = "./insns.json"
+out_file = open(OUT_FILENAME, "w")
 
 prog = rv.Histogram.parse(FILENAME, isa="32ICM")
 prog.findBasicBlocks()
@@ -83,18 +105,20 @@ for sg in new_instructions:
 saved_cycles = sum([sg.score for sg in new_instructions])
 percent_cycles = float(saved_cycles) / total_cycles * 100
 
+out_json = '{\n'
+out_json += "\"instructions\":[\n"
 
 i = 0
+n_i = len(new_instructions[:10])
 for sg in new_instructions[:10]:
     print("instruction #{}".format(i))
     print("range: {}".format(sg.imm_range))
 
-    plt.clf()
-    pos = graphviz_layout(sg.graph, prog="dot")
-    nx.draw(sg.graph, pos, with_labels=True, font_size=7)
+    #plt.clf()
+    #pos = graphviz_layout(sg.graph, prog="dot")
+    #nx.draw(sg.graph, pos, with_labels=True, font_size=7)
 
-    plt.savefig("test{}.png".format(i))
-    i += 1
+    #plt.savefig("test{}.png".format(i))
 
     # print out JSON
     for n in sg.graph:
@@ -104,8 +128,56 @@ for sg in new_instructions[:10]:
             except:
                 pass
 
+    new_insn_name = (rv.analysis.graphToParenString(sg.graph)).replace('(','_').replace(')','_')
+    new_insn_json = ''
+    new_insn_json += '{\n'
+    new_insn_json += '"insn_name":' + '"' + new_insn_name + '",\n'
+    new_insn_json += '"insn_fields":' + '[\n'
+    new_insn_json += '{\n'
+    new_insn_json += '"type":"opcode",\n' 
+    new_insn_json += '"value":' + str(getOpcode(i))+',\n'
+    new_insn_json += '"start":' + str(0)+',\n'
+    new_insn_json += '"width":' + str(7)+'\n'
+    new_insn_json += '},\n'
+    new_insn_json += '{\n'
+    new_insn_json += '"type":"funct3",\n' 
+    new_insn_json += '"value":' + str(getFunct3(i))+',\n'
+    new_insn_json += '"start":' + str(12)+',\n'
+    new_insn_json += '"width":' + str(3)+'\n'
+    new_insn_json += '},\n'
+    new_insn_json += '{\n'
+    new_insn_json += '"type":"rs1",\n' 
+    new_insn_json += '"start":' + str(15)+',\n'
+    new_insn_json += '"width":' + str(5)+'\n'
+    new_insn_json += '},\n'
+    new_insn_json += '{\n'
+    new_insn_json += '"type":"rs2",\n' 
+    new_insn_json += '"start":' + str(20)+',\n'
+    new_insn_json += '"width":' + str(5)+'\n'
+    new_insn_json += '},\n'
+    new_insn_json += '{\n'
+    new_insn_json += '"type":"rd",\n' 
+    new_insn_json += '"start":' + str(7)+',\n'
+    new_insn_json += '"width":' + str(5)+'\n'
+    new_insn_json += '}\n'
+    new_insn_json += '],\n'
+    new_insn_json += '"match":' + '"' + hex(getOpcode(i) | getFunct3(i) << 12) + '",\n'
+    new_insn_json += '"mask":' + '"0x707f",\n'
+
     data = json_graph.adjacency_data(sg.graph)
-    print(json.dumps(data))
+    new_insn_json += "\"graph\":\n"
+    new_insn_json += json.dumps(data)
+    new_insn_json += '}\n'
+    #print(json.dumps(data))
+    out_json += new_insn_json
+    if i < (n_i-1):
+        out_json += ','
+    
+    i += 1
+
+out_json +=']\n'
+out_json +='}'
+out_file.write(out_json)
 
 print(
     """Saved {} cycles out of {} ({:.4}%) with {} new instructions""".format(
