@@ -8,27 +8,37 @@ from pathlib import Path
 from bitarray import bitarray
 import sys
 
+
 def usage():
     print("Program takes three arguments:")
-    print("New instructions JSON file")
-    print("Path to RISCV SPIKE Installation")
-    print("Path to a folder/worksapce")
+    print("Path to JSON file with new instructions")
+    print("Path to RISC-V SPIKE Installation")
+    print("Path to a backup folder/workspace")
+
 
 class AutoGen:
     def __init__(self, new_insn_json, riscv_path_name, backup_path):
         if os.path.exists(riscv_path_name) == False:
-            print("Fatal: Unable to find the path: " + riscv_path_name)
+            print(
+                "Fatal: Unable to find the path to RISC-V SPIKE installation: "
+                + riscv_path_name
+            )
         else:
+            if os.path.exists(backup) == False:
+                os.mkdir(backup)
             json_handle = open(new_insn_json, "r")
 
             # TODO get data from json
             insn_dict = json.load(json_handle)
             # get name of new insn and save in var insn_name
-            #insn_name = ["MOD", "name6", "name7"]
+            for i in range(len(insn_dict["instructions"])):
+                insn_name[i] = insn_dict["instructions"][i]["insn_name"]
+                insn_name[i] = insn_name[i].replace(".", "_")
+            # insn_name = ["MOD", "name6", "name7"]
             # get "value" of custom-0 (and maybe of funct3 and funct7?)
-            #insn_match = [0xB, 0x1, 0x2]
+            # insn_match = [0xB, 0x1, 0x2]
             # get "width" of funct7 (or funct6?), funct3, and custon-0, left shift by "start", or with each other
-            #insn_mask = [0xFE00707F, 0x1, 0x2]
+            # insn_mask = [0xFE00707F, 0x1, 0x2]
             # get contents of new insn that will go in insns/insn_name.h
 
             # Write to encoding.h
@@ -37,9 +47,7 @@ class AutoGen:
             encoding_handle.close()
 
             # Backup encoding.h
-            backup_handle = open(
-                os.path.join(backup_path, "encoding_backup.h"), "w"
-            )
+            backup_handle = open(os.path.join(backup_path, "encoding_backup.h"), "w")
             print("\n".join(str_list), file=backup_handle)
             backup_handle.close()
 
@@ -62,14 +70,20 @@ class AutoGen:
 
                 # Add match/mask lines for each insn
                 for i in range(len(insn_dict["instructions"])):
-                    print(insn_dict["instructions"][i]) 
+                    print(insn_dict["instructions"][i])
                     str_list.insert(
                         match_start + 1 + (i * 2),
-                        "#define MATCH_" + insn_dict["instructions"][i]["insn_name"] + " " + insn_dict["instructions"][i]["match"],
+                        "#define MATCH_"
+                        + upper(insn_dict["instructions"][i]["insn_name"])
+                        + " "
+                        + insn_dict["instructions"][i]["match"],
                     )
                     str_list.insert(
                         match_start + 2 + (i * 2),
-                        "#define MASK_" + insn_dict["instructions"][i]["insn_name"]+ " " + insn_dict["instructions"][i]["mask"],
+                        "#define MASK_"
+                        + upper(insn_dict["instructions"][i]["insn_name"])
+                        + " "
+                        + insn_dict["instructions"][i]["mask"],
                     )
 
                 # Find Autogen section
@@ -87,11 +101,11 @@ class AutoGen:
                     str_list.insert(
                         match_start + 1 + i,
                         "DECLARE_INSN("
-                        + insn_dict["instructions"][i]["insn_name"]
+                        + upper(insn_dict["instructions"][i]["insn_name"])
                         + ", MATCH_"
-                        + insn_dict["instructions"][i]["insn_name"]
+                        + upper(insn_dict["instructions"][i]["insn_name"])
                         + ", MASK_"
-                        + insn_dict["instructions"][i]["insn_name"]
+                        + upper(insn_dict["instructions"][i]["insn_name"])
                         + ")",
                     )
 
@@ -108,11 +122,17 @@ class AutoGen:
                 for i in range(len(insn_dict["instructions"])):
                     str_list.insert(
                         match_str + 2 + (i * 2),
-                        "#define MATCH_" + insn_dict["instructions"][i]["insn_name"] + " " + insn_dict["instructions"][i]["match"],
+                        "#define MATCH_"
+                        + upper(insn_dict["instructions"][i]["insn_name"])
+                        + " "
+                        + insn_dict["instructions"][i]["match"],
                     )
                     str_list.insert(
                         match_str + 3 + (i * 2),
-                        "#define MASK_" + insn_dict["instructions"][i]["insn_name"] + " " + insn_dict["instructions"][i]["mask"],
+                        "#define MASK_"
+                        + upper(insn_dict["instructions"][i]["insn_name"])
+                        + " "
+                        + insn_dict["instructions"][i]["mask"],
                     )
                 str_list.insert(match_str + 4 + (i * 2), "// MATCH/MASK AUTOGEN END")
 
@@ -128,11 +148,11 @@ class AutoGen:
                     str_list.insert(
                         match_str + 2 + i,
                         "DECLARE_INSN("
-                        + insn_dict["instructions"][i]["insn_name"]
+                        + upper(insn_dict["instructions"][i]["insn_name"])
                         + ", MATCH_"
-                        + insn_dict["instructions"][i]["match"]
+                        + upper(insn_dict["instructions"][i]["insn_name"])
                         + ", MASK_"
-                        + insn_dict["instructions"][i]["mask"]
+                        + upper(insn_dict["instructions"][i]["insn_name"])
                         + ")",
                     )
                 str_list.insert(match_str + 3 + i, "// DECLARE AUTOGEN END")
@@ -148,9 +168,7 @@ class AutoGen:
             make_handle.close()
 
             # Backup riscv.mk.in
-            backup_handle = open(
-                os.path.join(backup_path, "riscv_backup.mk.in"), "w"
-            )
+            backup_handle = open(os.path.join(backup_path, "riscv_backup.mk.in"), "w")
             print("\n".join(str_list), file=backup_handle)
             backup_handle.close()
 
@@ -180,9 +198,18 @@ class AutoGen:
             # Write to files inside insns/
             # Backup existing insns files with same insn_name
             for i in range(len(insn_dict["instructions"])):
-                f = Path(riscv_path_name, "insns/", insn_dict["instructions"][i]["insn_name"] + ".h")
+                f = Path(
+                    riscv_path_name,
+                    "insns/",
+                    insn_dict["instructions"][i]["insn_name"] + ".h",
+                )
                 if f.is_file():
-                    i_handle = open(os.path.join(riscv_path_name, "insns/" + insn_dict[i]["insn_name"] + ".h"), "r")
+                    i_handle = open(
+                        os.path.join(
+                            riscv_path_name, "insns/" + insn_dict[i]["insn_name"] + ".h"
+                        ),
+                        "r",
+                    )
                     str_list = i_handle.read().split("\n")
                     i_handle.close()
 
@@ -195,7 +222,12 @@ class AutoGen:
             # Create new files inside insns/
             for i in range(len(insn_dict["instructions"])):
                 insn_handle = open(
-                    os.path.join(riscv_path_name, "insns/", insn_dict["instructions"][i]["insn_name"] + ".h"), "w+"
+                    os.path.join(
+                        riscv_path_name,
+                        "insns/",
+                        insn_dict["instructions"][i]["insn_name"] + ".h",
+                    ),
+                    "w+",
                 )
                 insn_handle.close()
 
